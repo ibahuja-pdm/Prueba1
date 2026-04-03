@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mantenimiento PDM</title>
 <style>
   /* ─── Design Tokens ─────────────────────────────────────── */
@@ -16,56 +16,124 @@
     --success:        #00A859;
     --warning:        #FFB800;
     --danger:         #D93025;
+    --sidebar-w:      240px;
+    --header-h:       56px;
   }
 
   /* ─── Reset ─────────────────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
 
-  /* ─── Layout ─────────────────────────────────────────────── */
-  body { font-family: 'Inter', sans-serif; }
-
-  .app-wrap {
-    width: 100%;
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg-body);
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    min-height: 100%;
   }
 
+  /* ─── App Shell ──────────────────────────────────────────── */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ─── Top Header ─────────────────────────────────────────── */
   .main-header {
     background: var(--medline-blue);
-    padding: 18px 20px;
+    padding: 0 20px;
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-shrink: 0;
   }
   .main-header h2 {
     font-size: 18px;
     color: #fff;
     font-weight: 600;
+    white-space: nowrap;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  .view-content {
-    padding: 14px;
-    flex-grow: 1;
+  /* ─── Desktop Layout ─────────────────────────────────────── */
+  .layout-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
   }
 
-  /* ─── Main Menu Grid ─────────────────────────────────────── */
+  /* ─── Sidebar (Desktop only) ─────────────────────────────── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 16px 12px;
+    gap: 6px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    transition: background 0.15s;
+    color: var(--text-main);
+  }
+  .sidebar-item:hover  { background: #f0f2f5; }
+  .sidebar-item.active { background: #e7f3ff; color: var(--medline-blue); }
+  .sidebar-item .icon-box { flex-shrink: 0; }
+  .sidebar-item .label-wrap h3 { font-size: 13px; font-weight: 700; }
+  .sidebar-item .label-wrap p  { font-size: 11px; color: var(--text-secondary); }
+  .sidebar-item.active .label-wrap p { color: #1877f2; }
+
+  /* ─── Main Content Area ──────────────────────────────────── */
+  .content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ─── Mobile Menu Grid ───────────────────────────────────── */
   .grid-menu {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    max-width: 900px;
   }
 
   .menu-card {
     background: var(--card-bg);
-    padding: 14px;
+    padding: 16px 14px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
-    border: none;
+    border: 1px solid transparent;
     text-align: left;
-    transition: transform 0.15s;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
+  .menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border-color); }
   .menu-card:active { transform: scale(0.97); }
   .menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); }
   .menu-card p  { font-size: 11px; color: var(--text-secondary); }
@@ -79,6 +147,7 @@
     align-items: center;
     justify-content: center;
     font-size: 17px;
+    flex-shrink: 0;
   }
   .bg-blue   { background: #e7f3ff; color: #1877f2; }
   .bg-green  { background: #e7f7ed; color: #2db84c; }
@@ -90,11 +159,19 @@
   /* ─── HMI View ───────────────────────────────────────────── */
   #hmi-view { display: none; flex-direction: column; }
 
+  .hmi-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
   .btn-back {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 14px;
+    padding: 9px 14px;
     background: white;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -102,9 +179,10 @@
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
-    margin-bottom: 14px;
-    width: 100%;
+    transition: background 0.15s;
+    flex-shrink: 0;
   }
+  .btn-back:hover { background: #f0f2f5; }
 
   /* ─── Tabs ───────────────────────────────────────────────── */
   .tab-nav {
@@ -125,6 +203,7 @@
     background: transparent;
     color: var(--text-secondary);
     transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
   }
   .tab-btn.active {
     background: white;
@@ -132,12 +211,17 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  /* ─── HMI Cards ──────────────────────────────────────────── */
+  /* ─── HMI Cards Grid ─────────────────────────────────────── */
+  #hmi-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
   .hmi-card {
     background: white;
     border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 14px;
+    padding: 16px;
     border-left: 5px solid var(--medline-blue);
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   }
@@ -174,7 +258,7 @@
 
   /* ─── Gauge & KPI ────────────────────────────────────────── */
   .gauge-wrap { display: flex; justify-content: center; margin: 6px 0 0; }
-  .gauge-wrap svg { width: 100%; max-width: 260px; height: auto; }
+  .gauge-wrap svg { width: 100%; max-width: 280px; height: auto; }
 
   .kpi-value {
     font-size: 22px;
@@ -207,13 +291,14 @@
   /* ─── Loading ────────────────────────────────────────────── */
   .loading-msg {
     text-align: center;
-    padding: 24px;
+    padding: 40px 24px;
     font-size: 12px;
     color: var(--text-secondary);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    grid-column: 1 / -1;
   }
   .spinner {
     width: 28px;
@@ -227,59 +312,140 @@
 
   /* ─── Utility ────────────────────────────────────────────── */
   .hidden { display: none !important; }
+
+  /* ─── Desktop Breakpoint (≥768px) ───────────────────────── */
+  @media (min-width: 768px) {
+
+    /* Sidebar visible, mobile back-button hidden */
+    .sidebar { display: flex; }
+    .btn-back { display: none; }
+
+    /* Wider grid for HMI cards */
+    #hmi-container {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    /* HMI view fills content area without back button gap */
+    #hmi-view { display: flex !important; flex-direction: column; }
+    #main-menu { display: none !important; }
+
+    .content-area { padding: 24px; }
+
+    .tab-nav { max-width: 360px; }
+
+    /* Larger gauges on desktop */
+    .gauge-wrap svg { max-width: 320px; }
+  }
+
+  /* ─── Mobile only ────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+
+    #hmi-container {
+      grid-template-columns: 1fr;
+    }
+
+    .content-area { padding: 14px; }
+  }
+
+  /* ─── Safe area (notched phones) ─────────────────────────── */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    .content-area {
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    .main-header {
+      padding-left:  calc(20px + env(safe-area-inset-left));
+      padding-right: calc(20px + env(safe-area-inset-right));
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="app-wrap">
+<div class="app-shell">
 
   <!-- Header -->
   <header id="main-header" class="main-header">
     <h2>⚙️ Mantenimiento PDM</h2>
   </header>
 
-  <main class="view-content">
+  <div class="layout-body">
 
-    <!-- Main Menu -->
-    <div id="main-menu" class="grid-menu">
-      <button class="menu-card" onclick="openHMI()">
+    <!-- Sidebar (desktop) -->
+    <nav class="sidebar" id="desktop-sidebar">
+      <button class="sidebar-item active" id="sb-hmi" onclick="sidebarNav('hmi')">
         <div class="icon-box bg-blue">🖥️</div>
-        <h3>HMI</h3><p>Monitoreo</p>
+        <div class="label-wrap"><h3>HMI</h3><p>Monitoreo</p></div>
       </button>
-      <button class="menu-card">
+      <button class="sidebar-item" onclick="sidebarNav('dashboard')">
         <div class="icon-box bg-green">📈</div>
-        <h3>Dashboard</h3><p>KPI</p>
+        <div class="label-wrap"><h3>Dashboard</h3><p>KPI</p></div>
       </button>
-      <button class="menu-card">
+      <button class="sidebar-item" onclick="sidebarNav('mp')">
         <div class="icon-box bg-orange">📅</div>
-        <h3>MP programados</h3><p>Formatos</p>
+        <div class="label-wrap"><h3>MP programados</h3><p>Formatos</p></div>
       </button>
-      <button class="menu-card">
+      <button class="sidebar-item" onclick="sidebarNav('qr')">
         <div class="icon-box bg-purple">🔲</div>
-        <h3>QR</h3><p>Recorridos</p>
+        <div class="label-wrap"><h3>QR</h3><p>Recorridos</p></div>
       </button>
-      <button class="menu-card">
+      <button class="sidebar-item" onclick="sidebarNav('inventario')">
         <div class="icon-box bg-teal">📦</div>
-        <h3>Inventario</h3><p>Refacciones</p>
+        <div class="label-wrap"><h3>Inventario</h3><p>Refacciones</p></div>
       </button>
-      <button class="menu-card">
+      <button class="sidebar-item" onclick="sidebarNav('extra')">
         <div class="icon-box bg-red">🔧</div>
-        <h3>Extra</h3><p>Pruebas</p>
+        <div class="label-wrap"><h3>Extra</h3><p>Pruebas</p></div>
       </button>
-    </div>
+    </nav>
 
-    <!-- HMI View -->
-    <section id="hmi-view">
-      <button class="btn-back" onclick="closeHMI()">← Regresar al menú</button>
-      <div class="tab-nav">
-        <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
-        <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
+    <!-- Main content -->
+    <main class="content-area">
+
+      <!-- Mobile Main Menu -->
+      <div id="main-menu" class="grid-menu">
+        <button class="menu-card" onclick="openHMI()">
+          <div class="icon-box bg-blue">🖥️</div>
+          <h3>HMI</h3><p>Monitoreo</p>
+        </button>
+        <button class="menu-card">
+          <div class="icon-box bg-green">📈</div>
+          <h3>Dashboard</h3><p>KPI</p>
+        </button>
+        <button class="menu-card">
+          <div class="icon-box bg-orange">📅</div>
+          <h3>MP programados</h3><p>Formatos</p>
+        </button>
+        <button class="menu-card">
+          <div class="icon-box bg-purple">🔲</div>
+          <h3>QR</h3><p>Recorridos</p>
+        </button>
+        <button class="menu-card">
+          <div class="icon-box bg-teal">📦</div>
+          <h3>Inventario</h3><p>Refacciones</p>
+        </button>
+        <button class="menu-card">
+          <div class="icon-box bg-red">🔧</div>
+          <h3>Extra</h3><p>Pruebas</p>
+        </button>
       </div>
-      <div id="hmi-container"></div>
-    </section>
 
-  </main>
-</div>
+      <!-- HMI View -->
+      <section id="hmi-view">
+        <!-- Back button (mobile only) -->
+        <button class="btn-back" onclick="closeHMI()">← Regresar al menú</button>
+
+        <div class="tab-nav">
+          <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
+          <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
+        </div>
+        <div id="hmi-container"></div>
+      </section>
+
+    </main>
+  </div><!-- /.layout-body -->
+
+</div><!-- /.app-shell -->
 
 <script>
 /* ─────────────────────────────────────────────────────────────
@@ -293,7 +459,6 @@ const CONFIG = {
   CH_LIST: ['CH001','CH002','CH003','CH004','CH005','CH006','CH007','CH008','CH009','CH010'],
   CP_LIST: ['COMP001','COMP002','COMP003'],
 
-  // Monday.com column IDs — Chillers
   COL_CH: {
     CARGA:    'numeric_mm1h2wdq',
     TEMP_OUT: 'numeric_mm1fssgs',
@@ -303,7 +468,6 @@ const CONFIG = {
     STATUS:   'status',
   },
 
-  // Monday.com column IDs — Compresores
   COL_CP: {
     STATUS:         'status',
     TEMP_CARGA:     'numeric_mm1zfxhc',
@@ -329,7 +493,6 @@ const COMPRESOR_SUB = {
   COMP003: 'Compresor CR4',
 };
 
-/* ─── Status maps ────────────────────────────────────────────── */
 const STATUS_KEY_MAP = [
   { match: 'operativo',    key: 'operativo'       },
   { match: 'carga parcial',key: 'carga-parcial'   },
@@ -340,47 +503,31 @@ const STATUS_KEY_MAP = [
 const DEFAULT_STATUS = 'fuera-servicio';
 
 const STATUS_META = {
-  'operativo':      { badge: 'badge-operativo',      label: '● Operativo',          cardClass: '' },
-  'carga-parcial':  { badge: 'badge-carga-parcial',  label: '◐ Carga Parcial',      cardClass: '' },
-  'alarma-activa':  { badge: 'badge-alarma-activa',  label: '⚠ Alarma Activa',      cardClass: 'alert' },
-  'falla-critica':  { badge: 'badge-falla-critica',  label: '✕ Falla Crítica',       cardClass: 'alert' },
-  'fuera-servicio': { badge: 'badge-fuera-servicio', label: '○ Fuera de Servicio',  cardClass: '' },
-  'standby':        { badge: 'badge-standby',        label: '💤 Standby',            cardClass: '' },
+  'operativo':      { badge: 'badge-operativo',      label: '● Operativo',         cardClass: '' },
+  'carga-parcial':  { badge: 'badge-carga-parcial',  label: '◐ Carga Parcial',     cardClass: '' },
+  'alarma-activa':  { badge: 'badge-alarma-activa',  label: '⚠ Alarma Activa',     cardClass: 'alert' },
+  'falla-critica':  { badge: 'badge-falla-critica',  label: '✕ Falla Crítica',      cardClass: 'alert' },
+  'fuera-servicio': { badge: 'badge-fuera-servicio', label: '○ Fuera de Servicio', cardClass: '' },
+  'standby':        { badge: 'badge-standby',        label: '💤 Standby',           cardClass: '' },
 };
 
 /* ─────────────────────────────────────────────────────────────
-   GAUGE — SVG constants & helpers
-───────────────────────────────────────────────────────────── */
+   GAUGE
+───────────────────────────────────────────────────────── */
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const GAUGE = { CX: 115, CY: 85, R_OUTER: 78, R_INNER: 52, R_NEEDLE: 70 };
 
-/** Convert a 0-100 gauge value to an (x,y) point at radius r */
 function gaugePoint(val, r) {
   const angle = (180 - (Math.min(val, 100) / 100) * 180) * (Math.PI / 180);
-  return {
-    x: GAUGE.CX + r * Math.cos(angle),
-    y: GAUGE.CY - r * Math.sin(angle),
-  };
+  return { x: GAUGE.CX + r * Math.cos(angle), y: GAUGE.CY - r * Math.sin(angle) };
 }
-
-/** Create an SVG element with given attributes */
 function svgEl(tag, attrs) {
   const el = document.createElementNS(SVG_NS, tag);
   for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   return el;
 }
-
-/**
- * Build an animated semicircular gauge inside an SVG element.
- * @param {SVGElement} svg   - target SVG
- * @param {string}     gradId - unique gradient ID
- * @param {string}     unit  - label unit (% or °F)
- * @returns {SVGLineElement} needle element (for animation)
- */
 function buildGauge(svg, gradId, unit = '%') {
   const { CX, CY, R_OUTER, R_INNER } = GAUGE;
-
-  // Gradient definition
   const defs = document.createElementNS(SVG_NS, 'defs');
   const grad = svgEl('linearGradient', { id: gradId, x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
   [{ o: '0%', c: '#00A859' }, { o: '55%', c: '#FFB800' }, { o: '100%', c: '#D93025' }]
@@ -388,15 +535,13 @@ function buildGauge(svg, gradId, unit = '%') {
   defs.appendChild(grad);
   svg.appendChild(defs);
 
-  // Arc track
-  const o1 = gaugePoint(0,   R_OUTER), o2 = gaugePoint(100, R_OUTER);
-  const i1 = gaugePoint(0,   R_INNER), i2 = gaugePoint(100, R_INNER);
+  const o1 = gaugePoint(0, R_OUTER), o2 = gaugePoint(100, R_OUTER);
+  const i1 = gaugePoint(0, R_INNER), i2 = gaugePoint(100, R_INNER);
   const arcD = `M ${o1.x} ${o1.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${o2.x} ${o2.y}`
              + ` L ${i2.x} ${i2.y} A ${R_INNER} ${R_INNER} 0 0 0 ${i1.x} ${i1.y} Z`;
   svg.appendChild(svgEl('path', { d: arcD, fill: '#F5F6FA', stroke: '#E6E9EF', 'stroke-width': '1' }));
   svg.appendChild(svgEl('path', { d: arcD, fill: `url(#${gradId})`, opacity: '0.85' }));
 
-  // Tick marks & labels
   [0, 25, 50, 75, 100].forEach(v => {
     const p1 = gaugePoint(v, R_OUTER + 2);
     const p2 = gaugePoint(v, R_OUTER + 8);
@@ -407,28 +552,16 @@ function buildGauge(svg, gradId, unit = '%') {
     svg.appendChild(lbl);
   });
 
-  // Needle
   const needle = svgEl('line', { x1: CX, y1: CY, x2: CX - GAUGE.R_NEEDLE, y2: CY, stroke: '#323338', 'stroke-width': '2.5', 'stroke-linecap': 'round' });
   svg.appendChild(needle);
-
-  // Pivot
-  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '9', fill: '#FFFFFF', stroke: '#E6E9EF', 'stroke-width': '2' }));
-  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '4', fill: '#004F9F' }));
-
+  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '9',  fill: '#FFFFFF', stroke: '#E6E9EF', 'stroke-width': '2' }));
+  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '4',  fill: '#004F9F' }));
   return needle;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   NEEDLE ANIMATION
-───────────────────────────────────────────────────────────── */
-
-/** Cubic ease-out: t → 1 - (1-t)³ */
+/* ─── Animation ──────────────────────────────────────────────── */
 function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
-/**
- * Animate the gauge needle from 0 to targetPct (0-100).
- * Optionally updates a KPI text element.
- */
 function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay = 0) {
   setTimeout(() => {
     const startTime = performance.now();
@@ -438,90 +571,47 @@ function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay = 0) {
       const pt  = gaugePoint(cur, GAUGE.R_NEEDLE);
       needle.setAttribute('x2', pt.x);
       needle.setAttribute('y2', pt.y);
-      if (kpiEl) {
-        kpiEl.textContent    = formatFn(cur);
-        kpiEl.style.color    = colorFn(cur);
-      }
+      if (kpiEl) { kpiEl.textContent = formatFn(cur); kpiEl.style.color = colorFn(cur); }
       if (t < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   }, delay);
 }
 
-/** Animate chiller load gauge (percentage) */
 function animateLoadGauge(needle, kpiEl, loadPct, delay = 0) {
-  animateNeedle(
-    needle, kpiEl, loadPct,
+  animateNeedle(needle, kpiEl, loadPct,
     cur => `${Math.round(cur)} %`,
     cur => cur > 85 ? '#D93025' : cur > 65 ? '#BF8900' : '#007D43',
-    delay
-  );
+    delay);
 }
 
-/** Animate compressor temperature gauge */
 function animateTempGauge(needle, kpiEl, tempF, maxTempF = 150, delay = 0) {
   const targetPct = Math.min((tempF / maxTempF) * 100, 100);
-  animateNeedle(
-    needle, kpiEl, targetPct,
-    cur => `${Math.round((cur / 100) * tempF)} °F`,  // scale back to real temp
+  animateNeedle(needle, kpiEl, targetPct,
+    cur => `${Math.round((cur / 100) * tempF)} °F`,
     cur => cur > 80 ? '#D93025' : cur > 55 ? '#BF8900' : '#007D43',
-    delay
-  );
+    delay);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   STATUS HELPERS
-───────────────────────────────────────────────────────────── */
-
-/** Normalise a raw Monday.com status string to an internal key */
+/* ─── Status helpers ──────────────────────────────────────────── */
 function parseStatus(raw = '') {
   const s = raw.toLowerCase().trim();
   const found = STATUS_KEY_MAP.find(({ match }) => s.includes(match));
   return found ? found.key : DEFAULT_STATUS;
 }
-
-/** True when the equipment should be shown as inactive */
-function isOff(statusKey) {
-  return statusKey === 'fuera-servicio' || statusKey === 'standby';
-}
-
-/* ─────────────────────────────────────────────────────────────
-   COLOUR CLASS HELPERS
-───────────────────────────────────────────────────────────── */
+function isOff(statusKey) { return statusKey === 'fuera-servicio' || statusKey === 'standby'; }
 function loadColorClass(pct) { return pct > 85 ? 'c-danger' : pct > 65 ? 'c-warning' : 'c-normal'; }
 function tempColorClass(f)   { return f > 110  ? 'c-danger' : 'c-normal'; }
-
-/* ─────────────────────────────────────────────────────────────
-   TEMPLATE HELPERS
-───────────────────────────────────────────────────────────── */
 const DASH = '—';
-
-/** Single metric row HTML */
 function metricRow(label, value, colorClass = '') {
-  return `<div class="mrow">
-    <span class="mlabel">${label}</span>
-    <span class="mval ${colorClass}">${value}</span>
-  </div>`;
+  return `<div class="mrow"><span class="mlabel">${label}</span><span class="mval ${colorClass}">${value}</span></div>`;
 }
+function statusMeta(key) { return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS]; }
 
-/** Resolve status metadata, defaulting gracefully */
-function statusMeta(key) {
-  return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS];
-}
-
-/* ─────────────────────────────────────────────────────────────
-   CARD RENDERERS
-───────────────────────────────────────────────────────────── */
-
-/**
- * @param {{ name, sub, carga, tempOut, tempIn, presOut, presIn, status }} ch
- * @param {number} idx   - card index (for unique IDs)
- * @param {number} delay - animation delay in ms
- */
+/* ─── Card Renderers ──────────────────────────────────────────── */
 function renderChillerCard(ch, idx, delay = 0) {
   const off  = isOff(ch.status);
   const meta = statusMeta(ch.status);
-
   const card = document.createElement('div');
   card.className = `hmi-card ${meta.cardClass}`.trim();
   card.innerHTML = `
@@ -533,30 +623,22 @@ function renderChillerCard(ch, idx, delay = 0) {
     <div class="gauge-wrap"><svg id="svg-ch-${idx}" viewBox="0 0 230 100"></svg></div>
     <div class="kpi-value ${off ? 'kpi-off' : ''}" id="kpi-ch-${idx}">${off ? DASH : '0 %'}</div>
     <div class="metrics">
-      ${metricRow('Carga',     off ? DASH : ch.carga   + ' %',  off ? 'c-off' : loadColorClass(ch.carga))}
-      ${metricRow('T° Salida', off ? DASH : ch.tempOut + ' °F', off ? 'c-off' : 'c-normal')}
-      ${metricRow('T° Entrada',off ? DASH : ch.tempIn  + ' °F', off ? 'c-off' : 'c-normal')}
-      ${metricRow('P. Salida', off ? DASH : ch.presOut + ' psi',off ? 'c-off' : 'c-warning')}
-      ${metricRow('P. Entrada',off ? DASH : ch.presIn  + ' psi',off ? 'c-off' : 'c-warning')}
+      ${metricRow('Carga',      off ? DASH : ch.carga   + ' %',   off ? 'c-off' : loadColorClass(ch.carga))}
+      ${metricRow('T° Salida',  off ? DASH : ch.tempOut + ' °F',  off ? 'c-off' : 'c-normal')}
+      ${metricRow('T° Entrada', off ? DASH : ch.tempIn  + ' °F',  off ? 'c-off' : 'c-normal')}
+      ${metricRow('P. Salida',  off ? DASH : ch.presOut + ' psi', off ? 'c-off' : 'c-warning')}
+      ${metricRow('P. Entrada', off ? DASH : ch.presIn  + ' psi', off ? 'c-off' : 'c-warning')}
     </div>`;
-
   document.getElementById('hmi-container').appendChild(card);
-
   const svg    = document.getElementById(`svg-ch-${idx}`);
   const kpiEl  = document.getElementById(`kpi-ch-${idx}`);
   const needle = buildGauge(svg, `grad-ch-${idx}`, '%');
   if (!off) animateLoadGauge(needle, kpiEl, ch.carga, delay);
 }
 
-/**
- * @param {{ name, sub, tempCarga, tempDescarga, presCarga, presDescarga, status }} cp
- * @param {number} idx
- * @param {number} delay
- */
 function renderCompresorCard(cp, idx, delay = 0) {
   const off  = isOff(cp.status);
   const meta = statusMeta(cp.status);
-
   const card = document.createElement('div');
   card.className = `hmi-card ${meta.cardClass}`.trim();
   card.innerHTML = `
@@ -568,23 +650,19 @@ function renderCompresorCard(cp, idx, delay = 0) {
     <div class="gauge-wrap"><svg id="svg-cp-${idx}" viewBox="0 0 230 100"></svg></div>
     <div class="kpi-value ${off ? 'kpi-off' : ''}" id="kpi-cp-${idx}">${off ? DASH : '0 °F'}</div>
     <div class="metrics">
-      ${metricRow('T° Carga',    off ? DASH : cp.tempCarga    + ' °F', off ? 'c-off' : tempColorClass(cp.tempCarga))}
-      ${metricRow('T° Descarga', off ? DASH : cp.tempDescarga + ' °F', off ? 'c-off' : tempColorClass(cp.tempDescarga))}
-      ${metricRow('P. Carga',    off ? DASH : cp.presCarga    + ' psi',off ? 'c-off' : 'c-warning')}
-      ${metricRow('P. Descarga', off ? DASH : cp.presDescarga + ' psi',off ? 'c-off' : 'c-warning')}
+      ${metricRow('T° Carga',    off ? DASH : cp.tempCarga    + ' °F',  off ? 'c-off' : tempColorClass(cp.tempCarga))}
+      ${metricRow('T° Descarga', off ? DASH : cp.tempDescarga + ' °F',  off ? 'c-off' : tempColorClass(cp.tempDescarga))}
+      ${metricRow('P. Carga',    off ? DASH : cp.presCarga    + ' psi', off ? 'c-off' : 'c-warning')}
+      ${metricRow('P. Descarga', off ? DASH : cp.presDescarga + ' psi', off ? 'c-off' : 'c-warning')}
     </div>`;
-
   document.getElementById('hmi-container').appendChild(card);
-
   const svg    = document.getElementById(`svg-cp-${idx}`);
   const kpiEl  = document.getElementById(`kpi-cp-${idx}`);
   const needle = buildGauge(svg, `grad-cp-${idx}`, '°F');
   if (!off) animateTempGauge(needle, kpiEl, cp.tempCarga, 150, delay);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   MONDAY.COM DATA FETCHING
-───────────────────────────────────────────────────────────── */
+/* ─── Monday.com API ──────────────────────────────────────────── */
 const MONDAY_API = 'https://api.monday.com/v2';
 const MONDAY_HEADERS = {
   'Content-Type': 'application/json',
@@ -592,49 +670,29 @@ const MONDAY_HEADERS = {
   'API-Version': '2023-10',
 };
 
-/**
- * Fetch all items from a Monday.com board, handling cursor-based pagination.
- * @param {string} boardId
- * @returns {Promise<Array>}
- */
 async function fetchAllItems(boardId) {
   const items = [];
   let cursor = null;
-
   do {
     const cursorArg = cursor ? `, cursor: "${cursor}"` : '';
     const query = `query {
       boards(ids: ${boardId}) {
         items_page(limit: 100${cursorArg}) {
           cursor
-          items {
-            id name created_at
-            column_values { id text }
-          }
+          items { id name created_at column_values { id text } }
         }
       }
     }`;
-
     const res  = await fetch(MONDAY_API, { method: 'POST', headers: MONDAY_HEADERS, body: JSON.stringify({ query }) });
     const data = await res.json();
-
-    if (data.errors) {
-      throw new Error(data.errors.map(e => e.message).join(', '));
-    }
-
+    if (data.errors) throw new Error(data.errors.map(e => e.message).join(', '));
     const page = data.data.boards[0].items_page;
     items.push(...page.items);
     cursor = page.cursor ?? null;
-
   } while (cursor);
-
   return items;
 }
 
-/**
- * From an array of Monday.com items, return a Map of name → most-recent item,
- * filtered to only names in the allowList.
- */
 function latestByName(items, allowList) {
   const map = new Map();
   items.forEach(item => {
@@ -647,28 +705,19 @@ function latestByName(items, allowList) {
   return map;
 }
 
-/**
- * Extract a numeric column value from a Monday.com item.
- * Returns 0 if missing or non-numeric.
- */
 function numericCol(item, colId) {
   const raw = item.column_values.find(c => c.id === colId)?.text ?? '';
   return parseFloat(raw.replace(/[^\d.-]/g, '')) || 0;
 }
-
-/** Extract a status column text from a Monday.com item */
 function statusCol(item, colId) {
   return item.column_values.find(c => c.id === colId)?.text ?? '';
 }
 
-/* ─────────────────────────────────────────────────────────────
-   STATE & RENDERING ORCHESTRATION
-───────────────────────────────────────────────────────────── */
+/* ─── State & Render ──────────────────────────────────────────── */
 let currentTab  = 'CH';
 let allCHItems  = [];
 let allCPItems  = [];
 
-/** Show loading spinner inside the HMI container */
 function showLoading(message = 'Conectando con Monday.com…') {
   document.getElementById('hmi-container').innerHTML = `
     <div class="loading-msg">
@@ -676,14 +725,11 @@ function showLoading(message = 'Conectando con Monday.com…') {
       <span>${message}</span>
     </div>`;
 }
-
-/** Show an error message inside the HMI container */
 function showError(message = 'Error de conexión') {
   document.getElementById('hmi-container').innerHTML = `
     <div class="loading-msg" style="color: var(--danger)">⚠ ${message}</div>`;
 }
 
-/** Fetch data from both boards, then render */
 async function fetchData() {
   showLoading();
   try {
@@ -692,15 +738,11 @@ async function fetchData() {
       fetchAllItems(CONFIG.BOARD_COMPRESORES),
     ]);
     renderItems();
-  } catch {
-    showError();
-  }
+  } catch { showError(); }
 }
 
-/** Render the cards for the currently active tab */
 function renderItems() {
   document.getElementById('hmi-container').innerHTML = '';
-
   if (currentTab === 'CH') {
     const latest = latestByName(allCHItems, CONFIG.CH_LIST);
     CONFIG.CH_LIST.forEach((name, i) => {
@@ -708,8 +750,7 @@ function renderItems() {
       if (!item) return;
       const { COL_CH } = CONFIG;
       renderChillerCard({
-        name,
-        sub:     CHILLER_SUB[name] ?? 'Equipo',
+        name, sub: CHILLER_SUB[name] ?? 'Equipo',
         carga:   numericCol(item, COL_CH.CARGA),
         tempOut: numericCol(item, COL_CH.TEMP_OUT),
         tempIn:  numericCol(item, COL_CH.TEMP_IN),
@@ -718,7 +759,6 @@ function renderItems() {
         status:  parseStatus(statusCol(item, COL_CH.STATUS)),
       }, i, i * 80);
     });
-
   } else {
     const latest = latestByName(allCPItems, CONFIG.CP_LIST);
     CONFIG.CP_LIST.forEach((name, i) => {
@@ -726,8 +766,7 @@ function renderItems() {
       if (!item) return;
       const { COL_CP } = CONFIG;
       renderCompresorCard({
-        name,
-        sub:          COMPRESOR_SUB[name] ?? 'Equipo',
+        name, sub: COMPRESOR_SUB[name] ?? 'Equipo',
         tempCarga:    numericCol(item, COL_CP.TEMP_CARGA),
         tempDescarga: numericCol(item, COL_CP.TEMP_DESCARGA),
         presCarga:    numericCol(item, COL_CP.PRES_CARGA),
@@ -738,29 +777,49 @@ function renderItems() {
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   VIEW NAVIGATION
-───────────────────────────────────────────────────────────── */
+/* ─── Navigation ──────────────────────────────────────────────── */
+
+/** Desktop sidebar: highlight active item and load section */
+function sidebarNav(section) {
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if (section === 'hmi') {
+    document.getElementById('hmi-view').style.display = 'flex';
+    fetchData();
+  }
+  // Other sections can be wired here without touching HMI logic
+}
+
+/** Mobile: open HMI view */
 function openHMI() {
-  document.getElementById('main-header').classList.add('hidden');
   document.getElementById('main-menu').classList.add('hidden');
   document.getElementById('hmi-view').style.display = 'flex';
   fetchData();
 }
 
+/** Mobile: go back to grid menu */
 function closeHMI() {
-  document.getElementById('main-header').classList.remove('hidden');
-  document.getElementById('main-menu').classList.remove('hidden');
   document.getElementById('hmi-view').style.display = 'none';
+  document.getElementById('main-menu').classList.remove('hidden');
 }
 
 function switchTab(type) {
   currentTab = type;
   document.getElementById('tab-ch').classList.toggle('active', type === 'CH');
   document.getElementById('tab-cp').classList.toggle('active', type === 'CP');
-  // Re-render from cached data if available, otherwise fetch
   (allCHItems.length || allCPItems.length) ? renderItems() : fetchData();
 }
+
+/* ─── Init: on desktop load HMI automatically ─────────────────── */
+function initLayout() {
+  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+  if (isDesktop) {
+    document.getElementById('main-menu').classList.add('hidden');
+    document.getElementById('hmi-view').style.display = 'flex';
+    fetchData();
+  }
+}
+document.addEventListener('DOMContentLoaded', initLayout);
 </script>
 
 </body>
