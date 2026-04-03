@@ -57,6 +57,9 @@
     color: #fff;
     font-weight: 600;
     white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .header-actions {
     display: flex;
@@ -167,22 +170,24 @@
     flex-wrap: wrap;
   }
 
+  /* ─── Back Button (in header) ────────────────────────────── */
   .btn-back {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 9px 14px;
-    background: white;
-    border: 1px solid var(--border-color);
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
     border-radius: 8px;
-    color: var(--medline-blue);
+    color: #ffffff;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
     transition: background 0.15s;
     flex-shrink: 0;
+    white-space: nowrap;
   }
-  .btn-back:hover { background: #f0f2f5; }
+  .btn-back:hover { background: rgba(255,255,255,0.25); }
 
   /* ─── Tabs ───────────────────────────────────────────────── */
   .tab-nav {
@@ -317,16 +322,16 @@
   /* ─── Desktop Breakpoint (≥768px) ───────────────────────── */
   @media (min-width: 768px) {
 
-    /* Sidebar visible, mobile back-button hidden */
+    /* Sidebar visible, back button always hidden on desktop */
     .sidebar { display: flex; }
-    .btn-back { display: none; }
+    .btn-back { display: none !important; }
 
-    /* Wider grid for HMI cards */
+    /* 5 columns = 2 rows of 5 for the 10 chillers */
     #hmi-container {
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
     }
 
-    /* HMI view fills content area without back button gap */
+    /* HMI view fills content area */
     #hmi-view { display: flex !important; flex-direction: column; }
     #main-menu { display: none !important; }
 
@@ -334,8 +339,17 @@
 
     .tab-nav { max-width: 360px; }
 
-    /* Larger gauges on desktop */
-    .gauge-wrap svg { max-width: 380px; }
+    /* Compact cards for 5-column grid */
+    .hmi-card       { padding: 10px; }
+    .hmi-title      { font-size: 13px; }
+    .hmi-sub        { font-size: 9px; }
+    .kpi-value      { font-size: 16px; }
+    .mrow           { font-size: 10px; }
+    .status-badge   { font-size: 7px; padding: 2px 5px; }
+    .gauge-wrap svg { max-width: 200px; }
+
+    /* Re-center title without back button offset */
+    .main-header h2 { position: static; transform: none; }
   }
 
   /* ─── Mobile only ────────────────────────────────────────── */
@@ -374,7 +388,9 @@
 
   <!-- Header -->
   <header id="main-header" class="main-header">
+    <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">← Regresar</button>
     <h2>⚙️ Mantenimiento PDM</h2>
+    <div style="width:80px"></div>
   </header>
 
   <div class="layout-body">
@@ -440,9 +456,6 @@
 
       <!-- HMI View -->
       <section id="hmi-view">
-        <!-- Back button (mobile only) -->
-        <button class="btn-back" onclick="closeHMI()">← Regresar al menú</button>
-
         <div class="tab-nav">
           <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
           <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
@@ -795,13 +808,13 @@ function sidebarNav(section) {
     document.getElementById('hmi-view').style.display = 'flex';
     fetchData();
   }
-  // Other sections can be wired here without touching HMI logic
 }
 
 /** Mobile: open HMI view */
 function openHMI() {
   document.getElementById('main-menu').classList.add('hidden');
   document.getElementById('hmi-view').style.display = 'flex';
+  document.getElementById('header-back-btn').classList.remove('hidden');
   fetchData();
 }
 
@@ -809,6 +822,7 @@ function openHMI() {
 function closeHMI() {
   document.getElementById('hmi-view').style.display = 'none';
   document.getElementById('main-menu').classList.remove('hidden');
+  document.getElementById('header-back-btn').classList.add('hidden');
 }
 
 function switchTab(type) {
