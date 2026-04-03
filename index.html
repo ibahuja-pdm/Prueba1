@@ -214,16 +214,17 @@
   /* ─── HMI Cards Grid ─────────────────────────────────────── */
   #hmi-container {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 
   .hmi-card {
     background: white;
     border-radius: 12px;
-    padding: 16px;
+    padding: 12px;
     border-left: 5px solid var(--medline-blue);
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    min-width: 0;
   }
   .hmi-card.alert { border-left-color: var(--danger); }
 
@@ -258,7 +259,7 @@
 
   /* ─── Gauge & KPI ────────────────────────────────────────── */
   .gauge-wrap { display: flex; justify-content: center; margin: 6px 0 0; }
-  .gauge-wrap svg { width: 100%; max-width: 280px; height: auto; }
+  .gauge-wrap svg { width: 100%; height: auto; display: block; }
 
   .kpi-value {
     font-size: 22px;
@@ -334,7 +335,7 @@
     .tab-nav { max-width: 360px; }
 
     /* Larger gauges on desktop */
-    .gauge-wrap svg { max-width: 320px; }
+    .gauge-wrap svg { max-width: 380px; }
   }
 
   /* ─── Mobile only ────────────────────────────────────────── */
@@ -342,10 +343,17 @@
     .sidebar { display: none; }
 
     #hmi-container {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
 
-    .content-area { padding: 14px; }
+    .content-area { padding: 10px; }
+
+    .hmi-title    { font-size: 13px; }
+    .hmi-sub      { font-size: 9px; }
+    .mrow         { font-size: 10px; }
+    .kpi-value    { font-size: 18px; }
+    .status-badge { font-size: 7px; padding: 2px 5px; }
   }
 
   /* ─── Safe area (notched phones) ─────────────────────────── */
