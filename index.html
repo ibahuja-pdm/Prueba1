@@ -5,451 +5,428 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mantenimiento PDM</title>
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   DESIGN TOKENS
-   Centraliza todos los colores, tamaños y espaciados del sistema
-═══════════════════════════════════════════════════════════════ */
-:root {
-  /* Colores principales */
-  --blue-dark:      #004b87;   /* Azul Medline principal */
-  --blue-mid:       #1877f2;   /* Azul acción / links */
-  --blue-light:     #e7f3ff;   /* Fondo de elementos activos */
-
-  /* Superficies y bordes */
-  --bg-body:        #f0f2f5;
-  --card-bg:        #ffffff;
-  --border-color:   #e4e6eb;
-
-  /* Texto */
-  --text-main:      #1d2129;
-  --text-muted:     #65676b;
-
-  /* Estados semánticos */
-  --color-ok:       #00A859;
-  --color-warn:     #FFB800;
-  --color-danger:   #D93025;
-
-  /* Layout */
-  --sidebar-w:      240px;
-  --header-h:       56px;
-  --radius-card:    12px;
-  --radius-btn:     8px;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RESET BÁSICO
-═══════════════════════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg-body);
-  min-height: 100%;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SHELL PRINCIPAL
-   Estructura flex vertical que contiene header + cuerpo
-═══════════════════════════════════════════════════════════════ */
-.app-shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* ── Header superior ─────────────────────────────────────── */
-.main-header {
-  background: var(--blue-dark);
-  padding: 0 20px;
-  height: var(--header-h);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  flex-shrink: 0;
-}
-.main-header h2 {
-  font-size: 18px;
-  color: #fff;
-  font-weight: 600;
-  white-space: nowrap;
-  /* Centra el título independientemente del botón de retroceso */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* ── Botón retroceso (solo mobile) ───────────────────────── */
-.btn-back {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.35);
-  border-radius: var(--radius-btn);
-  color: #fff;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s;
-  white-space: nowrap;
-}
-.btn-back:hover { background: rgba(255,255,255,0.28); }
-
-/* ═══════════════════════════════════════════════════════════════
-   LAYOUT PRINCIPAL (sidebar + contenido)
-═══════════════════════════════════════════════════════════════ */
-.layout-body {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* ── Sidebar de navegación (solo desktop) ────────────────── */
-.sidebar {
-  width: var(--sidebar-w);
-  background: var(--card-bg);
-  border-right: 1px solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow-y: auto;
-  padding: 16px 12px;
-  gap: 6px;
-}
-
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-btn);
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  text-align: left;
-  width: 100%;
-  transition: background 0.15s;
-  color: var(--text-main);
-}
-.sidebar-item:hover         { background: #f0f2f5; }
-.sidebar-item.active        { background: var(--blue-light); color: var(--blue-dark); }
-.sidebar-item .label-wrap h3 { font-size: 13px; font-weight: 700; }
-.sidebar-item .label-wrap p  { font-size: 11px; color: var(--text-muted); }
-.sidebar-item.active .label-wrap p { color: var(--blue-mid); }
-
-/* ── Área de contenido principal ─────────────────────────── */
-.content-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MENÚ MÓVIL (grilla de accesos directos)
-═══════════════════════════════════════════════════════════════ */
-.grid-menu {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px;
-  max-width: 900px;
-}
-
-.menu-card {
-  background: var(--card-bg);
-  padding: 16px 14px;
-  border-radius: var(--radius-card);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  text-align: left;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-.menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border-color); }
-.menu-card:active { transform: scale(0.97); }
-.menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); }
-.menu-card p  { font-size: 11px; color: var(--text-muted); }
-
-/* ═══════════════════════════════════════════════════════════════
-   ICONOS DE COLOR
-   Usados en sidebar y menú móvil
-═══════════════════════════════════════════════════════════════ */
-.icon-box {
-  width: 40px; height: 40px;
-  border-radius: var(--radius-btn);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px; flex-shrink: 0;
-}
-.bg-blue   { background: #e7f3ff; color: #1877f2; }
-.bg-green  { background: #e7f7ed; color: #2db84c; }
-.bg-orange { background: #fff1e7; color: #f35e05; }
-.bg-purple { background: #f2f0ff; color: #6b51ff; }
-.bg-teal   { background: #e2faf8; color: #00a499; }
-.bg-red    { background: #fff0f0; color: #fa383e; }
-
-/* ═══════════════════════════════════════════════════════════════
-   VISTA HMI
-═══════════════════════════════════════════════════════════════ */
-#hmi-view { display: none; flex-direction: column; }
-
-/* ── Pestañas Chillers / Compresores ─────────────────────── */
-.tab-nav {
-  display: flex;
-  background: #e4e6eb;
-  padding: 4px;
-  border-radius: var(--radius-card);
-  margin-bottom: 16px;
-  max-width: 360px;
-}
-.tab-btn {
-  flex: 1;
-  border: none;
-  padding: 9px;
-  font-size: 12px;
-  font-weight: 700;
-  border-radius: var(--radius-btn);
-  cursor: pointer;
-  background: transparent;
-  color: var(--text-muted);
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
-}
-.tab-btn.active {
-  background: white;
-  color: var(--blue-dark);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* ── Grilla de tarjetas HMI ──────────────────────────────── */
-/*
-  IMPORTANTE: La grilla siempre muestra 5 columnas.
-  En mobile se permite scroll horizontal para mantener
-  las tarjetas legibles sin aplastar el contenido.
-*/
-#hmi-container {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(180px, 1fr));
-  gap: 10px;
-  /* Scroll horizontal en pantallas pequeñas */
-  overflow-x: auto;
-  padding-bottom: 8px;
-}
-
-/* ── Tarjeta individual de equipo ────────────────────────── */
-.hmi-card {
-  background: var(--card-bg);
-  border-radius: var(--radius-card);
-  padding: 12px;
-  border-left: 4px solid var(--blue-dark);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  min-width: 0;
-  transition: box-shadow 0.2s;
-}
-.hmi-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
-/* Tarjetas con alarma o falla se resaltan en rojo */
-.hmi-card.alert { border-left-color: var(--color-danger); }
-
-.hmi-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2px;
-  gap: 4px;
-}
-.hmi-title { font-size: 13px; font-weight: 800; color: var(--text-main); }
-.hmi-sub   { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
-
-/* ═══════════════════════════════════════════════════════════════
-   BADGES DE ESTADO
-   Cada estado tiene su propio color de fondo y texto
-═══════════════════════════════════════════════════════════════ */
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 7px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.badge-operativo      { background: #E6F6EF; color: #007D43; }
-.badge-carga-parcial  { background: #FFF8E6; color: #BF8900; }
-.badge-alarma-activa  { background: #FFF0E0; color: #C05800; }
-.badge-falla-critica  { background: #FCEAE9; color: #B9251C; }
-.badge-fuera-servicio { background: #F1F3F6; color: #676879; }
-.badge-standby        { background: #E6F0F9; color: #004F9F; }
-
-/* ═══════════════════════════════════════════════════════════════
-   GAUGE (medidor semicircular SVG)
-═══════════════════════════════════════════════════════════════ */
-.gauge-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 4px 0 0;
-}
-.gauge-wrap svg { width: 100%; height: auto; display: block; }
-
-/* Valor KPI grande debajo del gauge */
-.kpi-value {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--color-ok);
-  text-align: center;
-  margin: -2px 0 6px;
-  line-height: 1.1;
-}
-/* Estado apagado: valor gris con guión */
-.kpi-off { color: #C5C7D4 !important; font-size: 16px !important; }
-
-/* ═══════════════════════════════════════════════════════════════
-   TABLA DE MÉTRICAS (dentro de cada tarjeta)
-═══════════════════════════════════════════════════════════════ */
-.metrics {
-  border-top: 1px solid #f0f2f5;
-  padding-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.mrow   { display: flex; justify-content: space-between; font-size: 11px; }
-.mlabel { color: var(--text-muted); font-weight: 500; }
-.mval   { font-weight: 700; }
-
-/* Clases de color para métricas */
-.c-ok   { color: #007D43; }
-.c-warn { color: #BF8900; }
-.c-err  { color: #D93025; }
-.c-off  { color: #C5C7D4; }
-
-/* ═══════════════════════════════════════════════════════════════
-   ESTADOS DE CARGA Y ERROR
-═══════════════════════════════════════════════════════════════ */
-.loading-msg {
-  text-align: center;
-  padding: 48px 24px;
-  font-size: 12px;
-  color: var(--text-muted);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  /* Ocupa todo el ancho de la grilla */
-  grid-column: 1 / -1;
-}
-.loading-msg.error { color: var(--color-danger); }
-
-/* Spinner animado */
-.spinner {
-  width: 28px; height: 28px;
-  border: 3px solid var(--border-color);
-  border-top-color: var(--blue-dark);
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Utilidades ──────────────────────────────────────────── */
-.hidden { display: none !important; }
-
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE — DESKTOP (≥ 768px)
-═══════════════════════════════════════════════════════════════ */
-@media (min-width: 768px) {
-  .sidebar       { display: flex; }
-  .btn-back      { display: none !important; }
-
-  /* En desktop el HMI siempre está visible */
-  #hmi-view  { display: flex !important; flex-direction: column; }
-  #main-menu { display: none !important; }
-
-  .content-area { padding: 24px; }
-  .main-header h2 { position: static; transform: none; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE — MOBILE (< 768px)
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 767px) {
-  .sidebar { display: none; }
-  .content-area { padding: 10px; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SAFE AREA — iPhones con notch
-═══════════════════════════════════════════════════════════════ */
-@supports (padding: env(safe-area-inset-bottom)) {
-  .content-area {
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  /* ─── Design Tokens ─────────────────────────────────────── */
+  :root {
+    --medline-blue:   #004b87;
+    --bg-body:        #f0f2f5;
+    --card-bg:        #ffffff;
+    --text-main:      #1d2129;
+    --text-secondary: #65676b;
+    --border-color:   #e4e6eb;
+    --success:        #00A859;
+    --warning:        #FFB800;
+    --danger:         #D93025;
+    --sidebar-w:      240px;
+    --header-h:       56px;
   }
+
+  /* ─── Reset ─────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-body);
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  /* ─── App Shell ──────────────────────────────────────────── */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ─── Top Header ─────────────────────────────────────────── */
   .main-header {
-    padding-left:  calc(20px + env(safe-area-inset-left));
-    padding-right: calc(20px + env(safe-area-inset-right));
+    background: var(--medline-blue);
+    padding: 0 20px;
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-shrink: 0;
   }
-}
+  .main-header h2 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ─── Desktop Layout ─────────────────────────────────────── */
+  .layout-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ─── Sidebar (Desktop only) ─────────────────────────────── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 16px 12px;
+    gap: 6px;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    transition: background 0.15s;
+    color: var(--text-main);
+  }
+  .sidebar-item:hover  { background: #f0f2f5; }
+  .sidebar-item.active { background: #e7f3ff; color: var(--medline-blue); }
+  .sidebar-item .icon-box { flex-shrink: 0; }
+  .sidebar-item .label-wrap h3 { font-size: 13px; font-weight: 700; }
+  .sidebar-item .label-wrap p  { font-size: 11px; color: var(--text-secondary); }
+  .sidebar-item.active .label-wrap p { color: #1877f2; }
+
+  /* ─── Main Content Area ──────────────────────────────────── */
+  .content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ─── Mobile Menu Grid ───────────────────────────────────── */
+  .grid-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    max-width: 900px;
+  }
+
+  .menu-card {
+    background: var(--card-bg);
+    padding: 16px 14px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-align: left;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border-color); }
+  .menu-card:active { transform: scale(0.97); }
+  .menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); }
+  .menu-card p  { font-size: 11px; color: var(--text-secondary); }
+
+  /* ─── Icon Boxes ─────────────────────────────────────────── */
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .bg-blue   { background: #e7f3ff; color: #1877f2; }
+  .bg-green  { background: #e7f7ed; color: #2db84c; }
+  .bg-orange { background: #fff1e7; color: #f35e05; }
+  .bg-purple { background: #f2f0ff; color: #6b51ff; }
+  .bg-teal   { background: #e2faf8; color: #00a499; }
+  .bg-red    { background: #fff0f0; color: #fa383e; }
+
+  /* ─── HMI View ───────────────────────────────────────────── */
+  #hmi-view { display: none; flex-direction: column; }
+
+  .hmi-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── Back Button (in header) ────────────────────────────── */
+  .btn-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 8px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .btn-back:hover { background: rgba(255,255,255,0.25); }
+
+  /* ─── Tabs ───────────────────────────────────────────────── */
+  .tab-nav {
+    display: flex;
+    background: #e4e6eb;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+  .tab-btn {
+    flex: 1;
+    border: none;
+    padding: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: white;
+    color: var(--medline-blue);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* ─── HMI Cards Grid ─────────────────────────────────────── */
+  #hmi-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .hmi-card {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    border-left: 5px solid var(--medline-blue);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    min-width: 0;
+  }
+  .hmi-card.alert { border-left-color: var(--danger); }
+
+  .hmi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .hmi-title { font-size: 14px; font-weight: 800; color: var(--text-main); }
+  .hmi-sub   { font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
+
+  /* ─── Status Badges ──────────────────────────────────────── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-operativo      { background: #E6F6EF; color: #007D43; }
+  .badge-carga-parcial  { background: #FFF8E6; color: #BF8900; }
+  .badge-alarma-activa  { background: #FFF0E0; color: #C05800; }
+  .badge-falla-critica  { background: #FCEAE9; color: #B9251C; }
+  .badge-fuera-servicio { background: #F1F3F6; color: #676879; }
+  .badge-standby        { background: #E6F0F9; color: #004F9F; }
+
+  /* ─── Gauge & KPI ────────────────────────────────────────── */
+  .gauge-wrap { display: flex; justify-content: center; margin: 6px 0 0; }
+  .gauge-wrap svg { width: 100%; height: auto; display: block; }
+
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #007D43;
+    text-align: center;
+    margin-top: -2px;
+    margin-bottom: 8px;
+  }
+  .kpi-off { color: #C5C7D4; font-size: 20px; }
+
+  /* ─── Metrics Table ──────────────────────────────────────── */
+  .metrics {
+    border-top: 1px solid #f0f2f5;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .mrow   { display: flex; justify-content: space-between; font-size: 11px; }
+  .mlabel { color: var(--text-secondary); font-weight: 500; }
+  .mval   { font-weight: 700; }
+
+  /* ─── Color Helpers ──────────────────────────────────────── */
+  .c-normal  { color: #007D43; }
+  .c-warning { color: #BF8900; }
+  .c-danger  { color: #D93025; }
+  .c-off     { color: #C5C7D4; }
+
+  /* ─── Loading ────────────────────────────────────────────── */
+  .loading-msg {
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    grid-column: 1 / -1;
+  }
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--medline-blue);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── Utility ────────────────────────────────────────────── */
+  .hidden { display: none !important; }
+
+  /* ─── Desktop Breakpoint (≥768px) ───────────────────────── */
+  @media (min-width: 768px) {
+
+    /* Sidebar visible, back button always hidden on desktop */
+    .sidebar { display: flex; }
+    .btn-back { display: none !important; }
+
+    /* 5 columns = 2 rows of 5 for the 10 chillers */
+    #hmi-container {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    /* HMI view fills content area */
+    #hmi-view { display: flex !important; flex-direction: column; }
+    #main-menu { display: none !important; }
+
+    .content-area { padding: 24px; }
+
+    .tab-nav { max-width: 360px; }
+
+    /* Compact cards for 5-column grid */
+    .hmi-card       { padding: 10px; }
+    .hmi-title      { font-size: 13px; }
+    .hmi-sub        { font-size: 9px; }
+    .kpi-value      { font-size: 16px; }
+    .mrow           { font-size: 10px; }
+    .status-badge   { font-size: 7px; padding: 2px 5px; }
+    .gauge-wrap svg { max-width: 200px; }
+
+    /* Re-center title without back button offset */
+    .main-header h2 { position: static; transform: none; }
+  }
+
+  /* ─── Mobile only ────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+
+    #hmi-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .content-area { padding: 10px; }
+
+    .hmi-title    { font-size: 13px; }
+    .hmi-sub      { font-size: 9px; }
+    .mrow         { font-size: 10px; }
+    .kpi-value    { font-size: 18px; }
+    .status-badge { font-size: 7px; padding: 2px 5px; }
+  }
+
+  /* ─── Safe area (notched phones) ─────────────────────────── */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    .content-area {
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    .main-header {
+      padding-left:  calc(20px + env(safe-area-inset-left));
+      padding-right: calc(20px + env(safe-area-inset-right));
+    }
+  }
 </style>
 </head>
 <body>
 
 <div class="app-shell">
 
-  <!-- ══════════════════════════════════════════════════════
-       HEADER
-  ══════════════════════════════════════════════════════ -->
+  <!-- Header -->
   <header id="main-header" class="main-header">
-    <!-- Botón "atrás" visible solo en mobile cuando se abre el HMI -->
-    <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">⟵ Menú</button>
+    <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">⟵</button>
     <h2>⚙️ Mantenimiento PDM</h2>
-    <!-- Espaciador para balancear el título centrado -->
-    <div style="width:100px"></div>
+    <div style="width:80px"></div>
   </header>
 
   <div class="layout-body">
 
-    <!-- ════════════════════════════════════════════════════
-         SIDEBAR — navegación de secciones (desktop)
-    ════════════════════════════════════════════════════ -->
+    <!-- Sidebar (desktop) -->
     <nav class="sidebar" id="desktop-sidebar">
-      <button class="sidebar-item active" id="sb-hmi" onclick="sidebarNav('hmi', this)">
+      <button class="sidebar-item active" id="sb-hmi" onclick="sidebarNav('hmi')">
         <div class="icon-box bg-blue">🖥️</div>
         <div class="label-wrap"><h3>HMI</h3><p>Monitoreo</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('dashboard', this)">
+      <button class="sidebar-item" onclick="sidebarNav('dashboard')">
         <div class="icon-box bg-green">📈</div>
         <div class="label-wrap"><h3>Dashboard</h3><p>KPI</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('mp', this)">
+      <button class="sidebar-item" onclick="sidebarNav('mp')">
         <div class="icon-box bg-orange">📅</div>
         <div class="label-wrap"><h3>MP programados</h3><p>Formatos</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('qr', this)">
+      <button class="sidebar-item" onclick="sidebarNav('qr')">
         <div class="icon-box bg-purple">🔲</div>
         <div class="label-wrap"><h3>QR</h3><p>Recorridos</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('inventario', this)">
+      <button class="sidebar-item" onclick="sidebarNav('inventario')">
         <div class="icon-box bg-teal">📦</div>
         <div class="label-wrap"><h3>Inventario</h3><p>Refacciones</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('extra', this)">
+      <button class="sidebar-item" onclick="sidebarNav('extra')">
         <div class="icon-box bg-red">🔧</div>
         <div class="label-wrap"><h3>Extra</h3><p>Pruebas</p></div>
       </button>
     </nav>
 
-    <!-- ════════════════════════════════════════════════════
-         CONTENIDO PRINCIPAL
-    ════════════════════════════════════════════════════ -->
+    <!-- Main content -->
     <main class="content-area">
 
-      <!-- Menú móvil: grilla de accesos directos -->
+      <!-- Mobile Main Menu -->
       <div id="main-menu" class="grid-menu">
         <button class="menu-card" onclick="openHMI()">
           <div class="icon-box bg-blue">🖥️</div>
@@ -477,13 +454,12 @@ body {
         </button>
       </div>
 
-      <!-- Vista HMI: pestañas + tarjetas de equipos -->
+      <!-- HMI View -->
       <section id="hmi-view">
         <div class="tab-nav">
           <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
           <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
         </div>
-        <!-- Aquí se inyectan las tarjetas dinámicamente via JS -->
         <div id="hmi-container"></div>
       </section>
 
@@ -493,44 +469,35 @@ body {
 </div><!-- /.app-shell -->
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   CONFIGURACIÓN GLOBAL
-   Centraliza tokens de API, IDs de tableros y columnas de Monday
-═══════════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────────────────────────
+   CONFIG & STATIC DATA
+───────────────────────────────────────────────────────────── */
 const CONFIG = {
-  /* Token de autenticación Monday.com */
   TOKEN: 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyMzQyMjcyOSwiYWFpIjoxMSwidWlkIjoxMDA3NjU5OSwiaWFkIjoiMjAyNi0wMi0xOVQxNjoxMjo1Ni4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6NDQ3Njg5MSwicmduIjoidXNlMSJ9.nY2MXM-x6fb95m2BvxmhUFVMHLxHrJpnl8ZNyjcFfVA',
-
-  /* IDs de tableros en Monday.com */
   BOARD_CHILLERS:    '18403987245',
   BOARD_COMPRESORES: '18406608853',
 
-  /* Nombres exactos (en mayúsculas) de los items a mostrar */
-  CH_LIST: ['CH001','CH002','CH003','CH004','CH005',
-            'CH006','CH007','CH008','CH009','CH010'],
+  CH_LIST: ['CH001','CH002','CH003','CH004','CH005','CH006','CH007','CH008','CH009','CH010'],
   CP_LIST: ['COMP001','COMP002','COMP003'],
 
-  /* IDs de columnas del tablero de Chillers */
   COL_CH: {
-    CARGA:    'numeric_mm1h2wdq',  /* % de carga actual */
-    TEMP_OUT: 'numeric_mm1fssgs',  /* Temperatura de salida (°F) */
-    TEMP_IN:  'numeric_mm1ffh7p',  /* Temperatura de entrada (°F) */
-    PRES_OUT: 'numeric_mm1fkdjh',  /* Presión de salida (psi) */
-    PRES_IN:  'numeric_mm1f4rmc',  /* Presión de entrada (psi) */
-    STATUS:   'status',            /* Estado del equipo */
+    CARGA:    'numeric_mm1h2wdq',
+    TEMP_OUT: 'numeric_mm1fssgs',
+    TEMP_IN:  'numeric_mm1ffh7p',
+    PRES_OUT: 'numeric_mm1fkdjh',
+    PRES_IN:  'numeric_mm1f4rmc',
+    STATUS:   'status',
   },
 
-  /* IDs de columnas del tablero de Compresores */
   COL_CP: {
     STATUS:         'status',
-    TEMP_CARGA:     'numeric_mm1zfxhc',  /* T° línea de carga (°F) */
-    TEMP_DESCARGA:  'numeric_mm1zwzac',  /* T° línea de descarga (°F) */
-    PRES_CARGA:     'numeric_mm1zvqry',  /* Presión de carga (psi) */
-    PRES_DESCARGA:  'numeric_mm1zmfy0',  /* Presión de descarga (psi) */
+    TEMP_CARGA:     'numeric_mm1zfxhc',
+    TEMP_DESCARGA:  'numeric_mm1zwzac',
+    PRES_CARGA:     'numeric_mm1zvqry',
+    PRES_DESCARGA:  'numeric_mm1zmfy0',
   },
 };
 
-/* ── Subtítulos descriptivos por equipo ──────────────────── */
 const CHILLER_SUB = {
   CH001: 'Confort Oficinas',
   CH002: 'Confort CR1/CR2', CH003: 'Confort CR1/CR2',
@@ -540,26 +507,22 @@ const CHILLER_SUB = {
   CH008: 'Confort CR4',    CH009: 'Confort CR4',
   CH010: 'Proceso CR2',
 };
+
 const COMPRESOR_SUB = {
   COMP001: 'Compresor CR1',
   COMP002: 'Compresor CR3',
   COMP003: 'Compresor CR4',
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   MAPEO DE ESTADOS
-   Relaciona el texto de Monday con la clave interna y el estilo
-═══════════════════════════════════════════════════════════════ */
 const STATUS_KEY_MAP = [
-  { match: 'operativo',     key: 'operativo'      },
-  { match: 'carga parcial', key: 'carga-parcial'  },
-  { match: 'alarma',        key: 'alarma-activa'  },
-  { match: 'falla',         key: 'falla-critica'  },
-  { match: 'standby',       key: 'standby'        },
+  { match: 'operativo',    key: 'operativo'       },
+  { match: 'carga parcial',key: 'carga-parcial'   },
+  { match: 'alarma',       key: 'alarma-activa'   },
+  { match: 'falla',        key: 'falla-critica'   },
+  { match: 'standby',      key: 'standby'         },
 ];
 const DEFAULT_STATUS = 'fuera-servicio';
 
-/* Metadata visual por cada estado: clase CSS del badge, etiqueta y clase de la tarjeta */
 const STATUS_META = {
   'operativo':      { badge: 'badge-operativo',      label: '● Operativo',         cardClass: '' },
   'carga-parcial':  { badge: 'badge-carga-parcial',  label: '◐ Carga Parcial',     cardClass: '' },
@@ -569,248 +532,107 @@ const STATUS_META = {
   'standby':        { badge: 'badge-standby',        label: '💤 Standby',           cardClass: '' },
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   GAUGE SVG — CONSTRUCCIÓN PROGRAMÁTICA
-   Genera un medidor semicircular (180°) con:
-   - Arco degradado verde→amarillo→rojo
-   - Marcas en 0, 25, 75, 100
-   - Marca especial en 50 (línea punteada + texto negrita)
-   - Aguja animada que parte desde 0
-═══════════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────────────────────────
+   GAUGE
+───────────────────────────────────────────────────────── */
 const SVG_NS = 'http://www.w3.org/2000/svg';
+const GAUGE = { CX: 115, CY: 85, R_OUTER: 78, R_INNER: 52, R_NEEDLE: 70 };
 
-/* Geometría del gauge (en unidades del viewBox 230×100) */
-const G = {
-  CX:       115,   /* Centro horizontal */
-  CY:       85,    /* Centro vertical (base de la aguja) */
-  R_OUTER:  78,    /* Radio exterior del arco */
-  R_INNER:  52,    /* Radio interior del arco (crea el hueco) */
-  R_NEEDLE: 70,    /* Longitud de la aguja */
-};
-
-/**
- * Convierte un porcentaje (0-100) a coordenadas XY sobre un arco semicircular.
- * 0% → extremo izquierdo (180°), 100% → extremo derecho (0°)
- * @param {number} val  - Valor entre 0 y 100
- * @param {number} r    - Radio en unidades SVG
- * @returns {{x: number, y: number}}
- */
 function gaugePoint(val, r) {
   const angle = (180 - (Math.min(val, 100) / 100) * 180) * (Math.PI / 180);
-  return {
-    x: G.CX + r * Math.cos(angle),
-    y: G.CY - r * Math.sin(angle),
-  };
+  return { x: GAUGE.CX + r * Math.cos(angle), y: GAUGE.CY - r * Math.sin(angle) };
 }
-
-/**
- * Crea un elemento SVG con los atributos indicados.
- * @param {string} tag    - Tag SVG (e.g. 'line', 'text', 'path')
- * @param {object} attrs  - Objeto clave-valor de atributos
- * @returns {SVGElement}
- */
 function svgEl(tag, attrs) {
   const el = document.createElementNS(SVG_NS, tag);
-  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
   return el;
 }
-
-/**
- * Construye el gauge dentro del SVG recibido.
- * @param {SVGElement} svg   - Elemento SVG contenedor (vacío)
- * @param {string}     gradId - ID único para el degradado (evita colisiones)
- * @param {string}     unit   - Unidad mostrada en las etiquetas ('%' o '°F')
- * @returns {SVGLineElement}  - Elemento de la aguja (para animarla después)
- */
 function buildGauge(svg, gradId, unit = '%') {
-  const { CX, CY, R_OUTER, R_INNER } = G;
-
-  /* ── Degradado de color del arco ───────────────────────── */
+  const { CX, CY, R_OUTER, R_INNER } = GAUGE;
   const defs = document.createElementNS(SVG_NS, 'defs');
   const grad = svgEl('linearGradient', { id: gradId, x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
-  [
-    { offset: '0%',   color: '#00A859' },  /* Verde: carga normal */
-    { offset: '55%',  color: '#FFB800' },  /* Amarillo: precaución */
-    { offset: '100%', color: '#D93025' },  /* Rojo: crítico */
-  ].forEach(({ offset: o, color: c }) =>
-    grad.appendChild(svgEl('stop', { offset: o, 'stop-color': c }))
-  );
+  [{ o: '0%', c: '#00A859' }, { o: '55%', c: '#FFB800' }, { o: '100%', c: '#D93025' }]
+    .forEach(({ o, c }) => grad.appendChild(svgEl('stop', { offset: o, 'stop-color': c })));
   defs.appendChild(grad);
   svg.appendChild(defs);
 
-  /* ── Arco (fondo gris + capa de color degradado) ────────── */
-  const p0  = gaugePoint(0,   R_OUTER), p100  = gaugePoint(100, R_OUTER);
-  const pi0 = gaugePoint(0,   R_INNER), pi100 = gaugePoint(100, R_INNER);
-  const arcPath =
-    `M ${p0.x} ${p0.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${p100.x} ${p100.y}` +
-    ` L ${pi100.x} ${pi100.y} A ${R_INNER} ${R_INNER} 0 0 0 ${pi0.x} ${pi0.y} Z`;
+  const o1 = gaugePoint(0, R_OUTER), o2 = gaugePoint(100, R_OUTER);
+  const i1 = gaugePoint(0, R_INNER), i2 = gaugePoint(100, R_INNER);
+  const arcD = `M ${o1.x} ${o1.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${o2.x} ${o2.y}`
+             + ` L ${i2.x} ${i2.y} A ${R_INNER} ${R_INNER} 0 0 0 ${i1.x} ${i1.y} Z`;
+  svg.appendChild(svgEl('path', { d: arcD, fill: '#F5F6FA', stroke: '#E6E9EF', 'stroke-width': '1' }));
+  svg.appendChild(svgEl('path', { d: arcD, fill: `url(#${gradId})`, opacity: '0.85' }));
 
-  svg.appendChild(svgEl('path', { d: arcPath, fill: '#F5F6FA', stroke: '#E6E9EF', 'stroke-width': '1' }));
-  svg.appendChild(svgEl('path', { d: arcPath, fill: `url(#${gradId})`, opacity: '0.85' }));
-
-
-/* ── 3. Marcas y etiquetas (0, 25, 50, 75, 100) ── */
   [0, 25, 50, 75, 100].forEach(v => {
-    const isSpecial = v === 50;
-    const tick1 = gaugePoint(v, R_OUTER + 2);
-    const tick2 = gaugePoint(v, R_OUTER + (isSpecial ? 12 : 8));
-    const lblPt = gaugePoint(v, R_OUTER + (isSpecial ? 28 : 16));
-
-    svg.appendChild(svgEl('line', {
-      x1: tick1.x, y1: tick1.y,
-      x2: tick2.x, y2: tick2.y,
-      stroke: '#C5C7D4', 'stroke-width': '1.5',
-    }));
-
-    const lbl = svgEl('text', {
-      x: lblPt.x, y: lblPt.y + 4,
-      'text-anchor': 'middle',
-      'font-size': '8',
-      fill: '#676879',
-      'font-family': 'Inter',
-      'font-weight': '600',
-    });
+    const p1 = gaugePoint(v, R_OUTER + 2);
+    const p2 = gaugePoint(v, R_OUTER + 8);
+    const pl = gaugePoint(v, R_OUTER + 16);
+    svg.appendChild(svgEl('line', { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, stroke: '#C5C7D4', 'stroke-width': '1.5' }));
+    const lbl = svgEl('text', { x: pl.x, y: pl.y + 4, 'text-anchor': 'middle', 'font-size': '8', fill: '#676879', 'font-family': 'Inter', 'font-weight': '600' });
     lbl.textContent = v + unit;
     svg.appendChild(lbl);
   });
 
-
-  /* ── Aguja + pivote central ──────────────────────────────── */
-  /* La aguja inicia apuntando a la izquierda (0%) y se anima después */
-  const needle = svgEl('line', {
-    x1: CX, y1: CY,
-    x2: CX - G.R_NEEDLE, y2: CY,
-    stroke: '#323338',
-    'stroke-width': '2.5',
-    'stroke-linecap': 'round',
-  });
+  const needle = svgEl('line', { x1: CX, y1: CY, x2: CX - GAUGE.R_NEEDLE, y2: CY, stroke: '#323338', 'stroke-width': '2.5', 'stroke-linecap': 'round' });
   svg.appendChild(needle);
-  /* Círculo blanco (fondo) y azul (centro) del pivote */
   svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '9',  fill: '#FFFFFF', stroke: '#E6E9EF', 'stroke-width': '2' }));
   svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '4',  fill: '#004F9F' }));
-
   return needle;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ANIMACIÓN DE LA AGUJA
-   Usa easing cúbico para una transición suave desde 0
-═══════════════════════════════════════════════════════════════ */
-
-/** Función de easing cúbico de salida (desacelera al final) */
+/* ─── Animation ──────────────────────────────────────────────── */
 function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
-/**
- * Anima la aguja de 0 al porcentaje objetivo con easing.
- * También actualiza el texto KPI en tiempo real durante la animación.
- * @param {SVGLineElement} needle    - Aguja a mover
- * @param {HTMLElement}    kpiEl     - Elemento de texto con el valor
- * @param {number}         targetPct - Porcentaje destino (0-100)
- * @param {Function}       formatFn  - Formatea el valor actual para mostrar
- * @param {Function}       colorFn   - Devuelve el color CSS según el valor
- * @param {number}         delay     - Retardo en ms antes de iniciar
- */
 function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay = 0) {
   setTimeout(() => {
     const startTime = performance.now();
     function frame(now) {
-      const t   = Math.min((now - startTime) / 1200, 1); /* duración: 1.2 s */
+      const t   = Math.min((now - startTime) / 1200, 1);
       const cur = easeOut(t) * targetPct;
-      const pt  = gaugePoint(cur, G.R_NEEDLE);
+      const pt  = gaugePoint(cur, GAUGE.R_NEEDLE);
       needle.setAttribute('x2', pt.x);
       needle.setAttribute('y2', pt.y);
-      if (kpiEl) {
-        kpiEl.textContent  = formatFn(cur);
-        kpiEl.style.color  = colorFn(cur);
-      }
+      if (kpiEl) { kpiEl.textContent = formatFn(cur); kpiEl.style.color = colorFn(cur); }
       if (t < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   }, delay);
 }
 
-/**
- * Anima un gauge de carga (%).
- * Colores: verde ≤65%, amarillo ≤85%, rojo >85%
- */
 function animateLoadGauge(needle, kpiEl, loadPct, delay = 0) {
-  animateNeedle(
-    needle, kpiEl, loadPct,
+  animateNeedle(needle, kpiEl, loadPct,
     cur => `${Math.round(cur)} %`,
     cur => cur > 85 ? '#D93025' : cur > 65 ? '#BF8900' : '#007D43',
-    delay
-  );
+    delay);
 }
 
-/**
- * Anima un gauge de temperatura (°F).
- * Escala el valor real a porcentaje respecto al máximo definido.
- * Colores: verde ≤55%, amarillo ≤80%, rojo >80%
- */
 function animateTempGauge(needle, kpiEl, tempF, maxTempF = 150, delay = 0) {
   const targetPct = Math.min((tempF / maxTempF) * 100, 100);
-  animateNeedle(
-    needle, kpiEl, targetPct,
+  animateNeedle(needle, kpiEl, targetPct,
     cur => `${Math.round((cur / 100) * tempF)} °F`,
     cur => cur > 80 ? '#D93025' : cur > 55 ? '#BF8900' : '#007D43',
-    delay
-  );
+    delay);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HELPERS DE ESTADO Y MÉTRICAS
-═══════════════════════════════════════════════════════════════ */
-
-/** Convierte el texto de estado de Monday a clave interna */
+/* ─── Status helpers ──────────────────────────────────────────── */
 function parseStatus(raw = '') {
-  const s     = raw.toLowerCase().trim();
+  const s = raw.toLowerCase().trim();
   const found = STATUS_KEY_MAP.find(({ match }) => s.includes(match));
   return found ? found.key : DEFAULT_STATUS;
 }
-
-/** Retorna true si el equipo está fuera de servicio o en standby */
-function isOff(statusKey) {
-  return statusKey === 'fuera-servicio' || statusKey === 'standby';
-}
-
-/** Clase CSS de color según porcentaje de carga */
-function loadColorClass(pct) {
-  return pct > 85 ? 'c-err' : pct > 65 ? 'c-warn' : 'c-ok';
-}
-
-/** Clase CSS de color según temperatura en °F */
-function tempColorClass(f) {
-  return f > 110 ? 'c-err' : 'c-ok';
-}
-
-/** Genera una fila de métrica en HTML */
+function isOff(statusKey) { return statusKey === 'fuera-servicio' || statusKey === 'standby'; }
+function loadColorClass(pct) { return pct > 85 ? 'c-danger' : pct > 65 ? 'c-warning' : 'c-normal'; }
+function tempColorClass(f)   { return f > 110  ? 'c-danger' : 'c-normal'; }
 const DASH = '—';
 function metricRow(label, value, colorClass = '') {
-  return `<div class="mrow">
-    <span class="mlabel">${label}</span>
-    <span class="mval ${colorClass}">${value}</span>
-  </div>`;
+  return `<div class="mrow"><span class="mlabel">${label}</span><span class="mval ${colorClass}">${value}</span></div>`;
 }
+function statusMeta(key) { return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS]; }
 
-/** Obtiene la metadata visual del estado (badge, etiqueta, clase de tarjeta) */
-function getStatusMeta(key) {
-  return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS];
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RENDERIZADO DE TARJETAS
-═══════════════════════════════════════════════════════════════ */
-
-/**
- * Crea y agrega al DOM una tarjeta de Chiller.
- * @param {object} ch    - Datos del chiller
- * @param {number} idx   - Índice único para IDs de SVG
- * @param {number} delay - Retardo de animación en ms (efecto escalonado)
- */
+/* ─── Card Renderers ──────────────────────────────────────────── */
 function renderChillerCard(ch, idx, delay = 0) {
   const off  = isOff(ch.status);
-  const meta = getStatusMeta(ch.status);
-
+  const meta = statusMeta(ch.status);
   const card = document.createElement('div');
   card.className = `hmi-card ${meta.cardClass}`.trim();
   card.innerHTML = `
@@ -819,39 +641,25 @@ function renderChillerCard(ch, idx, delay = 0) {
       <span class="status-badge ${meta.badge}">${meta.label}</span>
     </div>
     <div class="hmi-sub">${ch.sub}</div>
-    <div class="gauge-wrap">
-      <svg id="svg-ch-${idx}" viewBox="0 0 230 100"></svg>
-    </div>
-    <div class="kpi-value${off ? ' kpi-off' : ''}" id="kpi-ch-${idx}">
-      ${off ? DASH : '0 %'}
-    </div>
+    <div class="gauge-wrap"><svg id="svg-ch-${idx}" viewBox="0 0 230 100"></svg></div>
+    <div class="kpi-value ${off ? 'kpi-off' : ''}" id="kpi-ch-${idx}">${off ? DASH : '0 %'}</div>
     <div class="metrics">
       ${metricRow('Carga',      off ? DASH : ch.carga   + ' %',   off ? 'c-off' : loadColorClass(ch.carga))}
-      ${metricRow('T° Salida',  off ? DASH : ch.tempOut + ' °F',  off ? 'c-off' : 'c-ok')}
-      ${metricRow('T° Entrada', off ? DASH : ch.tempIn  + ' °F',  off ? 'c-off' : 'c-ok')}
-      ${metricRow('P. Salida',  off ? DASH : ch.presOut + ' psi', off ? 'c-off' : 'c-warn')}
-      ${metricRow('P. Entrada', off ? DASH : ch.presIn  + ' psi', off ? 'c-off' : 'c-warn')}
+      ${metricRow('T° Salida',  off ? DASH : ch.tempOut + ' °F',  off ? 'c-off' : 'c-normal')}
+      ${metricRow('T° Entrada', off ? DASH : ch.tempIn  + ' °F',  off ? 'c-off' : 'c-normal')}
+      ${metricRow('P. Salida',  off ? DASH : ch.presOut + ' psi', off ? 'c-off' : 'c-warning')}
+      ${metricRow('P. Entrada', off ? DASH : ch.presIn  + ' psi', off ? 'c-off' : 'c-warning')}
     </div>`;
-
   document.getElementById('hmi-container').appendChild(card);
-
-  /* Construir gauge y arrancar animación si el equipo está activo */
   const svg    = document.getElementById(`svg-ch-${idx}`);
   const kpiEl  = document.getElementById(`kpi-ch-${idx}`);
   const needle = buildGauge(svg, `grad-ch-${idx}`, '%');
   if (!off) animateLoadGauge(needle, kpiEl, ch.carga, delay);
 }
 
-/**
- * Crea y agrega al DOM una tarjeta de Compresor.
- * @param {object} cp    - Datos del compresor
- * @param {number} idx   - Índice único para IDs de SVG
- * @param {number} delay - Retardo de animación en ms
- */
 function renderCompresorCard(cp, idx, delay = 0) {
   const off  = isOff(cp.status);
-  const meta = getStatusMeta(cp.status);
-
+  const meta = statusMeta(cp.status);
   const card = document.createElement('div');
   card.className = `hmi-card ${meta.cardClass}`.trim();
   card.innerHTML = `
@@ -860,135 +668,89 @@ function renderCompresorCard(cp, idx, delay = 0) {
       <span class="status-badge ${meta.badge}">${meta.label}</span>
     </div>
     <div class="hmi-sub">${cp.sub}</div>
-    <div class="gauge-wrap">
-      <svg id="svg-cp-${idx}" viewBox="0 0 230 100"></svg>
-    </div>
-    <div class="kpi-value${off ? ' kpi-off' : ''}" id="kpi-cp-${idx}">
-      ${off ? DASH : '0 °F'}
-    </div>
+    <div class="gauge-wrap"><svg id="svg-cp-${idx}" viewBox="0 0 230 100"></svg></div>
+    <div class="kpi-value ${off ? 'kpi-off' : ''}" id="kpi-cp-${idx}">${off ? DASH : '0 °F'}</div>
     <div class="metrics">
       ${metricRow('T° Carga',    off ? DASH : cp.tempCarga    + ' °F',  off ? 'c-off' : tempColorClass(cp.tempCarga))}
       ${metricRow('T° Descarga', off ? DASH : cp.tempDescarga + ' °F',  off ? 'c-off' : tempColorClass(cp.tempDescarga))}
-      ${metricRow('P. Carga',    off ? DASH : cp.presCarga    + ' psi', off ? 'c-off' : 'c-warn')}
-      ${metricRow('P. Descarga', off ? DASH : cp.presDescarga + ' psi', off ? 'c-off' : 'c-warn')}
+      ${metricRow('P. Carga',    off ? DASH : cp.presCarga    + ' psi', off ? 'c-off' : 'c-warning')}
+      ${metricRow('P. Descarga', off ? DASH : cp.presDescarga + ' psi', off ? 'c-off' : 'c-warning')}
     </div>`;
-
   document.getElementById('hmi-container').appendChild(card);
-
   const svg    = document.getElementById(`svg-cp-${idx}`);
   const kpiEl  = document.getElementById(`kpi-cp-${idx}`);
   const needle = buildGauge(svg, `grad-cp-${idx}`, '°F');
   if (!off) animateTempGauge(needle, kpiEl, cp.tempCarga, 150, delay);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CAPA DE DATOS — MONDAY.COM API (GraphQL)
-═══════════════════════════════════════════════════════════════ */
-const MONDAY_API     = 'https://api.monday.com/v2';
+/* ─── Monday.com API ──────────────────────────────────────────── */
+const MONDAY_API = 'https://api.monday.com/v2';
 const MONDAY_HEADERS = {
   'Content-Type': 'application/json',
   'Authorization': CONFIG.TOKEN,
-  'API-Version':  '2023-10',
+  'API-Version': '2023-10',
 };
 
-/**
- * Descarga todos los items de un tablero con paginación.
- * Monday devuelve máximo 100 items por página; si hay más
- * se repite la consulta usando el cursor de la página anterior.
- * @param {string} boardId - ID del tablero
- * @returns {Promise<Array>} - Lista completa de items
- */
 async function fetchAllItems(boardId) {
   const items = [];
-  let cursor  = null;
-
+  let cursor = null;
   do {
     const cursorArg = cursor ? `, cursor: "${cursor}"` : '';
     const query = `query {
       boards(ids: ${boardId}) {
         items_page(limit: 100${cursorArg}) {
           cursor
-          items {
-            id
-            name
-            created_at
-            column_values { id text }
-          }
+          items { id name created_at column_values { id text } }
         }
       }
     }`;
-
-    const res  = await fetch(MONDAY_API, {
-      method:  'POST',
-      headers: MONDAY_HEADERS,
-      body:    JSON.stringify({ query }),
-    });
+    const res  = await fetch(MONDAY_API, { method: 'POST', headers: MONDAY_HEADERS, body: JSON.stringify({ query }) });
     const data = await res.json();
-
     if (data.errors) throw new Error(data.errors.map(e => e.message).join(', '));
-
     const page = data.data.boards[0].items_page;
     items.push(...page.items);
     cursor = page.cursor ?? null;
   } while (cursor);
-
   return items;
 }
 
-/**
- * De una lista de items filtra solo los de la allowList y,
- * si hay varios con el mismo nombre, conserva el más reciente.
- * @param {Array}  items     - Items de Monday
- * @param {Array}  allowList - Nombres permitidos (en mayúsculas)
- * @returns {Map<string, object>}
- */
 function latestByName(items, allowList) {
   const map = new Map();
   items.forEach(item => {
     const name = item.name.trim().toUpperCase();
     if (!allowList.includes(name)) return;
-    if (!map.has(name) || new Date(item.created_at) > new Date(map.get(name).created_at))
+    if (!map.has(name) || new Date(item.created_at) > new Date(map.get(name).created_at)) {
       map.set(name, item);
+    }
   });
   return map;
 }
 
-/** Extrae y parsea el valor numérico de una columna */
 function numericCol(item, colId) {
   const raw = item.column_values.find(c => c.id === colId)?.text ?? '';
   return parseFloat(raw.replace(/[^\d.-]/g, '')) || 0;
 }
-
-/** Extrae el texto de una columna de estado */
 function statusCol(item, colId) {
   return item.column_values.find(c => c.id === colId)?.text ?? '';
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ESTADO DE LA APLICACIÓN
-═══════════════════════════════════════════════════════════════ */
-let currentTab = 'CH';    /* Pestaña activa: 'CH' o 'CP' */
-let allCHItems = [];      /* Cache de items de Chillers */
-let allCPItems = [];      /* Cache de items de Compresores */
+/* ─── State & Render ──────────────────────────────────────────── */
+let currentTab  = 'CH';
+let allCHItems  = [];
+let allCPItems  = [];
 
-/* ── UI helpers ──────────────────────────────────────────── */
-function showLoading(msg = 'Conectando con Monday.com…') {
-  document.getElementById('hmi-container').innerHTML =
-    `<div class="loading-msg">
-       <div class="spinner"></div>
-       <span>${msg}</span>
-     </div>`;
+function showLoading(message = 'Conectando con Monday.com…') {
+  document.getElementById('hmi-container').innerHTML = `
+    <div class="loading-msg">
+      <div class="spinner"></div>
+      <span>${message}</span>
+    </div>`;
 }
-function showError(msg = 'Error de conexión. Verifica el token.') {
-  document.getElementById('hmi-container').innerHTML =
-    `<div class="loading-msg error">⚠ ${msg}</div>`;
+function showError(message = 'Error de conexión') {
+  document.getElementById('hmi-container').innerHTML = `
+    <div class="loading-msg" style="color: var(--danger)">⚠ ${message}</div>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CARGA Y RENDERIZADO
-═══════════════════════════════════════════════════════════════ */
-
-/** Descarga ambos tableros en paralelo y renderiza la pestaña activa */
 async function fetchData() {
   showLoading();
   try {
@@ -997,77 +759,58 @@ async function fetchData() {
       fetchAllItems(CONFIG.BOARD_COMPRESORES),
     ]);
     renderItems();
-  } catch (err) {
-    console.error('Error fetching Monday data:', err);
-    showError();
-  }
+  } catch { showError(); }
 }
 
-/**
- * Renderiza las tarjetas de la pestaña activa.
- * Usa el cache si ya se descargó; de lo contrario llama a fetchData.
- */
 function renderItems() {
   document.getElementById('hmi-container').innerHTML = '';
-
   if (currentTab === 'CH') {
-    /* ── Chillers ── */
     const latest = latestByName(allCHItems, CONFIG.CH_LIST);
     CONFIG.CH_LIST.forEach((name, i) => {
       const item = latest.get(name);
       if (!item) return;
-      const c = CONFIG.COL_CH;
+      const { COL_CH } = CONFIG;
       renderChillerCard({
-        name,
-        sub:     CHILLER_SUB[name] ?? 'Equipo',
-        carga:   numericCol(item, c.CARGA),
-        tempOut: numericCol(item, c.TEMP_OUT),
-        tempIn:  numericCol(item, c.TEMP_IN),
-        presOut: numericCol(item, c.PRES_OUT),
-        presIn:  numericCol(item, c.PRES_IN),
-        status:  parseStatus(statusCol(item, c.STATUS)),
-      }, i, i * 80); /* delay escalonado de 80ms entre tarjetas */
+        name, sub: CHILLER_SUB[name] ?? 'Equipo',
+        carga:   numericCol(item, COL_CH.CARGA),
+        tempOut: numericCol(item, COL_CH.TEMP_OUT),
+        tempIn:  numericCol(item, COL_CH.TEMP_IN),
+        presOut: numericCol(item, COL_CH.PRES_OUT),
+        presIn:  numericCol(item, COL_CH.PRES_IN),
+        status:  parseStatus(statusCol(item, COL_CH.STATUS)),
+      }, i, i * 80);
     });
-
   } else {
-    /* ── Compresores ── */
     const latest = latestByName(allCPItems, CONFIG.CP_LIST);
     CONFIG.CP_LIST.forEach((name, i) => {
       const item = latest.get(name);
       if (!item) return;
-      const c = CONFIG.COL_CP;
+      const { COL_CP } = CONFIG;
       renderCompresorCard({
-        name,
-        sub:          COMPRESOR_SUB[name] ?? 'Equipo',
-        tempCarga:    numericCol(item, c.TEMP_CARGA),
-        tempDescarga: numericCol(item, c.TEMP_DESCARGA),
-        presCarga:    numericCol(item, c.PRES_CARGA),
-        presDescarga: numericCol(item, c.PRES_DESCARGA),
-        status:       parseStatus(statusCol(item, c.STATUS)),
+        name, sub: COMPRESOR_SUB[name] ?? 'Equipo',
+        tempCarga:    numericCol(item, COL_CP.TEMP_CARGA),
+        tempDescarga: numericCol(item, COL_CP.TEMP_DESCARGA),
+        presCarga:    numericCol(item, COL_CP.PRES_CARGA),
+        presDescarga: numericCol(item, COL_CP.PRES_DESCARGA),
+        status:       parseStatus(statusCol(item, COL_CP.STATUS)),
       }, i, i * 80);
     });
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   NAVEGACIÓN
-═══════════════════════════════════════════════════════════════ */
+/* ─── Navigation ──────────────────────────────────────────────── */
 
-/**
- * Navegación del sidebar en desktop.
- * @param {string}      section - Sección destino
- * @param {HTMLElement} btn     - Botón clickeado (para marcar activo)
- */
-function sidebarNav(section, btn) {
+/** Desktop sidebar: highlight active item and load section */
+function sidebarNav(section) {
   document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-  btn.classList.add('active');
+  event.currentTarget.classList.add('active');
   if (section === 'hmi') {
     document.getElementById('hmi-view').style.display = 'flex';
     fetchData();
   }
 }
 
-/** Abre la vista HMI desde el menú móvil */
+/** Mobile: open HMI view */
 function openHMI() {
   document.getElementById('main-menu').classList.add('hidden');
   document.getElementById('hmi-view').style.display = 'flex';
@@ -1075,27 +818,21 @@ function openHMI() {
   fetchData();
 }
 
-/** Regresa al menú móvil principal */
+/** Mobile: go back to grid menu */
 function closeHMI() {
   document.getElementById('hmi-view').style.display = 'none';
   document.getElementById('main-menu').classList.remove('hidden');
   document.getElementById('header-back-btn').classList.add('hidden');
 }
 
-/** Cambia entre pestaña Chillers y Compresores */
 function switchTab(type) {
   currentTab = type;
   document.getElementById('tab-ch').classList.toggle('active', type === 'CH');
   document.getElementById('tab-cp').classList.toggle('active', type === 'CP');
-  /* Reutilizar cache si ya se descargaron los datos */
   (allCHItems.length || allCPItems.length) ? renderItems() : fetchData();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   INICIALIZACIÓN
-   En desktop: muestra el HMI directamente al cargar la página.
-   En mobile: muestra el menú de accesos directos.
-═══════════════════════════════════════════════════════════════ */
+/* ─── Init: on desktop load HMI automatically ─────────────────── */
 function initLayout() {
   const isDesktop = window.matchMedia('(min-width: 768px)').matches;
   if (isDesktop) {
@@ -1104,8 +841,8 @@ function initLayout() {
     fetchData();
   }
 }
-
 document.addEventListener('DOMContentLoaded', initLayout);
 </script>
+
 </body>
 </html>
