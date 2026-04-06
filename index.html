@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mantenimiento PDM</title>
 <style>
-  /* ─── Design Tokens ─────────────────────────────────────── */
   :root {
     --medline-blue:   #004b87;
     --bg-body:        #f0f2f5;
@@ -19,27 +18,24 @@
     --sidebar-w:      240px;
     --header-h:       56px;
   }
-
-  /* ─── Reset ─────────────────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
+  html, body { height: 100%; overflow: hidden; }
 
   body {
     font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg-body);
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    height: 100%;
   }
 
-  /* ─── App Shell ──────────────────────────────────────────── */
   .app-shell {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
   }
 
-  /* ─── Top Header ─────────────────────────────────────────── */
   .main-header {
     background: var(--medline-blue);
     padding: 0 20px;
@@ -47,10 +43,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
     flex-shrink: 0;
+    z-index: 100;
   }
   .main-header h2 {
     font-size: 18px;
@@ -61,20 +55,14 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
 
-  /* ─── Desktop Layout ─────────────────────────────────────── */
   .layout-body {
     display: flex;
     flex: 1;
     overflow: hidden;
+    min-height: 0;
   }
 
-  /* ─── Sidebar (Desktop only) ─────────────────────────────── */
   .sidebar {
     width: var(--sidebar-w);
     background: var(--card-bg);
@@ -107,20 +95,23 @@
   .sidebar-item .label-wrap p  { font-size: 11px; color: var(--text-secondary); }
   .sidebar-item.active .label-wrap p { color: #1877f2; }
 
-  /* ─── Main Content Area ──────────────────────────────────── */
   .content-area {
     flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
   }
 
-  /* ─── Mobile Menu Grid ───────────────────────────────────── */
-  .grid-menu {
+  /* Mobile Main Menu — sin scroll, llena la pantalla */
+  #main-menu {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: 12px;
-    max-width: 900px;
+    padding: 16px;
+    flex: 1;
+    overflow: hidden;
   }
 
   .menu-card {
@@ -129,19 +120,20 @@
     border-radius: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 8px;
     cursor: pointer;
     border: 1px solid transparent;
     text-align: left;
     transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    min-height: 0;
   }
   .menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border-color); }
   .menu-card:active { transform: scale(0.97); }
   .menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); }
   .menu-card p  { font-size: 11px; color: var(--text-secondary); }
 
-  /* ─── Icon Boxes ─────────────────────────────────────────── */
   .icon-box {
     width: 40px;
     height: 40px;
@@ -159,43 +151,23 @@
   .bg-teal   { background: #e2faf8; color: #00a499; }
   .bg-red    { background: #fff0f0; color: #fa383e; }
 
-  /* ─── HMI View ───────────────────────────────────────────── */
-  #hmi-view { display: none; flex-direction: column; }
-
-  .hmi-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+  /* HMI View: tabs fijos, tarjetas con scroll */
+  #hmi-view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
   }
 
-  /* ─── Back Button (in header) ────────────────────────────── */
-  .btn-back {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 8px;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.15s;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-  .btn-back:hover { background: rgba(255,255,255,0.25); }
-
-  /* ─── Tabs ───────────────────────────────────────────────── */
+  /* Tab bar fija dentro del HMI */
   .tab-nav {
     display: flex;
     background: #e4e6eb;
     padding: 4px;
     border-radius: 10px;
-    margin-bottom: 16px;
+    margin: 12px 12px 0;
+    flex-shrink: 0;
   }
   .tab-btn {
     flex: 1;
@@ -216,11 +188,16 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  /* ─── HMI Cards Grid ─────────────────────────────────────── */
+  /* Grid con scroll — unico elemento que scrollea */
   #hmi-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 12px 16px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    align-content: start;
   }
 
   .hmi-card {
@@ -244,7 +221,6 @@
   .hmi-title { font-size: 14px; font-weight: 800; color: var(--text-main); }
   .hmi-sub   { font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
 
-  /* ─── Status Badges ──────────────────────────────────────── */
   .status-badge {
     display: inline-flex;
     align-items: center;
@@ -262,7 +238,6 @@
   .badge-fuera-servicio { background: #F1F3F6; color: #676879; }
   .badge-standby        { background: #E6F0F9; color: #004F9F; }
 
-  /* ─── Gauge & KPI ────────────────────────────────────────── */
   .gauge-wrap { display: flex; justify-content: center; margin: 6px 0 0; }
   .gauge-wrap svg { width: 100%; height: auto; display: block; }
 
@@ -276,7 +251,6 @@
   }
   .kpi-off { color: #C5C7D4; font-size: 20px; }
 
-  /* ─── Metrics Table ──────────────────────────────────────── */
   .metrics {
     border-top: 1px solid #f0f2f5;
     padding-top: 10px;
@@ -288,13 +262,11 @@
   .mlabel { color: var(--text-secondary); font-weight: 500; }
   .mval   { font-weight: 700; }
 
-  /* ─── Color Helpers ──────────────────────────────────────── */
   .c-normal  { color: #007D43; }
   .c-warning { color: #BF8900; }
   .c-danger  { color: #D93025; }
   .c-off     { color: #C5C7D4; }
 
-  /* ─── Loading ────────────────────────────────────────────── */
   .loading-msg {
     text-align: center;
     padding: 40px 24px;
@@ -316,30 +288,49 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ─── Utility ────────────────────────────────────────────── */
   .hidden { display: none !important; }
 
-  /* ─── Desktop Breakpoint (≥768px) ───────────────────────── */
-  @media (min-width: 768px) {
+  .btn-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 8px;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .btn-back:hover { background: rgba(255,255,255,0.25); }
 
-    /* Sidebar visible, back button always hidden on desktop */
+  /* Desktop (>=768px) */
+  @media (min-width: 768px) {
     .sidebar { display: flex; }
     .btn-back { display: none !important; }
 
-    /* 5 columns = 2 rows of 5 for the 10 chillers */
+    #main-menu {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      padding: 24px;
+      gap: 16px;
+      max-width: 900px;
+    }
+
     #hmi-container {
       grid-template-columns: repeat(5, 1fr);
     }
 
-    /* HMI view fills content area */
-    #hmi-view { display: flex !important; flex-direction: column; }
-    #main-menu { display: none !important; }
+    #hmi-view { display: flex !important; }
+    #main-menu-wrap { display: none !important; }
 
-    .content-area { padding: 24px; }
+    .tab-nav { max-width: 360px; margin: 16px 24px 0; }
+    #hmi-container { padding: 10px 24px 24px; }
 
-    .tab-nav { max-width: 360px; }
-
-    /* Compact cards for 5-column grid */
     .hmi-card       { padding: 10px; }
     .hmi-title      { font-size: 13px; }
     .hmi-sub        { font-size: 9px; }
@@ -348,21 +339,13 @@
     .status-badge   { font-size: 7px; padding: 2px 5px; }
     .gauge-wrap svg { max-width: 200px; }
 
-    /* Re-center title without back button offset */
     .main-header h2 { position: static; transform: none; }
   }
 
-  /* ─── Mobile only ────────────────────────────────────────── */
+  /* Mobile (<768px) */
   @media (max-width: 767px) {
     .sidebar { display: none; }
-
-    #hmi-container {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .content-area { padding: 10px; }
-
+    #hmi-container { grid-template-columns: repeat(2, 1fr); }
     .hmi-title    { font-size: 13px; }
     .hmi-sub      { font-size: 9px; }
     .mrow         { font-size: 10px; }
@@ -370,9 +353,8 @@
     .status-badge { font-size: 7px; padding: 2px 5px; }
   }
 
-  /* ─── Safe area (notched phones) ─────────────────────────── */
   @supports (padding: env(safe-area-inset-bottom)) {
-    .content-area {
+    #hmi-container {
       padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
     .main-header {
@@ -386,7 +368,6 @@
 
 <div class="app-shell">
 
-  <!-- Header -->
   <header id="main-header" class="main-header">
     <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">⟵</button>
     <h2>⚙️ Mantenimiento PDM</h2>
@@ -395,7 +376,6 @@
 
   <div class="layout-body">
 
-    <!-- Sidebar (desktop) -->
     <nav class="sidebar" id="desktop-sidebar">
       <button class="sidebar-item active" id="sb-hmi" onclick="sidebarNav('hmi')">
         <div class="icon-box bg-blue">🖥️</div>
@@ -423,38 +403,39 @@
       </button>
     </nav>
 
-    <!-- Main content -->
     <main class="content-area">
 
-      <!-- Mobile Main Menu -->
-      <div id="main-menu" class="grid-menu">
-        <button class="menu-card" onclick="openHMI()">
-          <div class="icon-box bg-blue">🖥️</div>
-          <h3>HMI</h3><p>Monitoreo</p>
-        </button>
-        <button class="menu-card">
-          <div class="icon-box bg-green">📈</div>
-          <h3>Dashboard</h3><p>KPI</p>
-        </button>
-        <button class="menu-card">
-          <div class="icon-box bg-orange">📅</div>
-          <h3>MP programados</h3><p>Formatos</p>
-        </button>
-        <button class="menu-card">
-          <div class="icon-box bg-purple">🔲</div>
-          <h3>QR</h3><p>Recorridos</p>
-        </button>
-        <button class="menu-card">
-          <div class="icon-box bg-teal">📦</div>
-          <h3>Inventario</h3><p>Refacciones</p>
-        </button>
-        <button class="menu-card">
-          <div class="icon-box bg-red">🔧</div>
-          <h3>Extra</h3><p>Pruebas</p>
-        </button>
+      <!-- Mobile Main Menu — sin scroll, se fija al viewport -->
+      <div id="main-menu-wrap" style="display:flex;flex:1;overflow:hidden;min-height:0;">
+        <div id="main-menu">
+          <button class="menu-card" onclick="openHMI()">
+            <div class="icon-box bg-blue">🖥️</div>
+            <h3>HMI</h3><p>Monitoreo</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-green">📈</div>
+            <h3>Dashboard</h3><p>KPI</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-orange">📅</div>
+            <h3>MP programados</h3><p>Formatos</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-purple">🔲</div>
+            <h3>QR</h3><p>Recorridos</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-teal">📦</div>
+            <h3>Inventario</h3><p>Refacciones</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-red">🔧</div>
+            <h3>Extra</h3><p>Pruebas</p>
+          </button>
+        </div>
       </div>
 
-      <!-- HMI View -->
+      <!-- HMI View: tabs fijos arriba, scroll solo en las tarjetas -->
       <section id="hmi-view">
         <div class="tab-nav">
           <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
@@ -464,22 +445,16 @@
       </section>
 
     </main>
-  </div><!-- /.layout-body -->
-
-</div><!-- /.app-shell -->
+  </div>
+</div>
 
 <script>
-/* ─────────────────────────────────────────────────────────────
-   CONFIG & STATIC DATA
-───────────────────────────────────────────────────────────── */
 const CONFIG = {
   TOKEN: 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyMzQyMjcyOSwiYWFpIjoxMSwidWlkIjoxMDA3NjU5OSwiaWFkIjoiMjAyNi0wMi0xOVQxNjoxMjo1Ni4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6NDQ3Njg5MSwicmduIjoidXNlMSJ9.nY2MXM-x6fb95m2BvxmhUFVMHLxHrJpnl8ZNyjcFfVA',
   BOARD_CHILLERS:    '18403987245',
   BOARD_COMPRESORES: '18406608853',
-
   CH_LIST: ['CH001','CH002','CH003','CH004','CH005','CH006','CH007','CH008','CH009','CH010'],
   CP_LIST: ['COMP001','COMP002','COMP003'],
-
   COL_CH: {
     CARGA:    'numeric_mm1h2wdq',
     TEMP_OUT: 'numeric_mm1fssgs',
@@ -488,7 +463,6 @@ const CONFIG = {
     PRES_IN:  'numeric_mm1f4rmc',
     STATUS:   'status',
   },
-
   COL_CP: {
     STATUS:         'status',
     TEMP_CARGA:     'numeric_mm1zfxhc',
@@ -499,204 +473,172 @@ const CONFIG = {
 };
 
 const CHILLER_SUB = {
-  CH001: 'Confort Oficinas',
-  CH002: 'Confort CR1/CR2', CH003: 'Confort CR1/CR2',
-  CH004: 'Proceso CR2',
-  CH005: 'Proceso CR3',
-  CH006: 'Confort CR3',    CH007: 'Confort CR3',
-  CH008: 'Confort CR4',    CH009: 'Confort CR4',
-  CH010: 'Proceso CR2',
+  CH001:'Confort Oficinas', CH002:'Confort CR1/CR2', CH003:'Confort CR1/CR2',
+  CH004:'Proceso CR2', CH005:'Proceso CR3', CH006:'Confort CR3',
+  CH007:'Confort CR3', CH008:'Confort CR4', CH009:'Confort CR4', CH010:'Proceso CR2',
 };
-
 const COMPRESOR_SUB = {
-  COMP001: 'Compresor CR1',
-  COMP002: 'Compresor CR3',
-  COMP003: 'Compresor CR4',
+  COMP001:'Compresor CR1', COMP002:'Compresor CR3', COMP003:'Compresor CR4',
 };
 
 const STATUS_KEY_MAP = [
-  { match: 'operativo',    key: 'operativo'       },
-  { match: 'carga parcial',key: 'carga-parcial'   },
-  { match: 'alarma',       key: 'alarma-activa'   },
-  { match: 'falla',        key: 'falla-critica'   },
-  { match: 'standby',      key: 'standby'         },
+  { match:'operativo',     key:'operativo'      },
+  { match:'carga parcial', key:'carga-parcial'  },
+  { match:'alarma',        key:'alarma-activa'  },
+  { match:'falla',         key:'falla-critica'  },
+  { match:'standby',       key:'standby'        },
 ];
 const DEFAULT_STATUS = 'fuera-servicio';
-
 const STATUS_META = {
-  'operativo':      { badge: 'badge-operativo',      label: '● Operativo',         cardClass: '' },
-  'carga-parcial':  { badge: 'badge-carga-parcial',  label: '◐ Carga Parcial',     cardClass: '' },
-  'alarma-activa':  { badge: 'badge-alarma-activa',  label: '⚠ Alarma Activa',     cardClass: 'alert' },
-  'falla-critica':  { badge: 'badge-falla-critica',  label: '✕ Falla Crítica',      cardClass: 'alert' },
-  'fuera-servicio': { badge: 'badge-fuera-servicio', label: '○ Fuera de Servicio', cardClass: '' },
-  'standby':        { badge: 'badge-standby',        label: '💤 Standby',           cardClass: '' },
+  'operativo':      { badge:'badge-operativo',      label:'● Operativo',         cardClass:'' },
+  'carga-parcial':  { badge:'badge-carga-parcial',  label:'◐ Carga Parcial',     cardClass:'' },
+  'alarma-activa':  { badge:'badge-alarma-activa',  label:'⚠ Alarma Activa',     cardClass:'alert' },
+  'falla-critica':  { badge:'badge-falla-critica',  label:'✕ Falla Crítica',      cardClass:'alert' },
+  'fuera-servicio': { badge:'badge-fuera-servicio', label:'○ Fuera de Servicio', cardClass:'' },
+  'standby':        { badge:'badge-standby',        label:'💤 Standby',           cardClass:'' },
 };
 
-/* ─────────────────────────────────────────────────────────────
-   GAUGE
-───────────────────────────────────────────────────────── */
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const GAUGE = { CX: 115, CY: 85, R_OUTER: 78, R_INNER: 52, R_NEEDLE: 70 };
+const GAUGE  = { CX:115, CY:85, R_OUTER:78, R_INNER:52, R_NEEDLE:70 };
 
 function gaugePoint(val, r) {
-  const angle = (180 - (Math.min(val, 100) / 100) * 180) * (Math.PI / 180);
-  return { x: GAUGE.CX + r * Math.cos(angle), y: GAUGE.CY - r * Math.sin(angle) };
+  const angle = (180 - (Math.min(val,100)/100)*180) * (Math.PI/180);
+  return { x: GAUGE.CX + r*Math.cos(angle), y: GAUGE.CY - r*Math.sin(angle) };
 }
 function svgEl(tag, attrs) {
   const el = document.createElementNS(SVG_NS, tag);
-  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
   return el;
 }
-function buildGauge(svg, gradId, unit = '%') {
+function buildGauge(svg, gradId, unit='%') {
   const { CX, CY, R_OUTER, R_INNER } = GAUGE;
-  const defs = document.createElementNS(SVG_NS, 'defs');
-  const grad = svgEl('linearGradient', { id: gradId, x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
-  [{ o: '0%', c: '#00A859' }, { o: '55%', c: '#FFB800' }, { o: '100%', c: '#D93025' }]
-    .forEach(({ o, c }) => grad.appendChild(svgEl('stop', { offset: o, 'stop-color': c })));
-  defs.appendChild(grad);
-  svg.appendChild(defs);
-
-  const o1 = gaugePoint(0, R_OUTER), o2 = gaugePoint(100, R_OUTER);
-  const i1 = gaugePoint(0, R_INNER), i2 = gaugePoint(100, R_INNER);
-  const arcD = `M ${o1.x} ${o1.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${o2.x} ${o2.y}`
-             + ` L ${i2.x} ${i2.y} A ${R_INNER} ${R_INNER} 0 0 0 ${i1.x} ${i1.y} Z`;
-  svg.appendChild(svgEl('path', { d: arcD, fill: '#F5F6FA', stroke: '#E6E9EF', 'stroke-width': '1' }));
-  svg.appendChild(svgEl('path', { d: arcD, fill: `url(#${gradId})`, opacity: '0.85' }));
-
-  [0, 25, 50, 75, 100].forEach(v => {
-    const p1 = gaugePoint(v, R_OUTER + 2);
-    const p2 = gaugePoint(v, R_OUTER + 8);
-    const pl = gaugePoint(v, R_OUTER + 16);
-    svg.appendChild(svgEl('line', { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, stroke: '#C5C7D4', 'stroke-width': '1.5' }));
-    const lbl = svgEl('text', { x: pl.x, y: pl.y + 4, 'text-anchor': 'middle', 'font-size': '8', fill: '#676879', 'font-family': 'Inter', 'font-weight': '600' });
-    lbl.textContent = v + unit;
-    svg.appendChild(lbl);
+  const defs = document.createElementNS(SVG_NS,'defs');
+  const grad = svgEl('linearGradient',{id:gradId,x1:'0%',y1:'0%',x2:'100%',y2:'0%'});
+  [{o:'0%',c:'#00A859'},{o:'55%',c:'#FFB800'},{o:'100%',c:'#D93025'}]
+    .forEach(({o,c}) => grad.appendChild(svgEl('stop',{offset:o,'stop-color':c})));
+  defs.appendChild(grad); svg.appendChild(defs);
+  const o1=gaugePoint(0,R_OUTER), o2=gaugePoint(100,R_OUTER);
+  const i1=gaugePoint(0,R_INNER), i2=gaugePoint(100,R_INNER);
+  const arcD=`M ${o1.x} ${o1.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${o2.x} ${o2.y}`
+           +` L ${i2.x} ${i2.y} A ${R_INNER} ${R_INNER} 0 0 0 ${i1.x} ${i1.y} Z`;
+  svg.appendChild(svgEl('path',{d:arcD,fill:'#F5F6FA',stroke:'#E6E9EF','stroke-width':'1'}));
+  svg.appendChild(svgEl('path',{d:arcD,fill:`url(#${gradId})`,opacity:'0.85'}));
+  [0,25,50,75,100].forEach(v => {
+    const p1=gaugePoint(v,R_OUTER+2), p2=gaugePoint(v,R_OUTER+8), pl=gaugePoint(v,R_OUTER+16);
+    svg.appendChild(svgEl('line',{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,stroke:'#C5C7D4','stroke-width':'1.5'}));
+    const lbl=svgEl('text',{x:pl.x,y:pl.y+4,'text-anchor':'middle','font-size':'8',fill:'#676879','font-family':'Inter','font-weight':'600'});
+    lbl.textContent=v+unit; svg.appendChild(lbl);
   });
-
-  const needle = svgEl('line', { x1: CX, y1: CY, x2: CX - GAUGE.R_NEEDLE, y2: CY, stroke: '#323338', 'stroke-width': '2.5', 'stroke-linecap': 'round' });
+  const needle=svgEl('line',{x1:CX,y1:CY,x2:CX-GAUGE.R_NEEDLE,y2:CY,stroke:'#323338','stroke-width':'2.5','stroke-linecap':'round'});
   svg.appendChild(needle);
-  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '9',  fill: '#FFFFFF', stroke: '#E6E9EF', 'stroke-width': '2' }));
-  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '4',  fill: '#004F9F' }));
+  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:'9',fill:'#FFFFFF',stroke:'#E6E9EF','stroke-width':'2'}));
+  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:'4',fill:'#004F9F'}));
   return needle;
 }
 
-/* ─── Animation ──────────────────────────────────────────────── */
-function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
-
-function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay = 0) {
+function easeOut(t) { return 1-Math.pow(1-t,3); }
+function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay=0) {
   setTimeout(() => {
-    const startTime = performance.now();
+    const startTime=performance.now();
     function frame(now) {
-      const t   = Math.min((now - startTime) / 1200, 1);
-      const cur = easeOut(t) * targetPct;
-      const pt  = gaugePoint(cur, GAUGE.R_NEEDLE);
-      needle.setAttribute('x2', pt.x);
-      needle.setAttribute('y2', pt.y);
-      if (kpiEl) { kpiEl.textContent = formatFn(cur); kpiEl.style.color = colorFn(cur); }
-      if (t < 1) requestAnimationFrame(frame);
+      const t=Math.min((now-startTime)/1200,1), cur=easeOut(t)*targetPct;
+      const pt=gaugePoint(cur,GAUGE.R_NEEDLE);
+      needle.setAttribute('x2',pt.x); needle.setAttribute('y2',pt.y);
+      if (kpiEl) { kpiEl.textContent=formatFn(cur); kpiEl.style.color=colorFn(cur); }
+      if (t<1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   }, delay);
 }
-
-function animateLoadGauge(needle, kpiEl, loadPct, delay = 0) {
+function animateLoadGauge(needle, kpiEl, loadPct, delay=0) {
   animateNeedle(needle, kpiEl, loadPct,
-    cur => `${Math.round(cur)} %`,
-    cur => cur > 85 ? '#D93025' : cur > 65 ? '#BF8900' : '#007D43',
-    delay);
+    cur=>`${Math.round(cur)} %`,
+    cur=>cur>85?'#D93025':cur>65?'#BF8900':'#007D43', delay);
 }
-
-function animateTempGauge(needle, kpiEl, tempF, maxTempF = 150, delay = 0) {
-  const targetPct = Math.min((tempF / maxTempF) * 100, 100);
+function animateTempGauge(needle, kpiEl, tempF, maxTempF=150, delay=0) {
+  const targetPct=Math.min((tempF/maxTempF)*100,100);
   animateNeedle(needle, kpiEl, targetPct,
-    cur => `${Math.round((cur / 100) * tempF)} °F`,
-    cur => cur > 80 ? '#D93025' : cur > 55 ? '#BF8900' : '#007D43',
-    delay);
+    cur=>`${Math.round((cur/100)*tempF)} °F`,
+    cur=>cur>80?'#D93025':cur>55?'#BF8900':'#007D43', delay);
 }
 
-/* ─── Status helpers ──────────────────────────────────────────── */
-function parseStatus(raw = '') {
-  const s = raw.toLowerCase().trim();
-  const found = STATUS_KEY_MAP.find(({ match }) => s.includes(match));
-  return found ? found.key : DEFAULT_STATUS;
+function parseStatus(raw='') {
+  const s=raw.toLowerCase().trim();
+  const found=STATUS_KEY_MAP.find(({match})=>s.includes(match));
+  return found?found.key:DEFAULT_STATUS;
 }
-function isOff(statusKey) { return statusKey === 'fuera-servicio' || statusKey === 'standby'; }
-function loadColorClass(pct) { return pct > 85 ? 'c-danger' : pct > 65 ? 'c-warning' : 'c-normal'; }
-function tempColorClass(f)   { return f > 110  ? 'c-danger' : 'c-normal'; }
-const DASH = '—';
-function metricRow(label, value, colorClass = '') {
+function isOff(sk) { return sk==='fuera-servicio'||sk==='standby'; }
+function loadColorClass(pct) { return pct>85?'c-danger':pct>65?'c-warning':'c-normal'; }
+function tempColorClass(f)   { return f>110?'c-danger':'c-normal'; }
+const DASH='—';
+function metricRow(label, value, colorClass='') {
   return `<div class="mrow"><span class="mlabel">${label}</span><span class="mval ${colorClass}">${value}</span></div>`;
 }
-function statusMeta(key) { return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS]; }
+function statusMeta(key) { return STATUS_META[key]??STATUS_META[DEFAULT_STATUS]; }
 
-/* ─── Card Renderers ──────────────────────────────────────────── */
-function renderChillerCard(ch, idx, delay = 0) {
-  const off  = isOff(ch.status);
-  const meta = statusMeta(ch.status);
-  const card = document.createElement('div');
-  card.className = `hmi-card ${meta.cardClass}`.trim();
-  card.innerHTML = `
+function renderChillerCard(ch, idx, delay=0) {
+  const off=isOff(ch.status), meta=statusMeta(ch.status);
+  const card=document.createElement('div');
+  card.className=`hmi-card ${meta.cardClass}`.trim();
+  card.innerHTML=`
     <div class="hmi-header">
       <span class="hmi-title">${ch.name}</span>
       <span class="status-badge ${meta.badge}">${meta.label}</span>
     </div>
     <div class="hmi-sub">${ch.sub}</div>
     <div class="gauge-wrap"><svg id="svg-ch-${idx}" viewBox="0 0 230 100"></svg></div>
-    <div class="kpi-value ${off ? 'kpi-off' : ''}" id="kpi-ch-${idx}">${off ? DASH : '0 %'}</div>
+    <div class="kpi-value ${off?'kpi-off':''}" id="kpi-ch-${idx}">${off?DASH:'0 %'}</div>
     <div class="metrics">
-      ${metricRow('Carga',      off ? DASH : ch.carga   + ' %',   off ? 'c-off' : loadColorClass(ch.carga))}
-      ${metricRow('T° Salida',  off ? DASH : ch.tempOut + ' °F',  off ? 'c-off' : 'c-normal')}
-      ${metricRow('T° Entrada', off ? DASH : ch.tempIn  + ' °F',  off ? 'c-off' : 'c-normal')}
-      ${metricRow('P. Salida',  off ? DASH : ch.presOut + ' psi', off ? 'c-off' : 'c-warning')}
-      ${metricRow('P. Entrada', off ? DASH : ch.presIn  + ' psi', off ? 'c-off' : 'c-warning')}
+      ${metricRow('Carga',      off?DASH:ch.carga+' %',    off?'c-off':loadColorClass(ch.carga))}
+      ${metricRow('T° Salida',  off?DASH:ch.tempOut+' °F', off?'c-off':'c-normal')}
+      ${metricRow('T° Entrada', off?DASH:ch.tempIn+' °F',  off?'c-off':'c-normal')}
+      ${metricRow('P. Salida',  off?DASH:ch.presOut+' psi',off?'c-off':'c-warning')}
+      ${metricRow('P. Entrada', off?DASH:ch.presIn+' psi', off?'c-off':'c-warning')}
     </div>`;
   document.getElementById('hmi-container').appendChild(card);
-  const svg    = document.getElementById(`svg-ch-${idx}`);
-  const kpiEl  = document.getElementById(`kpi-ch-${idx}`);
-  const needle = buildGauge(svg, `grad-ch-${idx}`, '%');
-  if (!off) animateLoadGauge(needle, kpiEl, ch.carga, delay);
+  const svg=document.getElementById(`svg-ch-${idx}`);
+  const kpiEl=document.getElementById(`kpi-ch-${idx}`);
+  const needle=buildGauge(svg,`grad-ch-${idx}`,'%');
+  if (!off) animateLoadGauge(needle,kpiEl,ch.carga,delay);
 }
 
-function renderCompresorCard(cp, idx, delay = 0) {
-  const off  = isOff(cp.status);
-  const meta = statusMeta(cp.status);
-  const card = document.createElement('div');
-  card.className = `hmi-card ${meta.cardClass}`.trim();
-  card.innerHTML = `
+function renderCompresorCard(cp, idx, delay=0) {
+  const off=isOff(cp.status), meta=statusMeta(cp.status);
+  const card=document.createElement('div');
+  card.className=`hmi-card ${meta.cardClass}`.trim();
+  card.innerHTML=`
     <div class="hmi-header">
       <span class="hmi-title">${cp.name}</span>
       <span class="status-badge ${meta.badge}">${meta.label}</span>
     </div>
     <div class="hmi-sub">${cp.sub}</div>
     <div class="gauge-wrap"><svg id="svg-cp-${idx}" viewBox="0 0 230 100"></svg></div>
-    <div class="kpi-value ${off ? 'kpi-off' : ''}" id="kpi-cp-${idx}">${off ? DASH : '0 °F'}</div>
+    <div class="kpi-value ${off?'kpi-off':''}" id="kpi-cp-${idx}">${off?DASH:'0 °F'}</div>
     <div class="metrics">
-      ${metricRow('T° Carga',    off ? DASH : cp.tempCarga    + ' °F',  off ? 'c-off' : tempColorClass(cp.tempCarga))}
-      ${metricRow('T° Descarga', off ? DASH : cp.tempDescarga + ' °F',  off ? 'c-off' : tempColorClass(cp.tempDescarga))}
-      ${metricRow('P. Carga',    off ? DASH : cp.presCarga    + ' psi', off ? 'c-off' : 'c-warning')}
-      ${metricRow('P. Descarga', off ? DASH : cp.presDescarga + ' psi', off ? 'c-off' : 'c-warning')}
+      ${metricRow('T° Carga',    off?DASH:cp.tempCarga+' °F',    off?'c-off':tempColorClass(cp.tempCarga))}
+      ${metricRow('T° Descarga', off?DASH:cp.tempDescarga+' °F', off?'c-off':tempColorClass(cp.tempDescarga))}
+      ${metricRow('P. Carga',    off?DASH:cp.presCarga+' psi',   off?'c-off':'c-warning')}
+      ${metricRow('P. Descarga', off?DASH:cp.presDescarga+' psi',off?'c-off':'c-warning')}
     </div>`;
   document.getElementById('hmi-container').appendChild(card);
-  const svg    = document.getElementById(`svg-cp-${idx}`);
-  const kpiEl  = document.getElementById(`kpi-cp-${idx}`);
-  const needle = buildGauge(svg, `grad-cp-${idx}`, '°F');
-  if (!off) animateTempGauge(needle, kpiEl, cp.tempCarga, 150, delay);
+  const svg=document.getElementById(`svg-cp-${idx}`);
+  const kpiEl=document.getElementById(`kpi-cp-${idx}`);
+  const needle=buildGauge(svg,`grad-cp-${idx}`,'°F');
+  if (!off) animateTempGauge(needle,kpiEl,cp.tempCarga,150,delay);
 }
 
-/* ─── Monday.com API ──────────────────────────────────────────── */
-const MONDAY_API = 'https://api.monday.com/v2';
-const MONDAY_HEADERS = {
-  'Content-Type': 'application/json',
-  'Authorization': CONFIG.TOKEN,
-  'API-Version': '2023-10',
+const MONDAY_API='https://api.monday.com/v2';
+const MONDAY_HEADERS={
+  'Content-Type':'application/json',
+  'Authorization':CONFIG.TOKEN,
+  'API-Version':'2023-10',
 };
 
 async function fetchAllItems(boardId) {
-  const items = [];
-  let cursor = null;
+  const items=[]; let cursor=null;
   do {
-    const cursorArg = cursor ? `, cursor: "${cursor}"` : '';
-    const query = `query {
+    const cursorArg=cursor?`, cursor: "${cursor}"`:'';
+    const query=`query {
       boards(ids: ${boardId}) {
         items_page(limit: 100${cursorArg}) {
           cursor
@@ -704,57 +646,46 @@ async function fetchAllItems(boardId) {
         }
       }
     }`;
-    const res  = await fetch(MONDAY_API, { method: 'POST', headers: MONDAY_HEADERS, body: JSON.stringify({ query }) });
-    const data = await res.json();
-    if (data.errors) throw new Error(data.errors.map(e => e.message).join(', '));
-    const page = data.data.boards[0].items_page;
-    items.push(...page.items);
-    cursor = page.cursor ?? null;
+    const res=await fetch(MONDAY_API,{method:'POST',headers:MONDAY_HEADERS,body:JSON.stringify({query})});
+    const data=await res.json();
+    if (data.errors) throw new Error(data.errors.map(e=>e.message).join(', '));
+    const page=data.data.boards[0].items_page;
+    items.push(...page.items); cursor=page.cursor??null;
   } while (cursor);
   return items;
 }
 
 function latestByName(items, allowList) {
-  const map = new Map();
+  const map=new Map();
   items.forEach(item => {
-    const name = item.name.trim().toUpperCase();
+    const name=item.name.trim().toUpperCase();
     if (!allowList.includes(name)) return;
-    if (!map.has(name) || new Date(item.created_at) > new Date(map.get(name).created_at)) {
-      map.set(name, item);
-    }
+    if (!map.has(name)||new Date(item.created_at)>new Date(map.get(name).created_at))
+      map.set(name,item);
   });
   return map;
 }
-
 function numericCol(item, colId) {
-  const raw = item.column_values.find(c => c.id === colId)?.text ?? '';
-  return parseFloat(raw.replace(/[^\d.-]/g, '')) || 0;
+  const raw=item.column_values.find(c=>c.id===colId)?.text??'';
+  return parseFloat(raw.replace(/[^\d.-]/g,''))||0;
 }
-function statusCol(item, colId) {
-  return item.column_values.find(c => c.id === colId)?.text ?? '';
-}
+function statusCol(item, colId) { return item.column_values.find(c=>c.id===colId)?.text??''; }
 
-/* ─── State & Render ──────────────────────────────────────────── */
-let currentTab  = 'CH';
-let allCHItems  = [];
-let allCPItems  = [];
+let currentTab='CH', allCHItems=[], allCPItems=[];
 
-function showLoading(message = 'Conectando con Monday.com…') {
-  document.getElementById('hmi-container').innerHTML = `
-    <div class="loading-msg">
-      <div class="spinner"></div>
-      <span>${message}</span>
-    </div>`;
+function showLoading(msg='Conectando con Monday.com…') {
+  document.getElementById('hmi-container').innerHTML=`
+    <div class="loading-msg"><div class="spinner"></div><span>${msg}</span></div>`;
 }
-function showError(message = 'Error de conexión') {
-  document.getElementById('hmi-container').innerHTML = `
-    <div class="loading-msg" style="color: var(--danger)">⚠ ${message}</div>`;
+function showError(msg='Error de conexión') {
+  document.getElementById('hmi-container').innerHTML=`
+    <div class="loading-msg" style="color:var(--danger)">⚠ ${msg}</div>`;
 }
 
 async function fetchData() {
   showLoading();
   try {
-    [allCHItems, allCPItems] = await Promise.all([
+    [allCHItems, allCPItems]=await Promise.all([
       fetchAllItems(CONFIG.BOARD_CHILLERS),
       fetchAllItems(CONFIG.BOARD_COMPRESORES),
     ]);
@@ -763,81 +694,73 @@ async function fetchData() {
 }
 
 function renderItems() {
-  document.getElementById('hmi-container').innerHTML = '';
-  if (currentTab === 'CH') {
-    const latest = latestByName(allCHItems, CONFIG.CH_LIST);
-    CONFIG.CH_LIST.forEach((name, i) => {
-      const item = latest.get(name);
-      if (!item) return;
-      const { COL_CH } = CONFIG;
+  document.getElementById('hmi-container').innerHTML='';
+  if (currentTab==='CH') {
+    const latest=latestByName(allCHItems, CONFIG.CH_LIST);
+    CONFIG.CH_LIST.forEach((name,i) => {
+      const item=latest.get(name); if (!item) return;
+      const { COL_CH }=CONFIG;
       renderChillerCard({
-        name, sub: CHILLER_SUB[name] ?? 'Equipo',
-        carga:   numericCol(item, COL_CH.CARGA),
-        tempOut: numericCol(item, COL_CH.TEMP_OUT),
-        tempIn:  numericCol(item, COL_CH.TEMP_IN),
-        presOut: numericCol(item, COL_CH.PRES_OUT),
-        presIn:  numericCol(item, COL_CH.PRES_IN),
-        status:  parseStatus(statusCol(item, COL_CH.STATUS)),
-      }, i, i * 80);
+        name, sub:CHILLER_SUB[name]??'Equipo',
+        carga:   numericCol(item,COL_CH.CARGA),
+        tempOut: numericCol(item,COL_CH.TEMP_OUT),
+        tempIn:  numericCol(item,COL_CH.TEMP_IN),
+        presOut: numericCol(item,COL_CH.PRES_OUT),
+        presIn:  numericCol(item,COL_CH.PRES_IN),
+        status:  parseStatus(statusCol(item,COL_CH.STATUS)),
+      }, i, i*80);
     });
   } else {
-    const latest = latestByName(allCPItems, CONFIG.CP_LIST);
-    CONFIG.CP_LIST.forEach((name, i) => {
-      const item = latest.get(name);
-      if (!item) return;
-      const { COL_CP } = CONFIG;
+    const latest=latestByName(allCPItems, CONFIG.CP_LIST);
+    CONFIG.CP_LIST.forEach((name,i) => {
+      const item=latest.get(name); if (!item) return;
+      const { COL_CP }=CONFIG;
       renderCompresorCard({
-        name, sub: COMPRESOR_SUB[name] ?? 'Equipo',
-        tempCarga:    numericCol(item, COL_CP.TEMP_CARGA),
-        tempDescarga: numericCol(item, COL_CP.TEMP_DESCARGA),
-        presCarga:    numericCol(item, COL_CP.PRES_CARGA),
-        presDescarga: numericCol(item, COL_CP.PRES_DESCARGA),
-        status:       parseStatus(statusCol(item, COL_CP.STATUS)),
-      }, i, i * 80);
+        name, sub:COMPRESOR_SUB[name]??'Equipo',
+        tempCarga:    numericCol(item,COL_CP.TEMP_CARGA),
+        tempDescarga: numericCol(item,COL_CP.TEMP_DESCARGA),
+        presCarga:    numericCol(item,COL_CP.PRES_CARGA),
+        presDescarga: numericCol(item,COL_CP.PRES_DESCARGA),
+        status:       parseStatus(statusCol(item,COL_CP.STATUS)),
+      }, i, i*80);
     });
   }
 }
 
-/* ─── Navigation ──────────────────────────────────────────────── */
-
-/** Desktop sidebar: highlight active item and load section */
 function sidebarNav(section) {
-  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));
   event.currentTarget.classList.add('active');
-  if (section === 'hmi') {
-    document.getElementById('hmi-view').style.display = 'flex';
+  if (section==='hmi') {
+    document.getElementById('hmi-view').style.display='flex';
     fetchData();
   }
 }
 
-/** Mobile: open HMI view */
 function openHMI() {
-  document.getElementById('main-menu').classList.add('hidden');
-  document.getElementById('hmi-view').style.display = 'flex';
+  document.getElementById('main-menu-wrap').classList.add('hidden');
+  document.getElementById('hmi-view').style.display='flex';
   document.getElementById('header-back-btn').classList.remove('hidden');
   fetchData();
 }
 
-/** Mobile: go back to grid menu */
 function closeHMI() {
-  document.getElementById('hmi-view').style.display = 'none';
-  document.getElementById('main-menu').classList.remove('hidden');
+  document.getElementById('hmi-view').style.display='none';
+  document.getElementById('main-menu-wrap').classList.remove('hidden');
   document.getElementById('header-back-btn').classList.add('hidden');
 }
 
 function switchTab(type) {
-  currentTab = type;
-  document.getElementById('tab-ch').classList.toggle('active', type === 'CH');
-  document.getElementById('tab-cp').classList.toggle('active', type === 'CP');
-  (allCHItems.length || allCPItems.length) ? renderItems() : fetchData();
+  currentTab=type;
+  document.getElementById('tab-ch').classList.toggle('active', type==='CH');
+  document.getElementById('tab-cp').classList.toggle('active', type==='CP');
+  (allCHItems.length||allCPItems.length)?renderItems():fetchData();
 }
 
-/* ─── Init: on desktop load HMI automatically ─────────────────── */
 function initLayout() {
-  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+  const isDesktop=window.matchMedia('(min-width: 768px)').matches;
   if (isDesktop) {
-    document.getElementById('main-menu').classList.add('hidden');
-    document.getElementById('hmi-view').style.display = 'flex';
+    document.getElementById('main-menu-wrap').classList.add('hidden');
+    document.getElementById('hmi-view').style.display='flex';
     fetchData();
   }
 }
