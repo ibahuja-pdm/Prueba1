@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,39 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mantenimiento PDM</title>
 <style>
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    DESIGN TOKENS
-═══════════════════════════════════════════════════════ */
+   Centraliza todos los colores, tamaños y espaciados del sistema
+═══════════════════════════════════════════════════════════════ */
 :root {
-  --blue-dark:    #004b87;
-  --blue-mid:     #1877f2;
-  --blue-light:   #e7f3ff;
-  --bg-body:      #f0f2f5;
-  --card-bg:      #ffffff;
-  --border-color: #e4e6eb;
-  --text-main:    #1d2129;
-  --text-muted:   #65676b;
-  --color-ok:     #00A859;
-  --color-warn:   #FFB800;
-  --color-danger: #D93025;
-  --sidebar-w:    240px;
-  --header-h:     56px;
-  --radius-card:  12px;
-  --radius-btn:   8px;
+  /* Colores principales */
+  --blue-dark:      #004b87;   /* Azul Medline principal */
+  --blue-mid:       #1877f2;   /* Azul acción / links */
+  --blue-light:     #e7f3ff;   /* Fondo de elementos activos */
+
+  /* Superficies y bordes */
+  --bg-body:        #f0f2f5;
+  --card-bg:        #ffffff;
+  --border-color:   #e4e6eb;
+
+  /* Texto */
+  --text-main:      #1d2129;
+  --text-muted:     #65676b;
+
+  /* Estados semánticos */
+  --color-ok:       #00A859;
+  --color-warn:     #FFB800;
+  --color-danger:   #D93025;
+
+  /* Layout */
+  --sidebar-w:      240px;
+  --header-h:       56px;
+  --radius-card:    12px;
+  --radius-btn:     8px;
 }
 
-/* ═══════════════════════════════════════════════════════
-   RESET
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   RESET BÁSICO
+═══════════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
-body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); min-height: 100%; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-body);
+  min-height: 100%;
+}
 
-/* ═══════════════════════════════════════════════════════
-   SHELL
-═══════════════════════════════════════════════════════ */
-.app-shell { display: flex; flex-direction: column; min-height: 100vh; }
+/* ═══════════════════════════════════════════════════════════════
+   SHELL PRINCIPAL
+   Estructura flex vertical que contiene header + cuerpo
+═══════════════════════════════════════════════════════════════ */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
+/* ── Header superior ─────────────────────────────────────── */
 .main-header {
   background: var(--blue-dark);
   padding: 0 20px;
@@ -56,11 +75,13 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   color: #fff;
   font-weight: 600;
   white-space: nowrap;
+  /* Centra el título independientemente del botón de retroceso */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
+/* ── Botón retroceso (solo mobile) ───────────────────────── */
 .btn-back {
   display: flex;
   align-items: center;
@@ -78,8 +99,16 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
 }
 .btn-back:hover { background: rgba(255,255,255,0.28); }
 
-.layout-body { display: flex; flex: 1; overflow: hidden; }
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT PRINCIPAL (sidebar + contenido)
+═══════════════════════════════════════════════════════════════ */
+.layout-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
 
+/* ── Sidebar de navegación (solo desktop) ────────────────── */
 .sidebar {
   width: var(--sidebar-w);
   background: var(--card-bg);
@@ -91,6 +120,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   padding: 16px 12px;
   gap: 6px;
 }
+
 .sidebar-item {
   display: flex;
   align-items: center;
@@ -105,23 +135,30 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   transition: background 0.15s;
   color: var(--text-main);
 }
-.sidebar-item:hover                { background: #f0f2f5; }
-.sidebar-item.active               { background: var(--blue-light); color: var(--blue-dark); }
-.sidebar-item .label-wrap h3       { font-size: 13px; font-weight: 700; }
-.sidebar-item .label-wrap p        { font-size: 11px; color: var(--text-muted); }
+.sidebar-item:hover         { background: #f0f2f5; }
+.sidebar-item.active        { background: var(--blue-light); color: var(--blue-dark); }
+.sidebar-item .label-wrap h3 { font-size: 13px; font-weight: 700; }
+.sidebar-item .label-wrap p  { font-size: 11px; color: var(--text-muted); }
 .sidebar-item.active .label-wrap p { color: var(--blue-mid); }
 
-.content-area { flex: 1; overflow-y: auto; padding: 20px; -webkit-overflow-scrolling: touch; }
+/* ── Área de contenido principal ─────────────────────────── */
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  -webkit-overflow-scrolling: touch;
+}
 
-/* ═══════════════════════════════════════════════════════
-   MENU MOVIL
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   MENÚ MÓVIL (grilla de accesos directos)
+═══════════════════════════════════════════════════════════════ */
 .grid-menu {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 12px;
   max-width: 900px;
 }
+
 .menu-card {
   background: var(--card-bg);
   padding: 16px 14px;
@@ -137,12 +174,13 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
 }
 .menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border-color); }
 .menu-card:active { transform: scale(0.97); }
-.menu-card h3     { font-size: 13px; font-weight: 700; color: var(--text-main); }
-.menu-card p      { font-size: 11px; color: var(--text-muted); }
+.menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); }
+.menu-card p  { font-size: 11px; color: var(--text-muted); }
 
-/* ═══════════════════════════════════════════════════════
-   ICONOS
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   ICONOS DE COLOR
+   Usados en sidebar y menú móvil
+═══════════════════════════════════════════════════════════════ */
 .icon-box {
   width: 40px; height: 40px;
   border-radius: var(--radius-btn);
@@ -156,11 +194,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
 .bg-teal   { background: #e2faf8; color: #00a499; }
 .bg-red    { background: #fff0f0; color: #fa383e; }
 
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    VISTA HMI
-═══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════════════════ */
 #hmi-view { display: none; flex-direction: column; }
 
+/* ── Pestañas Chillers / Compresores ─────────────────────── */
 .tab-nav {
   display: flex;
   background: #e4e6eb;
@@ -182,16 +221,28 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   transition: background 0.2s, color 0.2s;
   white-space: nowrap;
 }
-.tab-btn.active { background: white; color: var(--blue-dark); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.tab-btn.active {
+  background: white;
+  color: var(--blue-dark);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
+/* ── Grilla de tarjetas HMI ──────────────────────────────── */
+/*
+  IMPORTANTE: La grilla siempre muestra 5 columnas.
+  En mobile se permite scroll horizontal para mantener
+  las tarjetas legibles sin aplastar el contenido.
+*/
 #hmi-container {
   display: grid;
   grid-template-columns: repeat(5, minmax(180px, 1fr));
   gap: 10px;
+  /* Scroll horizontal en pantallas pequeñas */
   overflow-x: auto;
   padding-bottom: 8px;
 }
 
+/* ── Tarjeta individual de equipo ────────────────────────── */
 .hmi-card {
   background: var(--card-bg);
   border-radius: var(--radius-card);
@@ -202,15 +253,23 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   transition: box-shadow 0.2s;
 }
 .hmi-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+/* Tarjetas con alarma o falla se resaltan en rojo */
 .hmi-card.alert { border-left-color: var(--color-danger); }
 
-.hmi-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; gap: 4px; }
-.hmi-title  { font-size: 13px; font-weight: 800; color: var(--text-main); }
-.hmi-sub    { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+.hmi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2px;
+  gap: 4px;
+}
+.hmi-title { font-size: 13px; font-weight: 800; color: var(--text-main); }
+.hmi-sub   { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
 
-/* ═══════════════════════════════════════════════════════
-   BADGES
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   BADGES DE ESTADO
+   Cada estado tiene su propio color de fondo y texto
+═══════════════════════════════════════════════════════════════ */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -229,29 +288,51 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
 .badge-fuera-servicio { background: #F1F3F6; color: #676879; }
 .badge-standby        { background: #E6F0F9; color: #004F9F; }
 
-/* ═══════════════════════════════════════════════════════
-   GAUGE
-═══════════════════════════════════════════════════════ */
-.gauge-wrap     { display: flex; justify-content: center; margin: 4px 0 0; }
+/* ═══════════════════════════════════════════════════════════════
+   GAUGE (medidor semicircular SVG)
+═══════════════════════════════════════════════════════════════ */
+.gauge-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 0;
+}
 .gauge-wrap svg { width: 100%; height: auto; display: block; }
-.kpi-value      { font-size: 18px; font-weight: 800; color: var(--color-ok); text-align: center; margin: -2px 0 6px; line-height: 1.1; }
-.kpi-off        { color: #C5C7D4 !important; font-size: 16px !important; }
 
-/* ═══════════════════════════════════════════════════════
-   METRICAS
-═══════════════════════════════════════════════════════ */
-.metrics { border-top: 1px solid #f0f2f5; padding-top: 8px; display: flex; flex-direction: column; gap: 5px; }
-.mrow    { display: flex; justify-content: space-between; font-size: 11px; }
-.mlabel  { color: var(--text-muted); font-weight: 500; }
-.mval    { font-weight: 700; }
-.c-ok    { color: #007D43; }
-.c-warn  { color: #BF8900; }
-.c-err   { color: #D93025; }
-.c-off   { color: #C5C7D4; }
+/* Valor KPI grande debajo del gauge */
+.kpi-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-ok);
+  text-align: center;
+  margin: -2px 0 6px;
+  line-height: 1.1;
+}
+/* Estado apagado: valor gris con guión */
+.kpi-off { color: #C5C7D4 !important; font-size: 16px !important; }
 
-/* ═══════════════════════════════════════════════════════
-   LOADING / ERROR
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   TABLA DE MÉTRICAS (dentro de cada tarjeta)
+═══════════════════════════════════════════════════════════════ */
+.metrics {
+  border-top: 1px solid #f0f2f5;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mrow   { display: flex; justify-content: space-between; font-size: 11px; }
+.mlabel { color: var(--text-muted); font-weight: 500; }
+.mval   { font-weight: 700; }
+
+/* Clases de color para métricas */
+.c-ok   { color: #007D43; }
+.c-warn { color: #BF8900; }
+.c-err  { color: #D93025; }
+.c-off  { color: #C5C7D4; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ESTADOS DE CARGA Y ERROR
+═══════════════════════════════════════════════════════════════ */
 .loading-msg {
   text-align: center;
   padding: 48px 24px;
@@ -261,9 +342,12 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  /* Ocupa todo el ancho de la grilla */
   grid-column: 1 / -1;
 }
 .loading-msg.error { color: var(--color-danger); }
+
+/* Spinner animado */
 .spinner {
   width: 28px; height: 28px;
   border: 3px solid var(--border-color);
@@ -272,26 +356,41 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
   animation: spin .8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Utilidades ──────────────────────────────────────────── */
 .hidden { display: none !important; }
 
-/* ═══════════════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — DESKTOP (≥ 768px)
+═══════════════════════════════════════════════════════════════ */
 @media (min-width: 768px) {
-  .sidebar        { display: flex; }
-  .btn-back       { display: none !important; }
-  #hmi-view       { display: flex !important; flex-direction: column; }
-  #main-menu      { display: none !important; }
-  .content-area   { padding: 24px; }
+  .sidebar       { display: flex; }
+  .btn-back      { display: none !important; }
+
+  /* En desktop el HMI siempre está visible */
+  #hmi-view  { display: flex !important; flex-direction: column; }
+  #main-menu { display: none !important; }
+
+  .content-area { padding: 24px; }
   .main-header h2 { position: static; transform: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (< 768px)
+═══════════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  .sidebar      { display: none; }
+  .sidebar { display: none; }
   .content-area { padding: 10px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SAFE AREA — iPhones con notch
+═══════════════════════════════════════════════════════════════ */
 @supports (padding: env(safe-area-inset-bottom)) {
-  .content-area { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
-  .main-header  {
+  .content-area {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  .main-header {
     padding-left:  calc(20px + env(safe-area-inset-left));
     padding-right: calc(20px + env(safe-area-inset-right));
   }
@@ -302,351 +401,594 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-body); 
 
 <div class="app-shell">
 
+  <!-- ══════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════ -->
   <header id="main-header" class="main-header">
-    <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">&#x27F5; Men&uacute;</button>
-    <h2>&#x2699;&#xFE0F; Mantenimiento PDM</h2>
+    <!-- Botón "atrás" visible solo en mobile cuando se abre el HMI -->
+    <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">⟵ Menú</button>
+    <h2>⚙️ Mantenimiento PDM</h2>
+    <!-- Espaciador para balancear el título centrado -->
     <div style="width:100px"></div>
   </header>
 
   <div class="layout-body">
 
+    <!-- ════════════════════════════════════════════════════
+         SIDEBAR — navegación de secciones (desktop)
+    ════════════════════════════════════════════════════ -->
     <nav class="sidebar" id="desktop-sidebar">
       <button class="sidebar-item active" id="sb-hmi" onclick="sidebarNav('hmi', this)">
-        <div class="icon-box bg-blue">&#x1F5A5;&#xFE0F;</div>
+        <div class="icon-box bg-blue">🖥️</div>
         <div class="label-wrap"><h3>HMI</h3><p>Monitoreo</p></div>
       </button>
       <button class="sidebar-item" onclick="sidebarNav('dashboard', this)">
-        <div class="icon-box bg-green">&#x1F4C8;</div>
+        <div class="icon-box bg-green">📈</div>
         <div class="label-wrap"><h3>Dashboard</h3><p>KPI</p></div>
       </button>
       <button class="sidebar-item" onclick="sidebarNav('mp', this)">
-        <div class="icon-box bg-orange">&#x1F4C5;</div>
+        <div class="icon-box bg-orange">📅</div>
         <div class="label-wrap"><h3>MP programados</h3><p>Formatos</p></div>
       </button>
       <button class="sidebar-item" onclick="sidebarNav('qr', this)">
-        <div class="icon-box bg-purple">&#x1F532;</div>
+        <div class="icon-box bg-purple">🔲</div>
         <div class="label-wrap"><h3>QR</h3><p>Recorridos</p></div>
       </button>
       <button class="sidebar-item" onclick="sidebarNav('inventario', this)">
-        <div class="icon-box bg-teal">&#x1F4E6;</div>
+        <div class="icon-box bg-teal">📦</div>
         <div class="label-wrap"><h3>Inventario</h3><p>Refacciones</p></div>
       </button>
       <button class="sidebar-item" onclick="sidebarNav('extra', this)">
-        <div class="icon-box bg-red">&#x1F527;</div>
+        <div class="icon-box bg-red">🔧</div>
         <div class="label-wrap"><h3>Extra</h3><p>Pruebas</p></div>
       </button>
     </nav>
 
+    <!-- ════════════════════════════════════════════════════
+         CONTENIDO PRINCIPAL
+    ════════════════════════════════════════════════════ -->
     <main class="content-area">
 
+      <!-- Menú móvil: grilla de accesos directos -->
       <div id="main-menu" class="grid-menu">
         <button class="menu-card" onclick="openHMI()">
-          <div class="icon-box bg-blue">&#x1F5A5;&#xFE0F;</div>
+          <div class="icon-box bg-blue">🖥️</div>
           <h3>HMI</h3><p>Monitoreo</p>
         </button>
         <button class="menu-card">
-          <div class="icon-box bg-green">&#x1F4C8;</div>
+          <div class="icon-box bg-green">📈</div>
           <h3>Dashboard</h3><p>KPI</p>
         </button>
         <button class="menu-card">
-          <div class="icon-box bg-orange">&#x1F4C5;</div>
+          <div class="icon-box bg-orange">📅</div>
           <h3>MP programados</h3><p>Formatos</p>
         </button>
         <button class="menu-card">
-          <div class="icon-box bg-purple">&#x1F532;</div>
+          <div class="icon-box bg-purple">🔲</div>
           <h3>QR</h3><p>Recorridos</p>
         </button>
         <button class="menu-card">
-          <div class="icon-box bg-teal">&#x1F4E6;</div>
+          <div class="icon-box bg-teal">📦</div>
           <h3>Inventario</h3><p>Refacciones</p>
         </button>
         <button class="menu-card">
-          <div class="icon-box bg-red">&#x1F527;</div>
+          <div class="icon-box bg-red">🔧</div>
           <h3>Extra</h3><p>Pruebas</p>
         </button>
       </div>
 
+      <!-- Vista HMI: pestañas + tarjetas de equipos -->
       <section id="hmi-view">
         <div class="tab-nav">
-          <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">&#x2744;&#xFE0F; CHILLERS</button>
-          <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">&#x1F527; COMPRESORES</button>
+          <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
+          <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
         </div>
+        <!-- Aquí se inyectan las tarjetas dinámicamente via JS -->
         <div id="hmi-container"></div>
       </section>
 
     </main>
-  </div>
+  </div><!-- /.layout-body -->
 
-</div>
+</div><!-- /.app-shell -->
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURACIÓN GLOBAL
+   Centraliza tokens de API, IDs de tableros y columnas de Monday
+═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  TOKEN:             'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyMzQyMjcyOSwiYWFpIjoxMSwidWlkIjoxMDA3NjU5OSwiaWFkIjoiMjAyNi0wMi0xOVQxNjoxMjo1Ni4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6NDQ3Njg5MSwicmduIjoidXNlMSJ9.nY2MXM-x6fb95m2BvxmhUFVMHLxHrJpnl8ZNyjcFfVA',
+  /* Token de autenticación Monday.com */
+  TOKEN: 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyMzQyMjcyOSwiYWFpIjoxMSwidWlkIjoxMDA3NjU5OSwiaWFkIjoiMjAyNi0wMi0xOVQxNjoxMjo1Ni4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6NDQ3Njg5MSwicmduIjoidXNlMSJ9.nY2MXM-x6fb95m2BvxmhUFVMHLxHrJpnl8ZNyjcFfVA',
+
+  /* IDs de tableros en Monday.com */
   BOARD_CHILLERS:    '18403987245',
   BOARD_COMPRESORES: '18406608853',
-  CH_LIST: ['CH001','CH002','CH003','CH004','CH005','CH006','CH007','CH008','CH009','CH010'],
+
+  /* Nombres exactos (en mayúsculas) de los items a mostrar */
+  CH_LIST: ['CH001','CH002','CH003','CH004','CH005',
+            'CH006','CH007','CH008','CH009','CH010'],
   CP_LIST: ['COMP001','COMP002','COMP003'],
+
+  /* IDs de columnas del tablero de Chillers */
   COL_CH: {
-    CARGA:    'numeric_mm1h2wdq',
-    TEMP_OUT: 'numeric_mm1fssgs',
-    TEMP_IN:  'numeric_mm1ffh7p',
-    PRES_OUT: 'numeric_mm1fkdjh',
-    PRES_IN:  'numeric_mm1f4rmc',
-    STATUS:   'status',
+    CARGA:    'numeric_mm1h2wdq',  /* % de carga actual */
+    TEMP_OUT: 'numeric_mm1fssgs',  /* Temperatura de salida (°F) */
+    TEMP_IN:  'numeric_mm1ffh7p',  /* Temperatura de entrada (°F) */
+    PRES_OUT: 'numeric_mm1fkdjh',  /* Presión de salida (psi) */
+    PRES_IN:  'numeric_mm1f4rmc',  /* Presión de entrada (psi) */
+    STATUS:   'status',            /* Estado del equipo */
   },
+
+  /* IDs de columnas del tablero de Compresores */
   COL_CP: {
-    STATUS:        'status',
-    TEMP_CARGA:    'numeric_mm1zfxhc',
-    TEMP_DESCARGA: 'numeric_mm1zwzac',
-    PRES_CARGA:    'numeric_mm1zvqry',
-    PRES_DESCARGA: 'numeric_mm1zmfy0',
+    STATUS:         'status',
+    TEMP_CARGA:     'numeric_mm1zfxhc',  /* T° línea de carga (°F) */
+    TEMP_DESCARGA:  'numeric_mm1zwzac',  /* T° línea de descarga (°F) */
+    PRES_CARGA:     'numeric_mm1zvqry',  /* Presión de carga (psi) */
+    PRES_DESCARGA:  'numeric_mm1zmfy0',  /* Presión de descarga (psi) */
   },
 };
 
+/* ── Subtítulos descriptivos por equipo ──────────────────── */
 const CHILLER_SUB = {
-  CH001:'Confort Oficinas', CH002:'Confort CR1/CR2', CH003:'Confort CR1/CR2',
-  CH004:'Proceso CR2',      CH005:'Proceso CR3',
-  CH006:'Confort CR3',      CH007:'Confort CR3',
-  CH008:'Confort CR4',      CH009:'Confort CR4',
-  CH010:'Proceso CR2',
+  CH001: 'Confort Oficinas',
+  CH002: 'Confort CR1/CR2', CH003: 'Confort CR1/CR2',
+  CH004: 'Proceso CR2',
+  CH005: 'Proceso CR3',
+  CH006: 'Confort CR3',    CH007: 'Confort CR3',
+  CH008: 'Confort CR4',    CH009: 'Confort CR4',
+  CH010: 'Proceso CR2',
 };
 const COMPRESOR_SUB = {
-  COMP001:'Compresor CR1', COMP002:'Compresor CR3', COMP003:'Compresor CR4',
+  COMP001: 'Compresor CR1',
+  COMP002: 'Compresor CR3',
+  COMP003: 'Compresor CR4',
 };
 
-/* ═══════════════════════════════════════════════════════
-   ESTADOS
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   MAPEO DE ESTADOS
+   Relaciona el texto de Monday con la clave interna y el estilo
+═══════════════════════════════════════════════════════════════ */
 const STATUS_KEY_MAP = [
-  { match:'operativo',     key:'operativo'      },
-  { match:'carga parcial', key:'carga-parcial'  },
-  { match:'alarma',        key:'alarma-activa'  },
-  { match:'falla',         key:'falla-critica'  },
-  { match:'standby',       key:'standby'        },
+  { match: 'operativo',     key: 'operativo'      },
+  { match: 'carga parcial', key: 'carga-parcial'  },
+  { match: 'alarma',        key: 'alarma-activa'  },
+  { match: 'falla',         key: 'falla-critica'  },
+  { match: 'standby',       key: 'standby'        },
 ];
 const DEFAULT_STATUS = 'fuera-servicio';
+
+/* Metadata visual por cada estado: clase CSS del badge, etiqueta y clase de la tarjeta */
 const STATUS_META = {
-  'operativo':      { badge:'badge-operativo',      label:'● Operativo',         cardClass:''      },
-  'carga-parcial':  { badge:'badge-carga-parcial',  label:'◐ Carga Parcial',     cardClass:''      },
-  'alarma-activa':  { badge:'badge-alarma-activa',  label:'⚠ Alarma Activa',     cardClass:'alert' },
-  'falla-critica':  { badge:'badge-falla-critica',  label:'✕ Falla Crítica',      cardClass:'alert' },
-  'fuera-servicio': { badge:'badge-fuera-servicio', label:'○ Fuera de Servicio', cardClass:''      },
-  'standby':        { badge:'badge-standby',        label:'💤 Standby',           cardClass:''      },
+  'operativo':      { badge: 'badge-operativo',      label: '● Operativo',         cardClass: '' },
+  'carga-parcial':  { badge: 'badge-carga-parcial',  label: '◐ Carga Parcial',     cardClass: '' },
+  'alarma-activa':  { badge: 'badge-alarma-activa',  label: '⚠ Alarma Activa',     cardClass: 'alert' },
+  'falla-critica':  { badge: 'badge-falla-critica',  label: '✕ Falla Crítica',      cardClass: 'alert' },
+  'fuera-servicio': { badge: 'badge-fuera-servicio', label: '○ Fuera de Servicio', cardClass: '' },
+  'standby':        { badge: 'badge-standby',        label: '💤 Standby',           cardClass: '' },
 };
 
-/* ═══════════════════════════════════════════════════════
-   GAUGE SVG
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   GAUGE SVG — CONSTRUCCIÓN PROGRAMÁTICA
+   Genera un medidor semicircular (180°) con:
+   - Arco degradado verde→amarillo→rojo
+   - Marcas en 0, 25, 75, 100
+   - Marca especial en 50 (línea punteada + texto negrita)
+   - Aguja animada que parte desde 0
+═══════════════════════════════════════════════════════════════ */
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const G = { CX:115, CY:85, R_OUTER:78, R_INNER:52, R_NEEDLE:70 };
 
+/* Geometría del gauge (en unidades del viewBox 230×100) */
+const G = {
+  CX:       115,   /* Centro horizontal */
+  CY:       85,    /* Centro vertical (base de la aguja) */
+  R_OUTER:  78,    /* Radio exterior del arco */
+  R_INNER:  52,    /* Radio interior del arco (crea el hueco) */
+  R_NEEDLE: 70,    /* Longitud de la aguja */
+};
+
+/**
+ * Convierte un porcentaje (0-100) a coordenadas XY sobre un arco semicircular.
+ * 0% → extremo izquierdo (180°), 100% → extremo derecho (0°)
+ * @param {number} val  - Valor entre 0 y 100
+ * @param {number} r    - Radio en unidades SVG
+ * @returns {{x: number, y: number}}
+ */
 function gaugePoint(val, r) {
-  const a = (180 - (Math.min(val, 100) / 100) * 180) * (Math.PI / 180);
-  return { x: G.CX + r * Math.cos(a), y: G.CY - r * Math.sin(a) };
+  const angle = (180 - (Math.min(val, 100) / 100) * 180) * (Math.PI / 180);
+  return {
+    x: G.CX + r * Math.cos(angle),
+    y: G.CY - r * Math.sin(angle),
+  };
 }
 
+/**
+ * Crea un elemento SVG con los atributos indicados.
+ * @param {string} tag    - Tag SVG (e.g. 'line', 'text', 'path')
+ * @param {object} attrs  - Objeto clave-valor de atributos
+ * @returns {SVGElement}
+ */
 function svgEl(tag, attrs) {
   const el = document.createElementNS(SVG_NS, tag);
-  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
   return el;
 }
 
+/**
+ * Construye el gauge dentro del SVG recibido.
+ * @param {SVGElement} svg   - Elemento SVG contenedor (vacío)
+ * @param {string}     gradId - ID único para el degradado (evita colisiones)
+ * @param {string}     unit   - Unidad mostrada en las etiquetas ('%' o '°F')
+ * @returns {SVGLineElement}  - Elemento de la aguja (para animarla después)
+ */
 function buildGauge(svg, gradId, unit = '%') {
   const { CX, CY, R_OUTER, R_INNER } = G;
 
+  /* ── Degradado de color del arco ───────────────────────── */
   const defs = document.createElementNS(SVG_NS, 'defs');
-  const grad = svgEl('linearGradient', { id:gradId, x1:'0%', y1:'0%', x2:'100%', y2:'0%' });
-  [['0%','#00A859'],['55%','#FFB800'],['100%','#D93025']].forEach(([offset, color]) =>
-    grad.appendChild(svgEl('stop', { offset, 'stop-color': color }))
+  const grad = svgEl('linearGradient', { id: gradId, x1: '0%', y1: '0%', x2: '100%', y2: '0%' });
+  [
+    { offset: '0%',   color: '#00A859' },  /* Verde: carga normal */
+    { offset: '55%',  color: '#FFB800' },  /* Amarillo: precaución */
+    { offset: '100%', color: '#D93025' },  /* Rojo: crítico */
+  ].forEach(({ offset: o, color: c }) =>
+    grad.appendChild(svgEl('stop', { offset: o, 'stop-color': c }))
   );
   defs.appendChild(grad);
   svg.appendChild(defs);
 
-  const p0   = gaugePoint(0,   R_OUTER), p100   = gaugePoint(100, R_OUTER);
-  const pi0  = gaugePoint(0,   R_INNER), pi100  = gaugePoint(100, R_INNER);
-  const arc  =
+  /* ── Arco (fondo gris + capa de color degradado) ────────── */
+  const p0  = gaugePoint(0,   R_OUTER), p100  = gaugePoint(100, R_OUTER);
+  const pi0 = gaugePoint(0,   R_INNER), pi100 = gaugePoint(100, R_INNER);
+  const arcPath =
     `M ${p0.x} ${p0.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${p100.x} ${p100.y}` +
     ` L ${pi100.x} ${pi100.y} A ${R_INNER} ${R_INNER} 0 0 0 ${pi0.x} ${pi0.y} Z`;
 
-  svg.appendChild(svgEl('path', { d:arc, fill:'#F5F6FA', stroke:'#E6E9EF', 'stroke-width':'1' }));
-  svg.appendChild(svgEl('path', { d:arc, fill:`url(#${gradId})`, opacity:'0.85' }));
+  svg.appendChild(svgEl('path', { d: arcPath, fill: '#F5F6FA', stroke: '#E6E9EF', 'stroke-width': '1' }));
+  svg.appendChild(svgEl('path', { d: arcPath, fill: `url(#${gradId})`, opacity: '0.85' }));
 
-  [0,25,50,75,100].forEach(v => {
-    const sp    = v === 50;
-    const t1    = gaugePoint(v, R_OUTER + 2);
-    const t2    = gaugePoint(v, R_OUTER + (sp ? 12 : 8));
-    const lp    = gaugePoint(v, R_OUTER + (sp ? 28 : 16));
-    svg.appendChild(svgEl('line', { x1:t1.x, y1:t1.y, x2:t2.x, y2:t2.y, stroke:'#C5C7D4', 'stroke-width':'1.5' }));
-    const lbl = svgEl('text', { x:lp.x, y:lp.y+4, 'text-anchor':'middle', 'font-size':'8', fill:'#676879', 'font-family':'Inter', 'font-weight':'600' });
+
+/* ── 3. Marcas y etiquetas (0, 25, 50, 75, 100) ── */
+  [0, 25, 50, 75, 100].forEach(v => {
+    const isSpecial = v === 50;
+    const tick1 = gaugePoint(v, R_OUTER + 2);
+    const tick2 = gaugePoint(v, R_OUTER + (isSpecial ? 12 : 8));
+    const lblPt = gaugePoint(v, R_OUTER + (isSpecial ? 28 : 16));
+
+    svg.appendChild(svgEl('line', {
+      x1: tick1.x, y1: tick1.y,
+      x2: tick2.x, y2: tick2.y,
+      stroke: '#C5C7D4', 'stroke-width': '1.5',
+    }));
+
+    const lbl = svgEl('text', {
+      x: lblPt.x, y: lblPt.y + 4,
+      'text-anchor': 'middle',
+      'font-size': '8',
+      fill: '#676879',
+      'font-family': 'Inter',
+      'font-weight': '600',
+    });
     lbl.textContent = v + unit;
     svg.appendChild(lbl);
   });
 
-  const needle = svgEl('line', { x1:CX, y1:CY, x2:CX - G.R_NEEDLE, y2:CY, stroke:'#323338', 'stroke-width':'2.5', 'stroke-linecap':'round' });
+
+  /* ── Aguja + pivote central ──────────────────────────────── */
+  /* La aguja inicia apuntando a la izquierda (0%) y se anima después */
+  const needle = svgEl('line', {
+    x1: CX, y1: CY,
+    x2: CX - G.R_NEEDLE, y2: CY,
+    stroke: '#323338',
+    'stroke-width': '2.5',
+    'stroke-linecap': 'round',
+  });
   svg.appendChild(needle);
-  svg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:'9', fill:'#FFFFFF', stroke:'#E6E9EF', 'stroke-width':'2' }));
-  svg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:'4', fill:'#004F9F' }));
+  /* Círculo blanco (fondo) y azul (centro) del pivote */
+  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '9',  fill: '#FFFFFF', stroke: '#E6E9EF', 'stroke-width': '2' }));
+  svg.appendChild(svgEl('circle', { cx: CX, cy: CY, r: '4',  fill: '#004F9F' }));
+
   return needle;
 }
 
-/* ═══════════════════════════════════════════════════════
-   ANIMACION
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   ANIMACIÓN DE LA AGUJA
+   Usa easing cúbico para una transición suave desde 0
+═══════════════════════════════════════════════════════════════ */
+
+/** Función de easing cúbico de salida (desacelera al final) */
 function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
+/**
+ * Anima la aguja de 0 al porcentaje objetivo con easing.
+ * También actualiza el texto KPI en tiempo real durante la animación.
+ * @param {SVGLineElement} needle    - Aguja a mover
+ * @param {HTMLElement}    kpiEl     - Elemento de texto con el valor
+ * @param {number}         targetPct - Porcentaje destino (0-100)
+ * @param {Function}       formatFn  - Formatea el valor actual para mostrar
+ * @param {Function}       colorFn   - Devuelve el color CSS según el valor
+ * @param {number}         delay     - Retardo en ms antes de iniciar
+ */
 function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay = 0) {
   setTimeout(() => {
-    const t0 = performance.now();
-    (function frame(now) {
-      const t   = Math.min((now - t0) / 1200, 1);
+    const startTime = performance.now();
+    function frame(now) {
+      const t   = Math.min((now - startTime) / 1200, 1); /* duración: 1.2 s */
       const cur = easeOut(t) * targetPct;
       const pt  = gaugePoint(cur, G.R_NEEDLE);
       needle.setAttribute('x2', pt.x);
       needle.setAttribute('y2', pt.y);
-      if (kpiEl) { kpiEl.textContent = formatFn(cur); kpiEl.style.color = colorFn(cur); }
+      if (kpiEl) {
+        kpiEl.textContent  = formatFn(cur);
+        kpiEl.style.color  = colorFn(cur);
+      }
       if (t < 1) requestAnimationFrame(frame);
-    })(t0);
+    }
+    requestAnimationFrame(frame);
   }, delay);
 }
 
-function animateLoadGauge(needle, kpiEl, pct, delay = 0) {
-  animateNeedle(needle, kpiEl, pct,
-    c => `${Math.round(c)} %`,
-    c => c > 85 ? '#D93025' : c > 65 ? '#BF8900' : '#007D43',
-    delay);
+/**
+ * Anima un gauge de carga (%).
+ * Colores: verde ≤65%, amarillo ≤85%, rojo >85%
+ */
+function animateLoadGauge(needle, kpiEl, loadPct, delay = 0) {
+  animateNeedle(
+    needle, kpiEl, loadPct,
+    cur => `${Math.round(cur)} %`,
+    cur => cur > 85 ? '#D93025' : cur > 65 ? '#BF8900' : '#007D43',
+    delay
+  );
 }
 
-function animateTempGauge(needle, kpiEl, tempF, maxF = 150, delay = 0) {
-  const pct = Math.min((tempF / maxF) * 100, 100);
-  animateNeedle(needle, kpiEl, pct,
-    c => `${Math.round((c / 100) * tempF)} °F`,
-    c => c > 80 ? '#D93025' : c > 55 ? '#BF8900' : '#007D43',
-    delay);
+/**
+ * Anima un gauge de temperatura (°F).
+ * Escala el valor real a porcentaje respecto al máximo definido.
+ * Colores: verde ≤55%, amarillo ≤80%, rojo >80%
+ */
+function animateTempGauge(needle, kpiEl, tempF, maxTempF = 150, delay = 0) {
+  const targetPct = Math.min((tempF / maxTempF) * 100, 100);
+  animateNeedle(
+    needle, kpiEl, targetPct,
+    cur => `${Math.round((cur / 100) * tempF)} °F`,
+    cur => cur > 80 ? '#D93025' : cur > 55 ? '#BF8900' : '#007D43',
+    delay
+  );
 }
 
-/* ═══════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS DE ESTADO Y MÉTRICAS
+═══════════════════════════════════════════════════════════════ */
+
+/** Convierte el texto de estado de Monday a clave interna */
 function parseStatus(raw = '') {
-  const s = raw.toLowerCase().trim();
-  return (STATUS_KEY_MAP.find(({ match }) => s.includes(match))?.key) ?? DEFAULT_STATUS;
+  const s     = raw.toLowerCase().trim();
+  const found = STATUS_KEY_MAP.find(({ match }) => s.includes(match));
+  return found ? found.key : DEFAULT_STATUS;
 }
-const isOff         = k  => k === 'fuera-servicio' || k === 'standby';
-const loadColorClass = p => p > 85 ? 'c-err' : p > 65 ? 'c-warn' : 'c-ok';
-const tempColorClass = f => f > 110 ? 'c-err' : 'c-ok';
-const getStatusMeta  = k => STATUS_META[k] ?? STATUS_META[DEFAULT_STATUS];
+
+/** Retorna true si el equipo está fuera de servicio o en standby */
+function isOff(statusKey) {
+  return statusKey === 'fuera-servicio' || statusKey === 'standby';
+}
+
+/** Clase CSS de color según porcentaje de carga */
+function loadColorClass(pct) {
+  return pct > 85 ? 'c-err' : pct > 65 ? 'c-warn' : 'c-ok';
+}
+
+/** Clase CSS de color según temperatura en °F */
+function tempColorClass(f) {
+  return f > 110 ? 'c-err' : 'c-ok';
+}
+
+/** Genera una fila de métrica en HTML */
 const DASH = '—';
-
-function metricRow(label, value, cls = '') {
-  return `<div class="mrow"><span class="mlabel">${label}</span><span class="mval ${cls}">${value}</span></div>`;
+function metricRow(label, value, colorClass = '') {
+  return `<div class="mrow">
+    <span class="mlabel">${label}</span>
+    <span class="mval ${colorClass}">${value}</span>
+  </div>`;
 }
 
-/* ═══════════════════════════════════════════════════════
-   TARJETAS
-═══════════════════════════════════════════════════════ */
-function createCard(type, data, idx, delay) {
-  const off  = isOff(data.status);
-  const meta = getStatusMeta(data.status);
-  const pfx  = type === 'CH' ? 'ch' : 'cp';
-  const unit = type === 'CH' ? '%' : '°F';
+/** Obtiene la metadata visual del estado (badge, etiqueta, clase de tarjeta) */
+function getStatusMeta(key) {
+  return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS];
+}
 
-  let rows = '';
-  if (type === 'CH') {
-    rows =
-      metricRow('Carga',      off ? DASH : data.carga   + ' %',   off ? 'c-off' : loadColorClass(data.carga))  +
-      metricRow('T° Salida',  off ? DASH : data.tempOut + ' °F',  off ? 'c-off' : 'c-ok')  +
-      metricRow('T° Entrada', off ? DASH : data.tempIn  + ' °F',  off ? 'c-off' : 'c-ok')  +
-      metricRow('P. Salida',  off ? DASH : data.presOut + ' psi', off ? 'c-off' : 'c-warn') +
-      metricRow('P. Entrada', off ? DASH : data.presIn  + ' psi', off ? 'c-off' : 'c-warn');
-  } else {
-    rows =
-      metricRow('T° Carga',    off ? DASH : data.tempCarga    + ' °F',  off ? 'c-off' : tempColorClass(data.tempCarga))    +
-      metricRow('T° Descarga', off ? DASH : data.tempDescarga + ' °F',  off ? 'c-off' : tempColorClass(data.tempDescarga)) +
-      metricRow('P. Carga',    off ? DASH : data.presCarga    + ' psi', off ? 'c-off' : 'c-warn') +
-      metricRow('P. Descarga', off ? DASH : data.presDescarga + ' psi', off ? 'c-off' : 'c-warn');
-  }
+/* ═══════════════════════════════════════════════════════════════
+   RENDERIZADO DE TARJETAS
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * Crea y agrega al DOM una tarjeta de Chiller.
+ * @param {object} ch    - Datos del chiller
+ * @param {number} idx   - Índice único para IDs de SVG
+ * @param {number} delay - Retardo de animación en ms (efecto escalonado)
+ */
+function renderChillerCard(ch, idx, delay = 0) {
+  const off  = isOff(ch.status);
+  const meta = getStatusMeta(ch.status);
 
   const card = document.createElement('div');
   card.className = `hmi-card ${meta.cardClass}`.trim();
-  card.innerHTML =
-    `<div class="hmi-header">
-       <span class="hmi-title">${data.name}</span>
-       <span class="status-badge ${meta.badge}">${meta.label}</span>
-     </div>
-     <div class="hmi-sub">${data.sub}</div>
-     <div class="gauge-wrap"><svg id="svg-${pfx}-${idx}" viewBox="0 0 230 100"></svg></div>
-     <div class="kpi-value${off ? ' kpi-off' : ''}" id="kpi-${pfx}-${idx}">${off ? DASH : `0 ${unit}`}</div>
-     <div class="metrics">${rows}</div>`;
+  card.innerHTML = `
+    <div class="hmi-header">
+      <span class="hmi-title">${ch.name}</span>
+      <span class="status-badge ${meta.badge}">${meta.label}</span>
+    </div>
+    <div class="hmi-sub">${ch.sub}</div>
+    <div class="gauge-wrap">
+      <svg id="svg-ch-${idx}" viewBox="0 0 230 100"></svg>
+    </div>
+    <div class="kpi-value${off ? ' kpi-off' : ''}" id="kpi-ch-${idx}">
+      ${off ? DASH : '0 %'}
+    </div>
+    <div class="metrics">
+      ${metricRow('Carga',      off ? DASH : ch.carga   + ' %',   off ? 'c-off' : loadColorClass(ch.carga))}
+      ${metricRow('T° Salida',  off ? DASH : ch.tempOut + ' °F',  off ? 'c-off' : 'c-ok')}
+      ${metricRow('T° Entrada', off ? DASH : ch.tempIn  + ' °F',  off ? 'c-off' : 'c-ok')}
+      ${metricRow('P. Salida',  off ? DASH : ch.presOut + ' psi', off ? 'c-off' : 'c-warn')}
+      ${metricRow('P. Entrada', off ? DASH : ch.presIn  + ' psi', off ? 'c-off' : 'c-warn')}
+    </div>`;
 
   document.getElementById('hmi-container').appendChild(card);
-  const needle = buildGauge(document.getElementById(`svg-${pfx}-${idx}`), `grad-${pfx}-${idx}`, unit);
-  if (!off) {
-    const kpiEl = document.getElementById(`kpi-${pfx}-${idx}`);
-    type === 'CH'
-      ? animateLoadGauge(needle, kpiEl, data.carga, delay)
-      : animateTempGauge(needle, kpiEl, data.tempCarga, 150, delay);
-  }
+
+  /* Construir gauge y arrancar animación si el equipo está activo */
+  const svg    = document.getElementById(`svg-ch-${idx}`);
+  const kpiEl  = document.getElementById(`kpi-ch-${idx}`);
+  const needle = buildGauge(svg, `grad-ch-${idx}`, '%');
+  if (!off) animateLoadGauge(needle, kpiEl, ch.carga, delay);
 }
 
-/* ═══════════════════════════════════════════════════════
-   MONDAY API
-═══════════════════════════════════════════════════════ */
-const MONDAY_API     = 'https://api.monday.com/v2';
-const MONDAY_HEADERS = { 'Content-Type':'application/json', 'Authorization':CONFIG.TOKEN, 'API-Version':'2023-10' };
+/**
+ * Crea y agrega al DOM una tarjeta de Compresor.
+ * @param {object} cp    - Datos del compresor
+ * @param {number} idx   - Índice único para IDs de SVG
+ * @param {number} delay - Retardo de animación en ms
+ */
+function renderCompresorCard(cp, idx, delay = 0) {
+  const off  = isOff(cp.status);
+  const meta = getStatusMeta(cp.status);
 
+  const card = document.createElement('div');
+  card.className = `hmi-card ${meta.cardClass}`.trim();
+  card.innerHTML = `
+    <div class="hmi-header">
+      <span class="hmi-title">${cp.name}</span>
+      <span class="status-badge ${meta.badge}">${meta.label}</span>
+    </div>
+    <div class="hmi-sub">${cp.sub}</div>
+    <div class="gauge-wrap">
+      <svg id="svg-cp-${idx}" viewBox="0 0 230 100"></svg>
+    </div>
+    <div class="kpi-value${off ? ' kpi-off' : ''}" id="kpi-cp-${idx}">
+      ${off ? DASH : '0 °F'}
+    </div>
+    <div class="metrics">
+      ${metricRow('T° Carga',    off ? DASH : cp.tempCarga    + ' °F',  off ? 'c-off' : tempColorClass(cp.tempCarga))}
+      ${metricRow('T° Descarga', off ? DASH : cp.tempDescarga + ' °F',  off ? 'c-off' : tempColorClass(cp.tempDescarga))}
+      ${metricRow('P. Carga',    off ? DASH : cp.presCarga    + ' psi', off ? 'c-off' : 'c-warn')}
+      ${metricRow('P. Descarga', off ? DASH : cp.presDescarga + ' psi', off ? 'c-off' : 'c-warn')}
+    </div>`;
+
+  document.getElementById('hmi-container').appendChild(card);
+
+  const svg    = document.getElementById(`svg-cp-${idx}`);
+  const kpiEl  = document.getElementById(`kpi-cp-${idx}`);
+  const needle = buildGauge(svg, `grad-cp-${idx}`, '°F');
+  if (!off) animateTempGauge(needle, kpiEl, cp.tempCarga, 150, delay);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CAPA DE DATOS — MONDAY.COM API (GraphQL)
+═══════════════════════════════════════════════════════════════ */
+const MONDAY_API     = 'https://api.monday.com/v2';
+const MONDAY_HEADERS = {
+  'Content-Type': 'application/json',
+  'Authorization': CONFIG.TOKEN,
+  'API-Version':  '2023-10',
+};
+
+/**
+ * Descarga todos los items de un tablero con paginación.
+ * Monday devuelve máximo 100 items por página; si hay más
+ * se repite la consulta usando el cursor de la página anterior.
+ * @param {string} boardId - ID del tablero
+ * @returns {Promise<Array>} - Lista completa de items
+ */
 async function fetchAllItems(boardId) {
   const items = [];
   let cursor  = null;
+
   do {
     const cursorArg = cursor ? `, cursor: "${cursor}"` : '';
-    const query = `query { boards(ids:${boardId}) { items_page(limit:100${cursorArg}) { cursor items { id name created_at column_values { id text } } } } }`;
-    const res   = await fetch(MONDAY_API, { method:'POST', headers:MONDAY_HEADERS, body:JSON.stringify({ query }) });
-    const data  = await res.json();
+    const query = `query {
+      boards(ids: ${boardId}) {
+        items_page(limit: 100${cursorArg}) {
+          cursor
+          items {
+            id
+            name
+            created_at
+            column_values { id text }
+          }
+        }
+      }
+    }`;
+
+    const res  = await fetch(MONDAY_API, {
+      method:  'POST',
+      headers: MONDAY_HEADERS,
+      body:    JSON.stringify({ query }),
+    });
+    const data = await res.json();
+
     if (data.errors) throw new Error(data.errors.map(e => e.message).join(', '));
+
     const page = data.data.boards[0].items_page;
     items.push(...page.items);
     cursor = page.cursor ?? null;
   } while (cursor);
+
   return items;
 }
 
+/**
+ * De una lista de items filtra solo los de la allowList y,
+ * si hay varios con el mismo nombre, conserva el más reciente.
+ * @param {Array}  items     - Items de Monday
+ * @param {Array}  allowList - Nombres permitidos (en mayúsculas)
+ * @returns {Map<string, object>}
+ */
 function latestByName(items, allowList) {
   const map = new Map();
-  for (const item of items) {
+  items.forEach(item => {
     const name = item.name.trim().toUpperCase();
-    if (!allowList.includes(name)) continue;
+    if (!allowList.includes(name)) return;
     if (!map.has(name) || new Date(item.created_at) > new Date(map.get(name).created_at))
       map.set(name, item);
-  }
+  });
   return map;
 }
 
+/** Extrae y parsea el valor numérico de una columna */
 function numericCol(item, colId) {
-  return parseFloat((item.column_values.find(c => c.id === colId)?.text ?? '').replace(/[^\d.-]/g, '')) || 0;
+  const raw = item.column_values.find(c => c.id === colId)?.text ?? '';
+  return parseFloat(raw.replace(/[^\d.-]/g, '')) || 0;
 }
+
+/** Extrae el texto de una columna de estado */
 function statusCol(item, colId) {
   return item.column_values.find(c => c.id === colId)?.text ?? '';
 }
 
-/* ═══════════════════════════════════════════════════════
-   APP STATE
-═══════════════════════════════════════════════════════ */
-let currentTab = 'CH';
-let allCHItems = [];
-let allCPItems = [];
+/* ═══════════════════════════════════════════════════════════════
+   ESTADO DE LA APLICACIÓN
+═══════════════════════════════════════════════════════════════ */
+let currentTab = 'CH';    /* Pestaña activa: 'CH' o 'CP' */
+let allCHItems = [];      /* Cache de items de Chillers */
+let allCPItems = [];      /* Cache de items de Compresores */
 
-const $hmi = () => document.getElementById('hmi-container');
-
+/* ── UI helpers ──────────────────────────────────────────── */
 function showLoading(msg = 'Conectando con Monday.com…') {
-  $hmi().innerHTML = `<div class="loading-msg"><div class="spinner"></div><span>${msg}</span></div>`;
+  document.getElementById('hmi-container').innerHTML =
+    `<div class="loading-msg">
+       <div class="spinner"></div>
+       <span>${msg}</span>
+     </div>`;
 }
 function showError(msg = 'Error de conexión. Verifica el token.') {
-  $hmi().innerHTML = `<div class="loading-msg error">⚠ ${msg}</div>`;
+  document.getElementById('hmi-container').innerHTML =
+    `<div class="loading-msg error">⚠ ${msg}</div>`;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   CARGA Y RENDERIZADO
+═══════════════════════════════════════════════════════════════ */
+
+/** Descarga ambos tableros en paralelo y renderiza la pestaña activa */
 async function fetchData() {
   showLoading();
   try {
@@ -661,32 +1003,42 @@ async function fetchData() {
   }
 }
 
+/**
+ * Renderiza las tarjetas de la pestaña activa.
+ * Usa el cache si ya se descargó; de lo contrario llama a fetchData.
+ */
 function renderItems() {
-  $hmi().innerHTML = '';
+  document.getElementById('hmi-container').innerHTML = '';
+
   if (currentTab === 'CH') {
+    /* ── Chillers ── */
     const latest = latestByName(allCHItems, CONFIG.CH_LIST);
-    const c = CONFIG.COL_CH;
     CONFIG.CH_LIST.forEach((name, i) => {
       const item = latest.get(name);
       if (!item) return;
-      createCard('CH', {
-        name, sub: CHILLER_SUB[name] ?? 'Equipo',
+      const c = CONFIG.COL_CH;
+      renderChillerCard({
+        name,
+        sub:     CHILLER_SUB[name] ?? 'Equipo',
         carga:   numericCol(item, c.CARGA),
         tempOut: numericCol(item, c.TEMP_OUT),
         tempIn:  numericCol(item, c.TEMP_IN),
         presOut: numericCol(item, c.PRES_OUT),
         presIn:  numericCol(item, c.PRES_IN),
         status:  parseStatus(statusCol(item, c.STATUS)),
-      }, i, i * 80);
+      }, i, i * 80); /* delay escalonado de 80ms entre tarjetas */
     });
+
   } else {
+    /* ── Compresores ── */
     const latest = latestByName(allCPItems, CONFIG.CP_LIST);
-    const c = CONFIG.COL_CP;
     CONFIG.CP_LIST.forEach((name, i) => {
       const item = latest.get(name);
       if (!item) return;
-      createCard('CP', {
-        name, sub: COMPRESOR_SUB[name] ?? 'Equipo',
+      const c = CONFIG.COL_CP;
+      renderCompresorCard({
+        name,
+        sub:          COMPRESOR_SUB[name] ?? 'Equipo',
         tempCarga:    numericCol(item, c.TEMP_CARGA),
         tempDescarga: numericCol(item, c.TEMP_DESCARGA),
         presCarga:    numericCol(item, c.PRES_CARGA),
@@ -697,9 +1049,15 @@ function renderItems() {
   }
 }
 
-/* ═══════════════════════════════════════════════════════
-   NAVEGACION
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   NAVEGACIÓN
+═══════════════════════════════════════════════════════════════ */
+
+/**
+ * Navegación del sidebar en desktop.
+ * @param {string}      section - Sección destino
+ * @param {HTMLElement} btn     - Botón clickeado (para marcar activo)
+ */
 function sidebarNav(section, btn) {
   document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
   btn.classList.add('active');
@@ -709,6 +1067,7 @@ function sidebarNav(section, btn) {
   }
 }
 
+/** Abre la vista HMI desde el menú móvil */
 function openHMI() {
   document.getElementById('main-menu').classList.add('hidden');
   document.getElementById('hmi-view').style.display = 'flex';
@@ -716,21 +1075,30 @@ function openHMI() {
   fetchData();
 }
 
+/** Regresa al menú móvil principal */
 function closeHMI() {
   document.getElementById('hmi-view').style.display = 'none';
   document.getElementById('main-menu').classList.remove('hidden');
   document.getElementById('header-back-btn').classList.add('hidden');
 }
 
+/** Cambia entre pestaña Chillers y Compresores */
 function switchTab(type) {
   currentTab = type;
   document.getElementById('tab-ch').classList.toggle('active', type === 'CH');
   document.getElementById('tab-cp').classList.toggle('active', type === 'CP');
+  /* Reutilizar cache si ya se descargaron los datos */
   (allCHItems.length || allCPItems.length) ? renderItems() : fetchData();
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   INICIALIZACIÓN
+   En desktop: muestra el HMI directamente al cargar la página.
+   En mobile: muestra el menú de accesos directos.
+═══════════════════════════════════════════════════════════════ */
 function initLayout() {
-  if (window.matchMedia('(min-width: 768px)').matches) {
+  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+  if (isDesktop) {
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('hmi-view').style.display = 'flex';
     fetchData();
