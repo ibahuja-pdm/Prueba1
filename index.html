@@ -107,7 +107,7 @@
   #main-menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     gap: 12px;
     padding: 16px;
     flex: 1;
@@ -401,6 +401,14 @@
         <div class="icon-box bg-red">🔧</div>
         <div class="label-wrap"><h3>Extra</h3><p>Pruebas</p></div>
       </button>
+      <button class="sidebar-item" onclick="sidebarNav('recorrido')">
+        <div class="icon-box bg-purple">🚶</div>
+        <div class="label-wrap"><h3>Recorrido</h3><p>Rutas</p></div>
+      </button>
+      <button class="sidebar-item" onclick="sidebarNav('checklist')">
+        <div class="icon-box bg-green">✅</div>
+        <div class="label-wrap"><h3>Check List</h3><p>Verificación</p></div>
+      </button>
     </nav>
 
     <main class="content-area">
@@ -431,6 +439,14 @@
           <button class="menu-card">
             <div class="icon-box bg-red">🔧</div>
             <h3>Extra</h3><p>Pruebas</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-purple">🚶</div>
+            <h3>Recorrido</h3><p>Rutas</p>
+          </button>
+          <button class="menu-card">
+            <div class="icon-box bg-green">✅</div>
+            <h3>Check List</h3><p>Verificación</p>
           </button>
         </div>
       </div>
