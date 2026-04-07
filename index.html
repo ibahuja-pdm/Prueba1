@@ -325,8 +325,10 @@
       grid-template-columns: repeat(5, 1fr);
     }
 
-    #hmi-view { display: flex !important; }
     #main-menu-wrap { display: none !important; }
+
+    #checklist-view { padding: 0; }
+    #cl-container { padding: 24px; max-width: 600px; }
 
     .tab-nav { max-width: 360px; margin: 16px 24px 0; }
     #hmi-container { padding: 10px 24px 24px; }
@@ -351,6 +353,132 @@
     .mrow         { font-size: 10px; }
     .kpi-value    { font-size: 18px; }
     .status-badge { font-size: 7px; padding: 2px 5px; }
+  }
+
+  /* ── CHECK LIST FORM ── */
+  .cl-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid var(--border-color);
+  }
+  .cl-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--medline-blue);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 10px;
+  }
+  .cl-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .cl-field:last-child { margin-bottom: 0; }
+  .cl-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cl-unit {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: #f0f2f5;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .cl-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-main);
+    background: #f9fafb;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    -webkit-appearance: none;
+  }
+  .cl-input:focus {
+    border-color: var(--medline-blue);
+    background: #fff;
+  }
+  .cl-btn-primary {
+    flex: 1;
+    padding: 12px;
+    background: var(--medline-blue);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cl-btn-primary:hover  { background: #003d6f; }
+  .cl-btn-primary:active { transform: scale(0.98); }
+  .cl-btn-secondary {
+    padding: 12px 18px;
+    background: #f0f2f5;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cl-btn-secondary:hover { background: #e4e6eb; }
+  .cl-toast {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #e7f7ed;
+    color: #007D43;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #b5e5c8;
+  }
+  .cl-history-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  .cl-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .cl-history-id   { font-size: 13px; font-weight: 800; color: var(--text-main); }
+  .cl-history-date { font-size: 10px; color: var(--text-secondary); }
+  .cl-history-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+  }
+  .cl-history-row  { display: flex; justify-content: space-between; }
+  .cl-history-lbl  { color: var(--text-secondary); }
+  .cl-history-val  { font-weight: 700; color: var(--text-main); }
+  .cl-history-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 6px;
   }
 
   @supports (padding: env(safe-area-inset-bottom)) {
@@ -444,7 +572,7 @@
             <div class="icon-box bg-purple">🚶</div>
             <h3>Recorrido</h3><p>Rutas</p>
           </button>
-          <button class="menu-card">
+          <button class="menu-card" onclick="openSection('checklist')">
             <div class="icon-box bg-green">✅</div>
             <h3>Check List</h3><p>Verificación</p>
           </button>
@@ -458,6 +586,64 @@
           <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
         </div>
         <div id="hmi-container"></div>
+      </section>
+
+      <!-- Check List View -->
+      <section id="checklist-view" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+        <div style="flex-shrink:0;padding:12px 12px 0;">
+          <h3 style="font-size:15px;font-weight:700;color:var(--text-main);margin-bottom:2px;">📋 Check List de Equipo</h3>
+          <p style="font-size:11px;color:var(--text-secondary);">Registro de parámetros operativos</p>
+        </div>
+        <div id="cl-container" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;">
+
+          <div class="cl-card">
+            <div class="cl-section-title">Identificación</div>
+            <div class="cl-field">
+              <label class="cl-label">ID de Equipo</label>
+              <input class="cl-input" type="text" id="cl-id" placeholder="Ej. CH001, COMP002…">
+            </div>
+          </div>
+
+          <div class="cl-card">
+            <div class="cl-section-title">Parámetros de Carga</div>
+            <div class="cl-field">
+              <label class="cl-label">Capacidad de Carga <span class="cl-unit">%</span></label>
+              <input class="cl-input" type="number" id="cl-carga" placeholder="0 – 100" min="0" max="100">
+            </div>
+          </div>
+
+          <div class="cl-card">
+            <div class="cl-section-title">Temperaturas</div>
+            <div class="cl-field">
+              <label class="cl-label">Temperatura de Salida <span class="cl-unit">°F</span></label>
+              <input class="cl-input" type="number" id="cl-temp-out" placeholder="Ej. 44.5">
+            </div>
+            <div class="cl-field">
+              <label class="cl-label">Temperatura de Entrada <span class="cl-unit">°F</span></label>
+              <input class="cl-input" type="number" id="cl-temp-in" placeholder="Ej. 54.0">
+            </div>
+          </div>
+
+          <div class="cl-card">
+            <div class="cl-section-title">Presiones</div>
+            <div class="cl-field">
+              <label class="cl-label">Presión de Salida <span class="cl-unit">psi</span></label>
+              <input class="cl-input" type="number" id="cl-pres-out" placeholder="Ej. 120">
+            </div>
+            <div class="cl-field">
+              <label class="cl-label">Presión de Entrada <span class="cl-unit">psi</span></label>
+              <input class="cl-input" type="number" id="cl-pres-in" placeholder="Ej. 65">
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:4px;">
+            <button class="cl-btn-secondary" onclick="clearChecklist()">Limpiar</button>
+            <button class="cl-btn-primary" onclick="submitChecklist()">Guardar registro</button>
+          </div>
+
+          <div id="cl-toast" class="cl-toast hidden">✔ Registro guardado correctamente</div>
+          <div id="cl-history" style="margin-top:16px;"></div>
+        </div>
       </section>
 
     </main>
@@ -743,24 +929,42 @@ function renderItems() {
   }
 }
 
+function hideAllSections() {
+  document.getElementById('hmi-view').style.display='none';
+  document.getElementById('checklist-view').style.display='none';
+}
+
 function sidebarNav(section) {
   document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));
   event.currentTarget.classList.add('active');
+  hideAllSections();
   if (section==='hmi') {
     document.getElementById('hmi-view').style.display='flex';
     fetchData();
+  } else if (section==='checklist') {
+    document.getElementById('checklist-view').style.display='flex';
   }
 }
 
 function openHMI() {
   document.getElementById('main-menu-wrap').classList.add('hidden');
+  hideAllSections();
   document.getElementById('hmi-view').style.display='flex';
   document.getElementById('header-back-btn').classList.remove('hidden');
   fetchData();
 }
 
+function openSection(section) {
+  document.getElementById('main-menu-wrap').classList.add('hidden');
+  hideAllSections();
+  document.getElementById('header-back-btn').classList.remove('hidden');
+  if (section==='checklist') {
+    document.getElementById('checklist-view').style.display='flex';
+  }
+}
+
 function closeHMI() {
-  document.getElementById('hmi-view').style.display='none';
+  hideAllSections();
   document.getElementById('main-menu-wrap').classList.remove('hidden');
   document.getElementById('header-back-btn').classList.add('hidden');
 }
@@ -770,6 +974,59 @@ function switchTab(type) {
   document.getElementById('tab-ch').classList.toggle('active', type==='CH');
   document.getElementById('tab-cp').classList.toggle('active', type==='CP');
   (allCHItems.length||allCPItems.length)?renderItems():fetchData();
+}
+
+/* ── CHECK LIST ── */
+let clRecords = [];
+
+function clearChecklist() {
+  ['cl-id','cl-carga','cl-temp-out','cl-temp-in','cl-pres-out','cl-pres-in']
+    .forEach(id => document.getElementById(id).value='');
+  document.getElementById('cl-toast').classList.add('hidden');
+}
+
+function submitChecklist() {
+  const id       = document.getElementById('cl-id').value.trim();
+  const carga    = document.getElementById('cl-carga').value;
+  const tempOut  = document.getElementById('cl-temp-out').value;
+  const tempIn   = document.getElementById('cl-temp-in').value;
+  const presOut  = document.getElementById('cl-pres-out').value;
+  const presIn   = document.getElementById('cl-pres-in').value;
+
+  if (!id) { document.getElementById('cl-id').focus(); return; }
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'})
+    + ' ' + now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+
+  clRecords.unshift({ id, carga, tempOut, tempIn, presOut, presIn, date: dateStr });
+
+  const toast = document.getElementById('cl-toast');
+  toast.classList.remove('hidden');
+  setTimeout(()=>toast.classList.add('hidden'), 2800);
+
+  renderClHistory();
+  clearChecklist();
+}
+
+function renderClHistory() {
+  const el = document.getElementById('cl-history');
+  if (!clRecords.length) { el.innerHTML=''; return; }
+  el.innerHTML = `<div class="cl-history-title">Registros guardados (${clRecords.length})</div>`
+    + clRecords.map(r=>`
+      <div class="cl-history-item">
+        <div class="cl-history-header">
+          <span class="cl-history-id">${r.id}</span>
+          <span class="cl-history-date">${r.date}</span>
+        </div>
+        <div class="cl-history-grid">
+          <div class="cl-history-row"><span class="cl-history-lbl">Carga</span><span class="cl-history-val">${r.carga||'—'} %</span></div>
+          <div class="cl-history-row"><span class="cl-history-lbl">T° Salida</span><span class="cl-history-val">${r.tempOut||'—'} °F</span></div>
+          <div class="cl-history-row"><span class="cl-history-lbl">T° Entrada</span><span class="cl-history-val">${r.tempIn||'—'} °F</span></div>
+          <div class="cl-history-row"><span class="cl-history-lbl">P. Salida</span><span class="cl-history-val">${r.presOut||'—'} psi</span></div>
+          <div class="cl-history-row"><span class="cl-history-lbl">P. Entrada</span><span class="cl-history-val">${r.presIn||'—'} psi</span></div>
+        </div>
+      </div>`).join('');
 }
 
 function initLayout() {
