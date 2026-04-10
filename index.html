@@ -772,12 +772,21 @@ const CONFIG = {
 
 /* ── SENSORES DE TEMPERATURA ── */
 const TEMP_SENSORS = [
-  { area: 'CR1',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR1', temp: 21.85, min: 18, max: 25 },
-  { area: 'CR2',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR2', temp: 24.10, min: 18, max: 25 },
-  { area: 'CR3',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR3', temp: 26.40, min: 18, max: 25 },
-  { area: 'CR4',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR4', temp: 19.75, min: 18, max: 25 },
-  { area: 'OF1',  zone: 'System/PDM/PDM_TC_OFF/PDM_TCO1',  temp: 22.30, min: 18, max: 26 },
-  { area: 'OF2',  zone: 'System/PDM/PDM_TC_OFF/PDM_TCO2',  temp: 17.50, min: 18, max: 26 },
+  { area: 'PDM-TCR1', temp: 21.60, min: 16, max: 25 },
+  { area: 'PDM-TCR2', temp: 22.90, min: 16, max: 25 },
+  { area: 'PDM-TCR3', temp: 22.45, min: 16, max: 25 },
+  { area: 'PDM-TCR4', temp: 22.25, min: 16, max: 25 },
+  { area: 'PDM-TCR5', temp: 21.05, min: 16, max: 26 },
+  { area: 'PDM-CR1_1', temp: 20.20, min: 16, max: 26 },
+  { area: 'PDM-CR1_2', temp: 19.80, min: 16, max: 26 },
+  { area: 'PDM-CR2_A', temp: 17.20, min: 16, max: 26 },
+  { area: 'PDM-CR2_B', temp: 18.85, min: 16, max: 26 },
+  { area: 'PDM-CR3', temp: 22.23, min: 16, max: 22 },
+  { area: 'PDM-CR4_DP', temp: 18.82, min: 16, max: 26 },
+  { area: 'PDM-CR4_1', temp: 19.30, min: 16, max: 26 },
+  { area: 'PDM-CR4_2', temp: 17.90, min: 16, max: 26 },
+  { area: 'PDM-CR4_3', temp: 18.20, min: 16, max: 26 },
+  { area: 'PDM-PRINT_ROOM', temp: 18.50, min: 16, max: 26 },
 ];
 
 function renderTempCards() {
@@ -801,8 +810,7 @@ function renderTempCards() {
           <span class="temp-card-unit">°C</span>
         </div>
         <div class="temp-card-status-row">
-          <div class="temp-card-dot" style="background:${color};"></div>
-          <span class="temp-card-status-txt">En línea</span>
+
           <span class="temp-range-badge ${badgeCls}">${badgeTxt} ${s.min}°–${s.max}°</span>
         </div>
       </div>`;
