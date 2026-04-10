@@ -103,7 +103,6 @@
     min-height: 0;
   }
 
-  /* Mobile Main Menu — sin scroll, llena la pantalla */
   #main-menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -151,7 +150,6 @@
   .bg-teal   { background: #e2faf8; color: #00a499; }
   .bg-red    { background: #fff0f0; color: #fa383e; }
 
-  /* HMI View: tabs fijos, tarjetas con scroll */
   #hmi-view {
     display: none;
     flex-direction: column;
@@ -160,7 +158,6 @@
     min-height: 0;
   }
 
-  /* Tab bar fija dentro del HMI */
   .tab-nav {
     display: flex;
     background: #e4e6eb;
@@ -189,7 +186,6 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  /* Grid con scroll — unico elemento que scrollea */
   #hmi-container {
     flex: 1;
     overflow-y: auto;
@@ -310,7 +306,97 @@
   }
   .btn-back:hover { background: rgba(255,255,255,0.25); }
 
-  /* Desktop (>=768px) */
+  /* ── TEMP CARDS GRID ── */
+  #temp-container {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 12px 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    align-content: start;
+  }
+
+  .temp-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 0.5px solid #e0e0e0;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .temp-card-border {
+    position: absolute;
+    left: 0; top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 14px 0 0 14px;
+    background: #2ecc71;
+  }
+  .temp-card-inner {
+    padding: 12px 12px 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .temp-card-area {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a3a5c;
+    letter-spacing: 0.3px;
+  }
+  .temp-card-divider {
+    border: none;
+    border-top: 0.5px solid #e0e0e0;
+    margin: 6px 0;
+  }
+  .temp-card-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .temp-card-value {
+    font-size: 38px;
+    font-weight: 300;
+    color: #1a3a5c;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .temp-card-unit {
+    font-size: 16px;
+    font-weight: 300;
+    color: #1a3a5c;
+  }
+  .temp-card-status-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .temp-card-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .temp-card-status-txt {
+    font-size: 10px;
+    color: #888;
+  }
+  .temp-range-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+  .badge-in-range  { background: #e7f7ed; color: #007D43; }
+  .badge-out-range { background: #fceae9; color: #B9251C; }
+
+  /* Desktop */
   @media (min-width: 768px) {
     .sidebar { display: flex; }
     .btn-back { display: none !important; }
@@ -326,14 +412,18 @@
     #hmi-container {
       grid-template-columns: repeat(5, 1fr);
     }
+    #temp-container {
+      grid-template-columns: repeat(4, 1fr);
+    }
 
     #main-menu-wrap { display: none !important; }
 
     #checklist-view { padding: 0; }
     #cl-container { padding: 24px; max-width: 600px; }
 
-    .tab-nav { max-width: 360px; margin: 16px 24px 0; }
+    .tab-nav { max-width: 460px; margin: 16px 24px 0; }
     #hmi-container { padding: 10px 24px 24px; }
+    #temp-container { padding: 10px 24px 24px; }
 
     .hmi-card       { padding: 10px; }
     .hmi-title      { font-size: 13px; }
@@ -346,10 +436,10 @@
     .main-header h2 { position: static; transform: none; }
   }
 
-  /* Mobile (<768px) */
   @media (max-width: 767px) {
     .sidebar { display: none; }
     #hmi-container { grid-template-columns: repeat(2, 1fr); }
+    #temp-container { grid-template-columns: repeat(2, 1fr); }
     .hmi-title    { font-size: 13px; }
     .hmi-sub      { font-size: 9px; }
     .mrow         { font-size: 10px; }
@@ -402,14 +492,12 @@
     padding: 10px 12px;
     border: 1.5px solid var(--border-color);
     border-radius: 8px;
-    /* ✅ 16px evita el zoom automático en iOS Safari */
     font-size: 16px;
     color: var(--text-main);
     background: #f9fafb;
     outline: none;
     transition: border-color 0.15s, background 0.15s;
     -webkit-appearance: none;
-    /* Evita zoom por doble toque */
     touch-action: manipulation;
   }
   .cl-input:focus {
@@ -489,7 +577,7 @@
   }
 
   @supports (padding: env(safe-area-inset-bottom)) {
-    #hmi-container {
+    #hmi-container, #temp-container {
       padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
     .main-header {
@@ -548,7 +636,6 @@
 
     <main class="content-area">
 
-      <!-- Mobile Main Menu — sin scroll, se fija al viewport -->
       <div id="main-menu-wrap" style="display:flex;flex:1;overflow:hidden;min-height:0;">
         <div id="main-menu">
           <button class="menu-card" onclick="openHMI()">
@@ -586,13 +673,15 @@
         </div>
       </div>
 
-      <!-- HMI View: tabs fijos arriba, scroll solo en las tarjetas -->
+      <!-- HMI View -->
       <section id="hmi-view">
         <div class="tab-nav">
           <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
           <button id="tab-cp" class="tab-btn"        onclick="switchTab('CP')">🔧 COMPRESORES</button>
+          <button id="tab-tc" class="tab-btn"        onclick="switchTab('TC')">🌡️ TEMPERATURA</button>
         </div>
         <div id="hmi-container"></div>
+        <div id="temp-container" style="display:none;"></div>
       </section>
 
       <!-- Check List View -->
@@ -680,6 +769,46 @@ const CONFIG = {
     PRES_DESCARGA:  'numeric_mm1zmfy0',
   },
 };
+
+/* ── SENSORES DE TEMPERATURA ── */
+const TEMP_SENSORS = [
+  { area: 'CR1',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR1', temp: 21.85, min: 18, max: 25 },
+  { area: 'CR2',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR2', temp: 24.10, min: 18, max: 25 },
+  { area: 'CR3',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR3', temp: 26.40, min: 18, max: 25 },
+  { area: 'CR4',  zone: 'System/PDM/PDM_TC_ROOM/PDM_TCR4', temp: 19.75, min: 18, max: 25 },
+  { area: 'OF1',  zone: 'System/PDM/PDM_TC_OFF/PDM_TCO1',  temp: 22.30, min: 18, max: 26 },
+  { area: 'OF2',  zone: 'System/PDM/PDM_TC_OFF/PDM_TCO2',  temp: 17.50, min: 18, max: 26 },
+];
+
+function renderTempCards() {
+  const container = document.getElementById('temp-container');
+  container.innerHTML = '';
+  TEMP_SENSORS.forEach(s => {
+    const inRange = s.temp >= s.min && s.temp <= s.max;
+    const color   = inRange ? '#2ecc71' : '#e74c3c';
+    const badgeCls = inRange ? 'badge-in-range' : 'badge-out-range';
+    const badgeTxt = inRange ? 'En rango' : 'Fuera de rango';
+
+    const card = document.createElement('div');
+    card.className = 'temp-card';
+    card.innerHTML = `
+      <div class="temp-card-border" style="background:${color};"></div>
+      <div class="temp-card-inner">
+        <div class="temp-card-area">AREA: ${s.area}</div>
+        <hr class="temp-card-divider">
+        <div class="temp-card-value-row">
+          <span class="temp-card-value">${s.temp.toFixed(2).replace('.',',')}</span>
+          <span class="temp-card-unit">°C</span>
+        </div>
+        <div class="temp-card-status-row">
+          <div class="temp-card-dot" style="background:${color};"></div>
+          <span class="temp-card-status-txt">En línea</span>
+          <span class="temp-range-badge ${badgeCls}">${badgeTxt} ${s.min}°–${s.max}°</span>
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
 
 const CHILLER_SUB = {
   CH001:'Confort Oficinas', CH002:'Confort CR1/CR2', CH003:'Confort CR1/CR2',
@@ -977,10 +1106,23 @@ function closeHMI() {
 }
 
 function switchTab(type) {
-  currentTab=type;
+  currentTab = type;
   document.getElementById('tab-ch').classList.toggle('active', type==='CH');
   document.getElementById('tab-cp').classList.toggle('active', type==='CP');
-  (allCHItems.length||allCPItems.length)?renderItems():fetchData();
+  document.getElementById('tab-tc').classList.toggle('active', type==='TC');
+
+  const hmiContainer  = document.getElementById('hmi-container');
+  const tempContainer = document.getElementById('temp-container');
+
+  if (type === 'TC') {
+    hmiContainer.style.display  = 'none';
+    tempContainer.style.display = 'grid';
+    renderTempCards();
+  } else {
+    hmiContainer.style.display  = 'grid';
+    tempContainer.style.display = 'none';
+    (allCHItems.length||allCPItems.length) ? renderItems() : fetchData();
+  }
 }
 
 /* ── CHECK LIST ── */
