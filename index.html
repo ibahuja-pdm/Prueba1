@@ -331,42 +331,45 @@
   .temp-card-border {
     position: absolute;
     left: 0; top: 0;
-    width: 6px;
+    width: 5px;
     height: 100%;
     border-radius: 14px 0 0 14px;
     background: #2ecc71;
   }
   .temp-card-inner {
-    padding: 12px 12px 10px 16px;
+    padding: 10px 10px 10px 14px;
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
   .temp-card-area {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: #1a3a5c;
     letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .temp-card-divider {
     border: none;
     border-top: 0.5px solid #e0e0e0;
-    margin: 6px 0;
+    margin: 5px 0;
   }
   .temp-card-value-row {
     display: flex;
     align-items: baseline;
-    gap: 4px;
+    gap: 3px;
   }
   .temp-card-value {
-    font-size: 38px;
+    font-size: 28px;
     font-weight: 300;
     color: #1a3a5c;
     letter-spacing: -1px;
     line-height: 1;
   }
   .temp-card-unit {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 300;
     color: #1a3a5c;
   }
@@ -374,11 +377,11 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-top: 8px;
+    margin-top: 6px;
   }
   .temp-card-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -388,7 +391,7 @@
   }
   .temp-range-badge {
     margin-left: auto;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
     padding: 2px 7px;
     border-radius: 20px;
@@ -445,6 +448,8 @@
     .mrow         { font-size: 10px; }
     .kpi-value    { font-size: 18px; }
     .status-badge { font-size: 7px; padding: 2px 5px; }
+    .temp-card-value { font-size: 24px; }
+    .temp-range-badge { font-size: 9px; padding: 2px 5px; }
   }
 
   /* ── CHECK LIST FORM ── */
@@ -810,7 +815,6 @@ function renderTempCards() {
           <span class="temp-card-unit">°C</span>
         </div>
         <div class="temp-card-status-row">
-
           <span class="temp-range-badge ${badgeCls}">${badgeTxt} ${s.min}°–${s.max}°</span>
         </div>
       </div>`;
