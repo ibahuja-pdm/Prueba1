@@ -21,37 +21,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; }
 
-  /* ── iPhone full-page screenshot mode ── */
-  @media (max-width: 767px) {
-    html, body { overflow: auto; height: auto; }
-    .app-shell { height: auto; min-height: 100vh; overflow: visible; }
-    .layout-body { overflow: visible; height: auto; min-height: 0; }
-    .content-area { overflow: visible; height: auto; min-height: 0; }
-    #hmi-view {
-      overflow: visible !important;
-      height: auto !important;
-      min-height: 0 !important;
-      flex: none !important;
-    }
-    #hmi-container {
-      overflow: visible !important;
-      height: auto !important;
-      flex: none !important;
-      padding-bottom: 32px;
-    }
-    #temp-container {
-      overflow: visible !important;
-      height: auto !important;
-      flex: none !important;
-      padding-bottom: 32px;
-    }
-    .main-header {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-    }
-  }
-
   body {
     font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg-body);
@@ -593,6 +562,29 @@
     .main-header {
       padding-left:  calc(20px + env(safe-area-inset-left));
       padding-right: calc(20px + env(safe-area-inset-right));
+    }
+  }
+
+  /* ── Mobile: scroll inside HMI section only ── */
+  @media (max-width: 767px) {
+    html, body   { height: 100% !important; overflow: hidden !important; }
+    .app-shell   { height: 100vh !important; overflow: hidden !important; }
+    .layout-body { display: flex; flex: 1; overflow: hidden !important; min-height: 0; }
+    .content-area{ display: flex; flex-direction: column; flex: 1; overflow: hidden !important; min-height: 0; }
+    #hmi-view    { display: flex; flex-direction: column; flex: 1 !important; overflow: hidden !important; min-height: 0 !important; }
+    #hmi-container {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      overflow-y: scroll !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    #temp-container {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      overflow-y: scroll !important;
+      -webkit-overflow-scrolling: touch !important;
     }
   }
 </style>
