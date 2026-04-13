@@ -21,6 +21,30 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; }
 
+  /* ── iPhone full-page screenshot mode ── */
+  @media (max-width: 767px) {
+    html, body { overflow: auto; height: auto; }
+    .app-shell { height: auto; min-height: 100vh; overflow: visible; }
+    .layout-body { overflow: visible; height: auto; }
+    .content-area { overflow: visible; height: auto; }
+    #hmi-view { overflow: visible !important; height: auto !important; }
+    #hmi-container {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 32px;
+    }
+    #temp-container {
+      overflow: visible !important;
+      height: auto !important;
+      padding-bottom: 32px;
+    }
+    .main-header {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+  }
+
   body {
     font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg-body);
@@ -320,23 +344,23 @@
 
   .temp-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 8px;
     border: 0.5px solid #e4e6eb;
-    border-left: 4px solid #2ecc71;
-    padding: 12px 12px 12px 14px;
+    border-left: 3px solid #2ecc71;
+    padding: 7px 8px 7px 10px;
     display: flex;
     flex-direction: column;
     gap: 0;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
   .temp-card.out { border-left-color: #e74c3c; }
 
   .temp-card-area {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text-main);
     letter-spacing: 0.2px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -344,23 +368,23 @@
   .temp-card-divider {
     border: none;
     border-top: 0.5px solid #e4e6eb;
-    margin: 0 0 8px;
+    margin: 0 0 5px;
   }
   .temp-card-value-row {
     display: flex;
     align-items: baseline;
     gap: 2px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
   .temp-card-value {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 300;
     color: var(--text-main);
     line-height: 1;
     letter-spacing: -0.5px;
   }
   .temp-card-unit {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--text-secondary);
     font-weight: 400;
   }
@@ -369,9 +393,9 @@
     justify-content: flex-end;
   }
   .temp-range-badge {
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 500;
-    padding: 3px 9px;
+    padding: 2px 6px;
     border-radius: 20px;
   }
   .badge-in-range  { background: #e7f7ed; color: #007D43; }
@@ -391,7 +415,7 @@
     }
 
     #hmi-container { grid-template-columns: repeat(5, 1fr); }
-    #temp-container { grid-template-columns: repeat(4, 1fr); }
+    #temp-container { grid-template-columns: repeat(6, 1fr); }
 
     #main-menu-wrap { display: none !important; }
 
@@ -422,8 +446,8 @@
     .mrow         { font-size: 10px; }
     .kpi-value    { font-size: 18px; }
     .status-badge { font-size: 7px; padding: 2px 5px; }
-    .temp-card-value { font-size: 24px; }
-    .temp-range-badge { font-size: 9px; padding: 2px 6px; }
+    .temp-card-value { font-size: 18px; }
+    .temp-range-badge { font-size: 8px; padding: 2px 5px; }
   }
 
   /* ── CHECK LIST FORM ── */
