@@ -25,17 +25,24 @@
   @media (max-width: 767px) {
     html, body { overflow: auto; height: auto; }
     .app-shell { height: auto; min-height: 100vh; overflow: visible; }
-    .layout-body { overflow: visible; height: auto; }
-    .content-area { overflow: visible; height: auto; }
-    #hmi-view { overflow: visible !important; height: auto !important; }
+    .layout-body { overflow: visible; height: auto; min-height: 0; }
+    .content-area { overflow: visible; height: auto; min-height: 0; }
+    #hmi-view {
+      overflow: visible !important;
+      height: auto !important;
+      min-height: 0 !important;
+      flex: none !important;
+    }
     #hmi-container {
       overflow: visible !important;
       height: auto !important;
+      flex: none !important;
       padding-bottom: 32px;
     }
     #temp-container {
       overflow: visible !important;
       height: auto !important;
+      flex: none !important;
       padding-bottom: 32px;
     }
     .main-header {
