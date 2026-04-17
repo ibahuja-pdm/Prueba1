@@ -484,6 +484,23 @@
   .cl-history-lbl  { color: var(--muted); }
   .cl-history-val  { font-weight: 700; color: var(--text); }
 
+  /* ─── SYNC BADGE ────────────────────────────────────────── */
+  .cl-sync-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 4px;
+    min-height: 18px;
+    transition: all 0.3s;
+  }
+  .cl-sync-badge.idle    { background: transparent; color: transparent; }
+  .cl-sync-badge.loading { background: #e7f3ff; color: #004b87; }
+  .cl-sync-badge.saving  { background: #fff8e6; color: #BF8900; }
+  .cl-sync-badge.ok      { background: #e7f7ed; color: #007D43; }
+  .cl-sync-badge.error   { background: #fff0f0; color: #D93025; }
+
   /* ─── SAFE AREA ──────────────────────────────────────────── */
   @supports (padding: env(safe-area-inset-bottom)) {
     #hmi-container, #temp-container, #cl-container {
@@ -642,6 +659,7 @@
         <div class="cl-view-header">
           <h3>📋 Check List de Equipo</h3>
           <p>Registro de parámetros operativos</p>
+          <span id="cl-sync-status" class="cl-sync-badge idle"></span>
         </div>
         <div id="cl-container">
 
@@ -812,6 +830,7 @@ function showSection(section) {
     fetchData();
   } else if (section === 'checklist') {
     document.getElementById('checklist-view').style.display = 'flex';
+    setSyncStatus('idle');
   }
 }
 
@@ -1147,19 +1166,107 @@ function renderItems() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   CHECK LIST
+   CHECK LIST — Persistencia en la nube (JSONBin.io)
 ═══════════════════════════════════════════════════════════ */
-const CL_KEY      = 'pdm_checklist_records';
 const CL_FIELDS   = ['cl-id','cl-carga','cl-temp-out','cl-temp-in','cl-pres-out','cl-pres-in'];
-let   clRecords   = loadClRecords();
+let   clRecords   = [];
 
-function loadClRecords() {
-  try { return JSON.parse(localStorage.getItem(CL_KEY)) ?? []; }
-  catch { return []; }
+/* ── JSONBin config ── */
+const JSONBIN_API  = 'https://api.jsonbin.io/v3/b';
+const JSONBIN_KEY  = '$2a$10$MaC6G1xR4q/.GVYai40ktu9raqki.dtkkHcKKZgdjzROvo8vizlm2'; // Master key
+const JSONBIN_BIN  = null; // Se crea automáticamente en el primer uso
+const LS_BIN_KEY   = 'pdm_jsonbin_id'; // Guardamos el bin ID en localStorage
+
+let   _binId       = localStorage.getItem(LS_BIN_KEY) ?? null;
+let   _saveTimer   = null;
+
+/* Muestra indicador de sincronización en la UI */
+function setSyncStatus(state) {
+  // state: 'idle' | 'saving' | 'loading' | 'error' | 'ok'
+  let el = document.getElementById('cl-sync-status');
+  if (!el) return;
+  const icons = { idle:'', saving:'⏳ Guardando…', loading:'⏳ Cargando…', error:'⚠ Sin conexión (datos locales)', ok:'✔ Sincronizado' };
+  el.textContent = icons[state] ?? '';
+  el.className   = `cl-sync-badge ${state}`;
 }
 
+/* Crea un nuevo bin en JSONBin */
+async function createBin(records) {
+  const res = await fetch(JSONBIN_API, {
+    method:  'POST',
+    headers: { 'Content-Type':'application/json', 'X-Master-Key': JSONBIN_KEY, 'X-Bin-Name':'pdm-checklist', 'X-Bin-Private':'false' },
+    body:    JSON.stringify({ records }),
+  });
+  if (!res.ok) throw new Error('createBin failed');
+  const data = await res.json();
+  return data.metadata.id;
+}
+
+/* Lee los registros del bin */
+async function fetchBin(binId) {
+  const res = await fetch(`${JSONBIN_API}/${binId}/latest`, {
+    headers: { 'X-Master-Key': JSONBIN_KEY },
+  });
+  if (!res.ok) throw new Error('fetchBin failed');
+  const data = await res.json();
+  return data.record.records ?? [];
+}
+
+/* Actualiza el bin con los registros actuales */
+async function updateBin(binId, records) {
+  const res = await fetch(`${JSONBIN_API}/${binId}`, {
+    method:  'PUT',
+    headers: { 'Content-Type':'application/json', 'X-Master-Key': JSONBIN_KEY },
+    body:    JSON.stringify({ records }),
+  });
+  if (!res.ok) throw new Error('updateBin failed');
+}
+
+/* Carga registros desde la nube al arrancar */
+async function loadClRecords() {
+  setSyncStatus('loading');
+  // Fallback local mientras carga
+  try { clRecords = JSON.parse(localStorage.getItem('pdm_cl_backup')) ?? []; } catch {}
+  try {
+    if (!_binId) {
+      // Primer uso: crear bin vacío
+      _binId = await createBin([]);
+      localStorage.setItem(LS_BIN_KEY, _binId);
+    }
+    const remote = await fetchBin(_binId);
+    clRecords = remote;
+    localStorage.setItem('pdm_cl_backup', JSON.stringify(clRecords));
+    setSyncStatus('ok');
+    renderClHistory();
+  } catch (e) {
+    console.warn('Cloud load failed, using local backup', e);
+    setSyncStatus('error');
+    renderClHistory();
+  }
+}
+
+/* Guarda con debounce (evita spam de requests) */
 function saveClRecords() {
-  try { localStorage.setItem(CL_KEY, JSON.stringify(clRecords)); } catch {}
+  // Backup local inmediato
+  try { localStorage.setItem('pdm_cl_backup', JSON.stringify(clRecords)); } catch {}
+  // Push a la nube con debounce de 800ms
+  clearTimeout(_saveTimer);
+  setSyncStatus('saving');
+  _saveTimer = setTimeout(async () => {
+    try {
+      if (!_binId) {
+        _binId = await createBin(clRecords);
+        localStorage.setItem(LS_BIN_KEY, _binId);
+      } else {
+        await updateBin(_binId, clRecords);
+      }
+      setSyncStatus('ok');
+      setTimeout(() => setSyncStatus('idle'), 2000);
+    } catch (e) {
+      console.warn('Cloud save failed', e);
+      setSyncStatus('error');
+    }
+  }, 800);
 }
 
 function getField(id) { return document.getElementById(id).value; }
@@ -1249,7 +1356,8 @@ function renderClHistory() {
 /* ═══════════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════════ */
-function initLayout() {
+async function initLayout() {
+  await loadClRecords();
   renderClHistory();
   const isDesktop = window.matchMedia('(min-width: 768px)').matches;
   if (isDesktop) {
