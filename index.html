@@ -5,39 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mantenimiento PDM</title>
 <style>
+  /* ─── TOKENS ─────────────────────────────────────────────── */
   :root {
-    --medline-blue:   #004b87;
-    --bg-body:        #f0f2f5;
-    --card-bg:        #ffffff;
-    --text-main:      #1d2129;
-    --text-secondary: #65676b;
-    --border-color:   #e4e6eb;
-    --success:        #00A859;
-    --warning:        #FFB800;
-    --danger:         #D93025;
-    --sidebar-w:      240px;
-    --header-h:       56px;
+    --blue:       #004b87;
+    --blue-dark:  #003d6f;
+    --blue-light: #e7f3ff;
+    --bg:         #f0f2f5;
+    --card:       #ffffff;
+    --text:       #1d2129;
+    --muted:      #65676b;
+    --border:     #e4e6eb;
+    --success:    #007D43;
+    --warning:    #BF8900;
+    --danger:     #D93025;
+    --sidebar-w:  240px;
+    --header-h:   56px;
   }
+
+  /* ─── RESET ──────────────────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; overflow: hidden; }
+  html, body { height: 100%; overflow: hidden; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); }
 
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: var(--bg-body);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
+  /* ─── LAYOUT ─────────────────────────────────────────────── */
+  .app-shell   { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  .layout-body { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+  .content-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+  .hidden { display: none !important; }
 
-  .app-shell {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-
+  /* ─── HEADER ─────────────────────────────────────────────── */
   .main-header {
-    background: var(--medline-blue);
+    background: var(--blue);
     padding: 0 20px;
     height: var(--header-h);
     display: flex;
@@ -55,18 +52,30 @@
     left: 50%;
     transform: translateX(-50%);
   }
-
-  .layout-body {
+  .btn-back {
     display: flex;
-    flex: 1;
-    overflow: hidden;
-    min-height: 0;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+    touch-action: manipulation;
   }
+  .btn-back:hover { background: rgba(255,255,255,0.25); }
 
+  /* ─── SIDEBAR ────────────────────────────────────────────── */
   .sidebar {
     width: var(--sidebar-w);
-    background: var(--card-bg);
-    border-right: 1px solid var(--border-color);
+    background: var(--card);
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -86,23 +95,17 @@
     text-align: left;
     width: 100%;
     transition: background 0.15s;
-    color: var(--text-main);
+    color: var(--text);
   }
-  .sidebar-item:hover  { background: #f0f2f5; }
-  .sidebar-item.active { background: #e7f3ff; color: var(--medline-blue); }
+  .sidebar-item:hover  { background: var(--bg); }
+  .sidebar-item.active { background: var(--blue-light); color: var(--blue); }
   .sidebar-item .icon-box { flex-shrink: 0; }
   .sidebar-item .label-wrap h3 { font-size: 13px; font-weight: 700; }
-  .sidebar-item .label-wrap p  { font-size: 11px; color: var(--text-secondary); }
+  .sidebar-item .label-wrap p  { font-size: 11px; color: var(--muted); }
   .sidebar-item.active .label-wrap p { color: #1877f2; }
 
-  .content-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    min-height: 0;
-  }
-
+  /* ─── MAIN MENU ──────────────────────────────────────────── */
+  #main-menu-wrap { display: flex; flex: 1; overflow: hidden; min-height: 0; }
   #main-menu {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -112,9 +115,8 @@
     flex: 1;
     overflow: hidden;
   }
-
   .menu-card {
-    background: var(--card-bg);
+    background: var(--card);
     padding: 16px 14px;
     border-radius: 10px;
     display: flex;
@@ -128,14 +130,14 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     min-height: 0;
   }
-  .menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border-color); }
+  .menu-card:hover  { box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--border); }
   .menu-card:active { transform: scale(0.97); }
-  .menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text-main); }
-  .menu-card p  { font-size: 11px; color: var(--text-secondary); }
+  .menu-card h3 { font-size: 13px; font-weight: 700; color: var(--text); }
+  .menu-card p  { font-size: 11px; color: var(--muted); }
 
+  /* ─── ICON BOX ───────────────────────────────────────────── */
   .icon-box {
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -150,6 +152,7 @@
   .bg-teal   { background: #e2faf8; color: #00a499; }
   .bg-red    { background: #fff0f0; color: #fa383e; }
 
+  /* ─── HMI VIEW ───────────────────────────────────────────── */
   #hmi-view {
     display: none;
     flex-direction: column;
@@ -157,7 +160,6 @@
     overflow: hidden;
     min-height: 0;
   }
-
   .tab-nav {
     display: flex;
     background: #e4e6eb;
@@ -175,18 +177,17 @@
     border-radius: 8px;
     cursor: pointer;
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--muted);
     transition: background 0.2s, color 0.2s;
     white-space: nowrap;
     touch-action: manipulation;
   }
   .tab-btn.active {
     background: white;
-    color: var(--medline-blue);
+    color: var(--blue);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-
-  #hmi-container {
+  #hmi-container, #temp-container {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -196,17 +197,18 @@
     gap: 10px;
     align-content: start;
   }
+  #temp-container { display: none; }
 
+  /* ─── HMI CARDS ──────────────────────────────────────────── */
   .hmi-card {
     background: white;
     border-radius: 12px;
     padding: 12px;
-    border-left: 5px solid var(--medline-blue);
+    border-left: 5px solid var(--blue);
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     min-width: 0;
   }
   .hmi-card.alert { border-left-color: var(--danger); }
-
   .hmi-header {
     display: flex;
     justify-content: space-between;
@@ -215,9 +217,8 @@
     flex-wrap: wrap;
     gap: 4px;
   }
-  .hmi-title { font-size: 14px; font-weight: 800; color: var(--text-main); }
-  .hmi-sub   { font-size: 10px; color: var(--text-secondary); margin-bottom: 4px; }
-
+  .hmi-title { font-size: 14px; font-weight: 800; color: var(--text); }
+  .hmi-sub   { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
   .status-badge {
     display: inline-flex;
     align-items: center;
@@ -234,41 +235,69 @@
   .badge-falla-critica  { background: #FCEAE9; color: #B9251C; }
   .badge-fuera-servicio { background: #F1F3F6; color: #676879; }
   .badge-standby        { background: #E6F0F9; color: #004F9F; }
-
   .gauge-wrap { display: flex; justify-content: center; margin: 6px 0 0; }
   .gauge-wrap svg { width: 100%; height: auto; display: block; }
-
   .kpi-value {
     font-size: 22px;
     font-weight: 800;
-    color: #007D43;
+    color: var(--success);
     text-align: center;
     margin-top: -2px;
     margin-bottom: 8px;
   }
   .kpi-off { color: #C5C7D4; font-size: 20px; }
-
   .metrics {
-    border-top: 1px solid #f0f2f5;
+    border-top: 1px solid var(--bg);
     padding-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 6px;
   }
   .mrow   { display: flex; justify-content: space-between; font-size: 11px; }
-  .mlabel { color: var(--text-secondary); font-weight: 500; }
+  .mlabel { color: var(--muted); font-weight: 500; }
   .mval   { font-weight: 700; }
-
   .c-normal  { color: #007D43; }
   .c-warning { color: #BF8900; }
   .c-danger  { color: #D93025; }
   .c-off     { color: #C5C7D4; }
 
+  /* ─── TEMP CARDS ─────────────────────────────────────────── */
+  .temp-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 0.5px solid var(--border);
+    border-left: 4px solid #2ecc71;
+    padding: 12px 12px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .temp-card.out { border-left-color: #e74c3c; }
+  .temp-card-area {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.2px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .temp-card-divider { border: none; border-top: 0.5px solid var(--border); margin: 0 0 8px; }
+  .temp-card-value-row { display: flex; align-items: baseline; gap: 2px; margin-bottom: 10px; }
+  .temp-card-value { font-size: 28px; font-weight: 300; color: var(--text); line-height: 1; letter-spacing: -0.5px; }
+  .temp-card-unit  { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .temp-card-footer { display: flex; justify-content: flex-end; }
+  .temp-range-badge { font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 20px; }
+  .badge-in-range  { background: #e7f7ed; color: #007D43; }
+  .badge-out-range { background: #fceae9; color: #B9251C; }
+
+  /* ─── LOADING / ERROR ────────────────────────────────────── */
   .loading-msg {
     text-align: center;
     padding: 40px 24px;
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--muted);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -276,184 +305,56 @@
     grid-column: 1 / -1;
   }
   .spinner {
-    width: 28px;
-    height: 28px;
-    border: 3px solid var(--border-color);
-    border-top-color: var(--medline-blue);
+    width: 28px; height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--blue);
     border-radius: 50%;
     animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .hidden { display: none !important; }
-
-  .btn-back {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 8px;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.15s;
-    flex-shrink: 0;
-    white-space: nowrap;
-    touch-action: manipulation;
+  /* ─── CHECK LIST ─────────────────────────────────────────── */
+  #checklist-view {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
   }
-  .btn-back:hover { background: rgba(255,255,255,0.25); }
-
-  /* ── TEMP CARDS ── */
-  #temp-container {
+  .cl-view-header {
+    flex-shrink: 0;
+    padding: 12px 12px 0;
+  }
+  .cl-view-header h3 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .cl-view-header p  { font-size: 11px; color: var(--muted); }
+  #cl-container {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 10px 12px 16px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    align-content: start;
+    padding: 12px;
   }
-
-  .temp-card {
-    background: #fff;
-    border-radius: 12px;
-    border: 0.5px solid #e4e6eb;
-    border-left: 4px solid #2ecc71;
-    padding: 12px 12px 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  }
-  .temp-card.out { border-left-color: #e74c3c; }
-
-  .temp-card-area {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: 0.2px;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .temp-card-divider {
-    border: none;
-    border-top: 0.5px solid #e4e6eb;
-    margin: 0 0 8px;
-  }
-  .temp-card-value-row {
-    display: flex;
-    align-items: baseline;
-    gap: 2px;
-    margin-bottom: 10px;
-  }
-  .temp-card-value {
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--text-main);
-    line-height: 1;
-    letter-spacing: -0.5px;
-  }
-  .temp-card-unit {
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-weight: 400;
-  }
-  .temp-card-footer {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .temp-range-badge {
-    font-size: 10px;
-    font-weight: 500;
-    padding: 3px 9px;
-    border-radius: 20px;
-  }
-  .badge-in-range  { background: #e7f7ed; color: #007D43; }
-  .badge-out-range { background: #fceae9; color: #B9251C; }
-
-  /* Desktop */
-  @media (min-width: 768px) {
-    .sidebar { display: flex; }
-    .btn-back { display: none !important; }
-
-    #main-menu {
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      padding: 24px;
-      gap: 16px;
-      max-width: 900px;
-    }
-
-    #hmi-container { grid-template-columns: repeat(5, 1fr); }
-    #temp-container { grid-template-columns: repeat(6, 1fr); }
-
-    #main-menu-wrap { display: none !important; }
-
-    #checklist-view { padding: 0; }
-    #cl-container { padding: 24px; max-width: 600px; }
-
-    .tab-nav { max-width: 460px; margin: 16px 24px 0; }
-    #hmi-container { padding: 10px 24px 24px; }
-    #temp-container { padding: 10px 24px 24px; }
-
-    .hmi-card       { padding: 10px; }
-    .hmi-title      { font-size: 13px; }
-    .hmi-sub        { font-size: 9px; }
-    .kpi-value      { font-size: 16px; }
-    .mrow           { font-size: 10px; }
-    .status-badge   { font-size: 7px; padding: 2px 5px; }
-    .gauge-wrap svg { max-width: 200px; }
-
-    .main-header h2 { position: static; transform: none; }
-  }
-
-  @media (max-width: 767px) {
-    .sidebar { display: none; }
-    #hmi-container { grid-template-columns: repeat(2, 1fr); }
-    #temp-container { grid-template-columns: repeat(2, 1fr); }
-    .hmi-title    { font-size: 13px; }
-    .hmi-sub      { font-size: 9px; }
-    .mrow         { font-size: 10px; }
-    .kpi-value    { font-size: 18px; }
-    .status-badge { font-size: 7px; padding: 2px 5px; }
-    .temp-card-value { font-size: 24px; }
-    .temp-range-badge { font-size: 9px; padding: 2px 6px; }
-  }
-
-  /* ── CHECK LIST FORM ── */
   .cl-card {
-    background: var(--card-bg);
+    background: var(--card);
     border-radius: 12px;
     padding: 14px;
     margin-bottom: 10px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
   }
   .cl-section-title {
     font-size: 11px;
     font-weight: 700;
-    color: var(--medline-blue);
+    color: var(--blue);
     text-transform: uppercase;
     letter-spacing: .5px;
     margin-bottom: 10px;
   }
-  .cl-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 10px;
-  }
+  .cl-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
   .cl-field:last-child { margin-bottom: 0; }
   .cl-label {
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-main);
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -461,48 +362,46 @@
   .cl-unit {
     font-size: 10px;
     font-weight: 500;
-    color: var(--text-secondary);
-    background: #f0f2f5;
+    color: var(--muted);
+    background: var(--bg);
     padding: 1px 5px;
     border-radius: 4px;
   }
   .cl-input {
     width: 100%;
     padding: 10px 12px;
-    border: 1.5px solid var(--border-color);
+    border: 1.5px solid var(--border);
     border-radius: 8px;
     font-size: 16px;
-    color: var(--text-main);
+    color: var(--text);
     background: #f9fafb;
     outline: none;
     transition: border-color 0.15s, background 0.15s;
     -webkit-appearance: none;
     touch-action: manipulation;
   }
-  .cl-input:focus {
-    border-color: var(--medline-blue);
-    background: #fff;
-  }
+  .cl-input:focus { border-color: var(--blue); background: #fff; }
+  .cl-actions { display: flex; gap: 10px; margin-top: 4px; }
   .cl-btn-primary {
     flex: 1;
     padding: 12px;
-    background: var(--medline-blue);
+    background: var(--blue);
     color: #fff;
     border: none;
     border-radius: 10px;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, transform 0.1s;
     touch-action: manipulation;
   }
-  .cl-btn-primary:hover  { background: #003d6f; }
+  .cl-btn-primary:hover  { background: var(--blue-dark); }
   .cl-btn-primary:active { transform: scale(0.98); }
   .cl-btn-secondary {
     padding: 12px 18px;
-    background: #f0f2f5;
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
@@ -510,7 +409,7 @@
     transition: background 0.15s;
     touch-action: manipulation;
   }
-  .cl-btn-secondary:hover { background: #e4e6eb; }
+  .cl-btn-secondary:hover { background: var(--border); }
   .cl-toast {
     margin-top: 12px;
     padding: 10px 14px;
@@ -522,41 +421,72 @@
     text-align: center;
     border: 1px solid #b5e5c8;
   }
-  .cl-history-item {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 8px;
-    font-size: 11px;
-  }
-  .cl-history-header {
+
+  /* ─── HISTORY ────────────────────────────────────────────── */
+  #cl-history { margin-top: 16px; }
+  .cl-history-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
   }
-  .cl-history-id   { font-size: 13px; font-weight: 800; color: var(--text-main); }
-  .cl-history-date { font-size: 10px; color: var(--text-secondary); }
-  .cl-history-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px 12px;
-  }
-  .cl-history-row  { display: flex; justify-content: space-between; }
-  .cl-history-lbl  { color: var(--text-secondary); }
-  .cl-history-val  { font-weight: 700; color: var(--text-main); }
   .cl-history-title {
     font-size: 11px;
     font-weight: 700;
-    color: var(--text-secondary);
+    color: var(--muted);
     text-transform: uppercase;
     letter-spacing: .4px;
-    margin-bottom: 6px;
   }
+  .cl-btn-export {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1.5px solid var(--blue);
+    background: var(--blue-light);
+    color: var(--blue);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cl-btn-export:hover { background: #d0e8ff; }
+  .cl-history-item {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  .cl-btn-delete {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #aaa;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .cl-btn-delete:hover { color: var(--danger); }
+  .cl-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-right: 20px;
+  }
+  .cl-history-id   { font-size: 13px; font-weight: 800; color: var(--text); }
+  .cl-history-date { font-size: 10px; color: var(--muted); }
+  .cl-history-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 12px; }
+  .cl-history-row  { display: flex; justify-content: space-between; }
+  .cl-history-lbl  { color: var(--muted); }
+  .cl-history-val  { font-weight: 700; color: var(--text); }
 
+  /* ─── SAFE AREA ──────────────────────────────────────────── */
   @supports (padding: env(safe-area-inset-bottom)) {
-    #hmi-container, #temp-container {
+    #hmi-container, #temp-container, #cl-container {
       padding-bottom: calc(16px + env(safe-area-inset-bottom));
     }
     .main-header {
@@ -564,50 +494,93 @@
       padding-right: calc(20px + env(safe-area-inset-right));
     }
   }
+
+  /* ─── DESKTOP ────────────────────────────────────────────── */
+  @media (min-width: 768px) {
+    .sidebar { display: flex; }
+    .btn-back { display: none !important; }
+    .main-header h2 { position: static; transform: none; }
+
+    #main-menu {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      padding: 24px;
+      gap: 16px;
+      max-width: 900px;
+    }
+    #main-menu-wrap  { display: none !important; }
+    #hmi-container   { grid-template-columns: repeat(5, 1fr); padding: 10px 24px 24px; }
+    #temp-container  { grid-template-columns: repeat(6, 1fr); padding: 10px 24px 24px; }
+    #cl-container    { padding: 24px; max-width: 600px; }
+    #checklist-view  { padding: 0; }
+    .tab-nav         { max-width: 460px; margin: 16px 24px 0; }
+
+    .hmi-card      { padding: 10px; }
+    .hmi-title     { font-size: 13px; }
+    .hmi-sub       { font-size: 9px; }
+    .kpi-value     { font-size: 16px; }
+    .mrow          { font-size: 10px; }
+    .status-badge  { font-size: 7px; padding: 2px 5px; }
+    .gauge-wrap svg { max-width: 200px; }
+  }
+
+  /* ─── MOBILE ─────────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+    .hmi-title    { font-size: 13px; }
+    .hmi-sub      { font-size: 9px; }
+    .mrow         { font-size: 10px; }
+    .kpi-value    { font-size: 18px; }
+    .status-badge { font-size: 7px; padding: 2px 5px; }
+    .temp-card-value  { font-size: 24px; }
+    .temp-range-badge { font-size: 9px; padding: 2px 6px; }
+  }
 </style>
 </head>
 <body>
 
 <div class="app-shell">
 
-  <header id="main-header" class="main-header">
-    <button id="header-back-btn" class="btn-back hidden" onclick="closeHMI()">⟵</button>
+  <!-- HEADER -->
+  <header class="main-header">
+    <button id="header-back-btn" class="btn-back hidden" onclick="navigate(null)">⟵</button>
     <h2>⚙️ Mantenimiento PDM</h2>
     <div style="width:80px"></div>
   </header>
 
   <div class="layout-body">
 
+    <!-- SIDEBAR (desktop) -->
     <nav class="sidebar" id="desktop-sidebar">
-      <button class="sidebar-item active" id="sb-hmi" onclick="sidebarNav('hmi')">
+      <button class="sidebar-item active" onclick="sidebarNav(this,'hmi')">
         <div class="icon-box bg-blue">🖥️</div>
         <div class="label-wrap"><h3>HMI</h3><p>Monitoreo</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('dashboard')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'dashboard')">
         <div class="icon-box bg-green">📈</div>
         <div class="label-wrap"><h3>Dashboard</h3><p>KPI</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('mp')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'mp')">
         <div class="icon-box bg-orange">📅</div>
         <div class="label-wrap"><h3>MP programados</h3><p>Formatos</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('qr')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'qr')">
         <div class="icon-box bg-purple">🔲</div>
         <div class="label-wrap"><h3>QR</h3><p>Recorridos</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('inventario')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'inventario')">
         <div class="icon-box bg-teal">📦</div>
         <div class="label-wrap"><h3>Inventario</h3><p>Refacciones</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('extra')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'extra')">
         <div class="icon-box bg-red">🔧</div>
         <div class="label-wrap"><h3>Extra</h3><p>Pruebas</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('recorrido')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'recorrido')">
         <div class="icon-box bg-purple">🚶</div>
         <div class="label-wrap"><h3>Recorrido</h3><p>Rutas</p></div>
       </button>
-      <button class="sidebar-item" onclick="sidebarNav('checklist')">
+      <button class="sidebar-item" onclick="sidebarNav(this,'checklist')">
         <div class="icon-box bg-green">✅</div>
         <div class="label-wrap"><h3>Check List</h3><p>Verificación</p></div>
       </button>
@@ -615,9 +588,10 @@
 
     <main class="content-area">
 
-      <div id="main-menu-wrap" style="display:flex;flex:1;overflow:hidden;min-height:0;">
+      <!-- MAIN MENU (mobile) -->
+      <div id="main-menu-wrap">
         <div id="main-menu">
-          <button class="menu-card" onclick="openHMI()">
+          <button class="menu-card" onclick="navigate('hmi')">
             <div class="icon-box bg-blue">🖥️</div>
             <h3>HMI</h3><p>Monitoreo</p>
           </button>
@@ -645,14 +619,14 @@
             <div class="icon-box bg-purple">🚶</div>
             <h3>Recorrido</h3><p>Rutas</p>
           </button>
-          <button class="menu-card" onclick="openSection('checklist')">
+          <button class="menu-card" onclick="navigate('checklist')">
             <div class="icon-box bg-green">✅</div>
             <h3>Check List</h3><p>Verificación</p>
           </button>
         </div>
       </div>
 
-      <!-- HMI View -->
+      <!-- HMI VIEW -->
       <section id="hmi-view">
         <div class="tab-nav">
           <button id="tab-ch" class="tab-btn active" onclick="switchTab('CH')">❄️ CHILLERS</button>
@@ -660,16 +634,16 @@
           <button id="tab-tc" class="tab-btn"        onclick="switchTab('TC')">🌡️ TEMPERATURA</button>
         </div>
         <div id="hmi-container"></div>
-        <div id="temp-container" style="display:none;"></div>
+        <div id="temp-container"></div>
       </section>
 
-      <!-- Check List View -->
-      <section id="checklist-view" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
-        <div style="flex-shrink:0;padding:12px 12px 0;">
-          <h3 style="font-size:15px;font-weight:700;color:var(--text-main);margin-bottom:2px;">📋 Check List de Equipo</h3>
-          <p style="font-size:11px;color:var(--text-secondary);">Registro de parámetros operativos</p>
+      <!-- CHECK LIST VIEW -->
+      <section id="checklist-view">
+        <div class="cl-view-header">
+          <h3>📋 Check List de Equipo</h3>
+          <p>Registro de parámetros operativos</p>
         </div>
-        <div id="cl-container" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;">
+        <div id="cl-container">
 
           <div class="cl-card">
             <div class="cl-section-title">Identificación</div>
@@ -711,13 +685,14 @@
             </div>
           </div>
 
-          <div style="display:flex;gap:10px;margin-top:4px;">
+          <div class="cl-actions">
             <button class="cl-btn-secondary" onclick="clearChecklist()">Limpiar</button>
-            <button class="cl-btn-primary" onclick="submitChecklist()">Guardar registro</button>
+            <button class="cl-btn-primary"   onclick="submitChecklist()">Guardar registro</button>
           </div>
 
           <div id="cl-toast" class="cl-toast hidden">✔ Registro guardado correctamente</div>
-          <div id="cl-history" style="margin-top:16px;"></div>
+          <div id="cl-history"></div>
+
         </div>
       </section>
 
@@ -726,8 +701,11 @@
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════════════════ */
 const CONFIG = {
-  TOKEN: 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyMzQyMjcyOSwiYWFpIjoxMSwidWlkIjoxMDA3NjU5OSwiaWFkIjoiMjAyNi0wMi0xOVQxNjoxMjo1Ni4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6NDQ3Njg5MSwicmduIjoidXNlMSJ9.nY2MXM-x6fb95m2BvxmhUFVMHLxHrJpnl8ZNyjcFfVA',
+  TOKEN:             'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYyMzQyMjcyOSwiYWFpIjoxMSwidWlkIjoxMDA3NjU5OSwiaWFkIjoiMjAyNi0wMi0xOVQxNjoxMjo1Ni4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6NDQ3Njg5MSwicmduIjoidXNlMSJ9.nY2MXM-x6fb95m2BvxmhUFVMHLxHrJpnl8ZNyjcFfVA',
   BOARD_CHILLERS:    '18403987245',
   BOARD_COMPRESORES: '18406608853',
   CH_LIST: ['CH001','CH002','CH003','CH004','CH005','CH006','CH007','CH008','CH009','CH010'],
@@ -741,47 +719,303 @@ const CONFIG = {
     STATUS:   'status',
   },
   COL_CP: {
-    STATUS:         'status',
-    TEMP_CARGA:     'numeric_mm1zfxhc',
-    TEMP_DESCARGA:  'numeric_mm1zwzac',
-    PRES_CARGA:     'numeric_mm1zvqry',
-    PRES_DESCARGA:  'numeric_mm1zmfy0',
+    STATUS:        'status',
+    TEMP_CARGA:    'numeric_mm1zfxhc',
+    TEMP_DESCARGA: 'numeric_mm1zwzac',
+    PRES_CARGA:    'numeric_mm1zvqry',
+    PRES_DESCARGA: 'numeric_mm1zmfy0',
   },
 };
 
-/* ── SENSORES DE TEMPERATURA ── */
+/* ═══════════════════════════════════════════════════════════
+   STATIC DATA
+═══════════════════════════════════════════════════════════ */
+const CHILLER_SUB = {
+  CH001:'Confort Oficinas', CH002:'Confort CR1/CR2', CH003:'Confort CR1/CR2',
+  CH004:'Proceso CR2',      CH005:'Proceso CR3',     CH006:'Confort CR3',
+  CH007:'Confort CR3',      CH008:'Confort CR4',     CH009:'Confort CR4', CH010:'Proceso CR2',
+};
+const COMPRESOR_SUB = {
+  COMP001:'Compresor CR1', COMP002:'Compresor CR3', COMP003:'Compresor CR4',
+};
+
 const TEMP_SENSORS = [
-  { area: 'PDM-TCR1',      temp: 21.60, min: 16, max: 25 },
-  { area: 'PDM-TCR2',      temp: 22.90, min: 16, max: 25 },
-  { area: 'PDM-TCR3',      temp: 22.45, min: 16, max: 25 },
-  { area: 'PDM-TCR4',      temp: 22.25, min: 16, max: 25 },
-  { area: 'PDM-TCR5',      temp: 21.05, min: 16, max: 26 },
-  { area: 'PDM-CR1_1',     temp: 20.20, min: 16, max: 26 },
-  { area: 'PDM-CR1_2',     temp: 19.80, min: 16, max: 26 },
-  { area: 'PDM-CR2_A',     temp: 17.20, min: 16, max: 26 },
-  { area: 'PDM-CR2_B',     temp: 18.85, min: 16, max: 26 },
-  { area: 'PDM-CR3',       temp: 22.23, min: 16, max: 22 },
-  { area: 'PDM-CR4_DP',    temp: 18.82, min: 16, max: 26 },
-  { area: 'PDM-CR4_1',     temp: 19.30, min: 16, max: 26 },
-  { area: 'PDM-CR4_2',     temp: 17.90, min: 16, max: 26 },
-  { area: 'PDM-CR4_3',     temp: 18.20, min: 16, max: 26 },
-  { area: 'PDM-PRINT_ROOM',temp: 18.50, min: 16, max: 26 },
+  { area:'PDM-TCR1',       temp:21.60, min:16, max:25 },
+  { area:'PDM-TCR2',       temp:22.90, min:16, max:25 },
+  { area:'PDM-TCR3',       temp:22.45, min:16, max:25 },
+  { area:'PDM-TCR4',       temp:22.25, min:16, max:25 },
+  { area:'PDM-TCR5',       temp:21.05, min:16, max:26 },
+  { area:'PDM-CR1_1',      temp:20.20, min:16, max:26 },
+  { area:'PDM-CR1_2',      temp:19.80, min:16, max:26 },
+  { area:'PDM-CR2_A',      temp:17.20, min:16, max:26 },
+  { area:'PDM-CR2_B',      temp:18.85, min:16, max:26 },
+  { area:'PDM-CR3',        temp:22.23, min:16, max:22 },
+  { area:'PDM-CR4_DP',     temp:18.82, min:16, max:26 },
+  { area:'PDM-CR4_1',      temp:19.30, min:16, max:26 },
+  { area:'PDM-CR4_2',      temp:17.90, min:16, max:26 },
+  { area:'PDM-CR4_3',      temp:18.20, min:16, max:26 },
+  { area:'PDM-PRINT_ROOM', temp:18.50, min:16, max:26 },
 ];
 
+const STATUS_KEY_MAP = [
+  { match:'operativo',     key:'operativo'     },
+  { match:'carga parcial', key:'carga-parcial' },
+  { match:'alarma',        key:'alarma-activa' },
+  { match:'falla',         key:'falla-critica' },
+  { match:'standby',       key:'standby'       },
+];
+const DEFAULT_STATUS = 'fuera-servicio';
+const STATUS_META = {
+  'operativo':      { badge:'badge-operativo',      label:'● Operativo',         cardClass:''      },
+  'carga-parcial':  { badge:'badge-carga-parcial',  label:'◐ Carga Parcial',     cardClass:''      },
+  'alarma-activa':  { badge:'badge-alarma-activa',  label:'⚠ Alarma Activa',     cardClass:'alert' },
+  'falla-critica':  { badge:'badge-falla-critica',  label:'✕ Falla Crítica',     cardClass:'alert' },
+  'fuera-servicio': { badge:'badge-fuera-servicio', label:'○ Fuera de Servicio', cardClass:''      },
+  'standby':        { badge:'badge-standby',        label:'💤 Standby',           cardClass:''      },
+};
+
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════════════ */
+const SECTIONS = ['hmi-view', 'checklist-view'];
+
+function hideAllSections() {
+  SECTIONS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+}
+
+/** Mobile nav: shows a section from the main menu grid */
+function navigate(section) {
+  if (!section) {
+    // back button → return to main menu
+    hideAllSections();
+    document.getElementById('main-menu-wrap').classList.remove('hidden');
+    document.getElementById('header-back-btn').classList.add('hidden');
+    return;
+  }
+  document.getElementById('main-menu-wrap').classList.add('hidden');
+  document.getElementById('header-back-btn').classList.remove('hidden');
+  hideAllSections();
+  showSection(section);
+}
+
+/** Desktop sidebar nav */
+function sidebarNav(btn, section) {
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+  hideAllSections();
+  showSection(section);
+}
+
+function showSection(section) {
+  if (section === 'hmi') {
+    document.getElementById('hmi-view').style.display = 'flex';
+    fetchData();
+  } else if (section === 'checklist') {
+    document.getElementById('checklist-view').style.display = 'flex';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HMI — TABS
+═══════════════════════════════════════════════════════════ */
+let currentTab = 'CH';
+
+function switchTab(type) {
+  currentTab = type;
+  ['CH','CP','TC'].forEach(t =>
+    document.getElementById(`tab-${t.toLowerCase()}`).classList.toggle('active', t === type)
+  );
+  const hmiEl  = document.getElementById('hmi-container');
+  const tempEl = document.getElementById('temp-container');
+
+  if (type === 'TC') {
+    hmiEl.style.display  = 'none';
+    tempEl.style.display = 'grid';
+    renderTempCards();
+  } else {
+    hmiEl.style.display  = 'grid';
+    tempEl.style.display = 'none';
+    (allCHItems.length || allCPItems.length) ? renderItems() : fetchData();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HMI — GAUGE
+═══════════════════════════════════════════════════════════ */
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const GAUGE  = { CX:115, CY:85, R_OUTER:78, R_INNER:52, R_NEEDLE:70 };
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS(SVG_NS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function gaugePoint(val, r) {
+  const angle = (180 - (Math.min(val, 100) / 100) * 180) * (Math.PI / 180);
+  return { x: GAUGE.CX + r * Math.cos(angle), y: GAUGE.CY - r * Math.sin(angle) };
+}
+
+function buildGauge(svg, gradId, unit = '%') {
+  const { CX, CY, R_OUTER, R_INNER } = GAUGE;
+  const defs = document.createElementNS(SVG_NS, 'defs');
+  const grad = svgEl('linearGradient', { id:gradId, x1:'0%', y1:'0%', x2:'100%', y2:'0%' });
+  [{ o:'0%', c:'#00A859' }, { o:'55%', c:'#FFB800' }, { o:'100%', c:'#D93025' }]
+    .forEach(({ o, c }) => grad.appendChild(svgEl('stop', { offset:o, 'stop-color':c })));
+  defs.appendChild(grad);
+  svg.appendChild(defs);
+
+  const o1 = gaugePoint(0, R_OUTER), o2 = gaugePoint(100, R_OUTER);
+  const i1 = gaugePoint(0, R_INNER), i2 = gaugePoint(100, R_INNER);
+  const arcD = `M ${o1.x} ${o1.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${o2.x} ${o2.y}`
+             + ` L ${i2.x} ${i2.y} A ${R_INNER} ${R_INNER} 0 0 0 ${i1.x} ${i1.y} Z`;
+  svg.appendChild(svgEl('path', { d:arcD, fill:'#F5F6FA', stroke:'#E6E9EF', 'stroke-width':'1' }));
+  svg.appendChild(svgEl('path', { d:arcD, fill:`url(#${gradId})`, opacity:'0.85' }));
+
+  [0, 25, 50, 75, 100].forEach(v => {
+    const p1 = gaugePoint(v, R_OUTER + 2), p2 = gaugePoint(v, R_OUTER + 8), pl = gaugePoint(v, R_OUTER + 16);
+    svg.appendChild(svgEl('line', { x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y, stroke:'#C5C7D4', 'stroke-width':'1.5' }));
+    const lbl = svgEl('text', { x:pl.x, y:pl.y + 4, 'text-anchor':'middle', 'font-size':'8', fill:'#676879', 'font-family':'Inter', 'font-weight':'600' });
+    lbl.textContent = v + unit;
+    svg.appendChild(lbl);
+  });
+
+  const needle = svgEl('line', { x1:CX, y1:CY, x2:CX - GAUGE.R_NEEDLE, y2:CY, stroke:'#323338', 'stroke-width':'2.5', 'stroke-linecap':'round' });
+  svg.appendChild(needle);
+  svg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:'9', fill:'#FFFFFF', stroke:'#E6E9EF', 'stroke-width':'2' }));
+  svg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:'4', fill:'#004F9F' }));
+  return needle;
+}
+
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay = 0) {
+  setTimeout(() => {
+    const startTime = performance.now();
+    function frame(now) {
+      const t   = Math.min((now - startTime) / 1200, 1);
+      const cur = easeOut(t) * targetPct;
+      const pt  = gaugePoint(cur, GAUGE.R_NEEDLE);
+      needle.setAttribute('x2', pt.x);
+      needle.setAttribute('y2', pt.y);
+      if (kpiEl) { kpiEl.textContent = formatFn(cur); kpiEl.style.color = colorFn(cur); }
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }, delay);
+}
+
+function animateLoadGauge(needle, kpiEl, loadPct, delay = 0) {
+  animateNeedle(needle, kpiEl, loadPct,
+    cur => `${Math.round(cur)} %`,
+    cur => cur > 85 ? '#D93025' : cur > 65 ? '#BF8900' : '#007D43',
+    delay);
+}
+
+function animateTempGauge(needle, kpiEl, tempF, maxTempF = 150, delay = 0) {
+  const targetPct = Math.min((tempF / maxTempF) * 100, 100);
+  animateNeedle(needle, kpiEl, targetPct,
+    cur => `${Math.round((cur / 100) * tempF)} °F`,
+    cur => cur > 80 ? '#D93025' : cur > 55 ? '#BF8900' : '#007D43',
+    delay);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HMI — HELPERS
+═══════════════════════════════════════════════════════════ */
+const DASH = '—';
+
+function parseStatus(raw = '') {
+  const s     = raw.toLowerCase().trim();
+  const found = STATUS_KEY_MAP.find(({ match }) => s.includes(match));
+  return found ? found.key : DEFAULT_STATUS;
+}
+
+function statusMeta(key)     { return STATUS_META[key] ?? STATUS_META[DEFAULT_STATUS]; }
+function isOff(sk)           { return sk === 'fuera-servicio' || sk === 'standby'; }
+function loadColorClass(pct) { return pct > 85 ? 'c-danger' : pct > 65 ? 'c-warning' : 'c-normal'; }
+function tempColorClass(f)   { return f > 110 ? 'c-danger' : 'c-normal'; }
+
+function metricRow(label, value, colorClass = '') {
+  return `<div class="mrow"><span class="mlabel">${label}</span><span class="mval ${colorClass}">${value}</span></div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HMI — CARD RENDERERS
+═══════════════════════════════════════════════════════════ */
+function createHmiCard({ name, sub, status, gaugePrefix, kpiDefault, metrics }, idx) {
+  const off  = isOff(status);
+  const meta = statusMeta(status);
+  const svgId = `svg-${gaugePrefix}-${idx}`;
+  const kpiId = `kpi-${gaugePrefix}-${idx}`;
+
+  const card = document.createElement('div');
+  card.className = `hmi-card ${meta.cardClass}`.trim();
+  card.innerHTML = `
+    <div class="hmi-header">
+      <span class="hmi-title">${name}</span>
+      <span class="status-badge ${meta.badge}">${meta.label}</span>
+    </div>
+    <div class="hmi-sub">${sub}</div>
+    <div class="gauge-wrap"><svg id="${svgId}" viewBox="0 0 230 100"></svg></div>
+    <div class="kpi-value ${off ? 'kpi-off' : ''}" id="${kpiId}">${off ? DASH : kpiDefault}</div>
+    <div class="metrics">${metrics.map(m => metricRow(m.label, off ? DASH : m.value, off ? 'c-off' : m.cls)).join('')}</div>`;
+
+  document.getElementById('hmi-container').appendChild(card);
+  return {
+    svg:   document.getElementById(svgId),
+    kpiEl: document.getElementById(kpiId),
+  };
+}
+
+function renderChillerCard(ch, idx, delay = 0) {
+  const off = isOff(ch.status);
+  const { svg, kpiEl } = createHmiCard({
+    name: ch.name, sub: ch.sub, status: ch.status,
+    gaugePrefix: 'ch', kpiDefault: '0 %',
+    metrics: [
+      { label:'Carga',      value:`${ch.carga} %`,    cls: loadColorClass(ch.carga) },
+      { label:'T° Salida',  value:`${ch.tempOut} °F`, cls: 'c-normal'              },
+      { label:'T° Entrada', value:`${ch.tempIn} °F`,  cls: 'c-normal'              },
+      { label:'P. Salida',  value:`${ch.presOut} psi`,cls: 'c-warning'             },
+      { label:'P. Entrada', value:`${ch.presIn} psi`, cls: 'c-warning'             },
+    ],
+  }, idx);
+  const needle = buildGauge(svg, `grad-ch-${idx}`, '%');
+  if (!off) animateLoadGauge(needle, kpiEl, ch.carga, delay);
+}
+
+function renderCompresorCard(cp, idx, delay = 0) {
+  const off = isOff(cp.status);
+  const { svg, kpiEl } = createHmiCard({
+    name: cp.name, sub: cp.sub, status: cp.status,
+    gaugePrefix: 'cp', kpiDefault: '0 °F',
+    metrics: [
+      { label:'T° Carga',    value:`${cp.tempCarga} °F`,    cls: tempColorClass(cp.tempCarga)    },
+      { label:'T° Descarga', value:`${cp.tempDescarga} °F`, cls: tempColorClass(cp.tempDescarga) },
+      { label:'P. Carga',    value:`${cp.presCarga} psi`,   cls: 'c-warning'                     },
+      { label:'P. Descarga', value:`${cp.presDescarga} psi`,cls: 'c-warning'                     },
+    ],
+  }, idx);
+  const needle = buildGauge(svg, `grad-cp-${idx}`, '°F');
+  if (!off) animateTempGauge(needle, kpiEl, cp.tempCarga, 150, delay);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HMI — TEMP CARDS
+═══════════════════════════════════════════════════════════ */
 function renderTempCards() {
   const container = document.getElementById('temp-container');
   container.innerHTML = '';
   TEMP_SENSORS.forEach(s => {
-    const inRange     = s.temp >= s.min && s.temp <= s.max;
-    const borderColor = inRange ? '#2ecc71' : '#e74c3c';
-    const badgeCls    = inRange ? 'badge-in-range' : 'badge-out-range';
-    const badgeTxt    = inRange
+    const inRange  = s.temp >= s.min && s.temp <= s.max;
+    const badgeCls = inRange ? 'badge-in-range' : 'badge-out-range';
+    const badgeTxt = inRange
       ? `En rango ${s.min}°–${s.max}°`
       : `Fuera de rango ${s.min}°–${s.max}°`;
 
     const card = document.createElement('div');
-    card.className = 'temp-card' + (inRange ? '' : ' out');
-    card.style.borderLeftColor = borderColor;
+    card.className = `temp-card${inRange ? '' : ' out'}`;
     card.innerHTML = `
       <div class="temp-card-area">AREA: ${s.area}</div>
       <hr class="temp-card-divider">
@@ -796,173 +1030,22 @@ function renderTempCards() {
   });
 }
 
-const CHILLER_SUB = {
-  CH001:'Confort Oficinas', CH002:'Confort CR1/CR2', CH003:'Confort CR1/CR2',
-  CH004:'Proceso CR2', CH005:'Proceso CR3', CH006:'Confort CR3',
-  CH007:'Confort CR3', CH008:'Confort CR4', CH009:'Confort CR4', CH010:'Proceso CR2',
-};
-const COMPRESOR_SUB = {
-  COMP001:'Compresor CR1', COMP002:'Compresor CR3', COMP003:'Compresor CR4',
-};
-
-const STATUS_KEY_MAP = [
-  { match:'operativo',     key:'operativo'      },
-  { match:'carga parcial', key:'carga-parcial'  },
-  { match:'alarma',        key:'alarma-activa'  },
-  { match:'falla',         key:'falla-critica'  },
-  { match:'standby',       key:'standby'        },
-];
-const DEFAULT_STATUS = 'fuera-servicio';
-const STATUS_META = {
-  'operativo':      { badge:'badge-operativo',      label:'● Operativo',         cardClass:'' },
-  'carga-parcial':  { badge:'badge-carga-parcial',  label:'◐ Carga Parcial',     cardClass:'' },
-  'alarma-activa':  { badge:'badge-alarma-activa',  label:'⚠ Alarma Activa',     cardClass:'alert' },
-  'falla-critica':  { badge:'badge-falla-critica',  label:'✕ Falla Crítica',      cardClass:'alert' },
-  'fuera-servicio': { badge:'badge-fuera-servicio', label:'○ Fuera de Servicio', cardClass:'' },
-  'standby':        { badge:'badge-standby',        label:'💤 Standby',           cardClass:'' },
-};
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
-const GAUGE  = { CX:115, CY:85, R_OUTER:78, R_INNER:52, R_NEEDLE:70 };
-
-function gaugePoint(val, r) {
-  const angle = (180 - (Math.min(val,100)/100)*180) * (Math.PI/180);
-  return { x: GAUGE.CX + r*Math.cos(angle), y: GAUGE.CY - r*Math.sin(angle) };
-}
-function svgEl(tag, attrs) {
-  const el = document.createElementNS(SVG_NS, tag);
-  for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
-  return el;
-}
-function buildGauge(svg, gradId, unit='%') {
-  const { CX, CY, R_OUTER, R_INNER } = GAUGE;
-  const defs = document.createElementNS(SVG_NS,'defs');
-  const grad = svgEl('linearGradient',{id:gradId,x1:'0%',y1:'0%',x2:'100%',y2:'0%'});
-  [{o:'0%',c:'#00A859'},{o:'55%',c:'#FFB800'},{o:'100%',c:'#D93025'}]
-    .forEach(({o,c}) => grad.appendChild(svgEl('stop',{offset:o,'stop-color':c})));
-  defs.appendChild(grad); svg.appendChild(defs);
-  const o1=gaugePoint(0,R_OUTER), o2=gaugePoint(100,R_OUTER);
-  const i1=gaugePoint(0,R_INNER), i2=gaugePoint(100,R_INNER);
-  const arcD=`M ${o1.x} ${o1.y} A ${R_OUTER} ${R_OUTER} 0 0 1 ${o2.x} ${o2.y}`
-           +` L ${i2.x} ${i2.y} A ${R_INNER} ${R_INNER} 0 0 0 ${i1.x} ${i1.y} Z`;
-  svg.appendChild(svgEl('path',{d:arcD,fill:'#F5F6FA',stroke:'#E6E9EF','stroke-width':'1'}));
-  svg.appendChild(svgEl('path',{d:arcD,fill:`url(#${gradId})`,opacity:'0.85'}));
-  [0,25,50,75,100].forEach(v => {
-    const p1=gaugePoint(v,R_OUTER+2), p2=gaugePoint(v,R_OUTER+8), pl=gaugePoint(v,R_OUTER+16);
-    svg.appendChild(svgEl('line',{x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,stroke:'#C5C7D4','stroke-width':'1.5'}));
-    const lbl=svgEl('text',{x:pl.x,y:pl.y+4,'text-anchor':'middle','font-size':'8',fill:'#676879','font-family':'Inter','font-weight':'600'});
-    lbl.textContent=v+unit; svg.appendChild(lbl);
-  });
-  const needle=svgEl('line',{x1:CX,y1:CY,x2:CX-GAUGE.R_NEEDLE,y2:CY,stroke:'#323338','stroke-width':'2.5','stroke-linecap':'round'});
-  svg.appendChild(needle);
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:'9',fill:'#FFFFFF',stroke:'#E6E9EF','stroke-width':'2'}));
-  svg.appendChild(svgEl('circle',{cx:CX,cy:CY,r:'4',fill:'#004F9F'}));
-  return needle;
-}
-
-function easeOut(t) { return 1-Math.pow(1-t,3); }
-function animateNeedle(needle, kpiEl, targetPct, formatFn, colorFn, delay=0) {
-  setTimeout(() => {
-    const startTime=performance.now();
-    function frame(now) {
-      const t=Math.min((now-startTime)/1200,1), cur=easeOut(t)*targetPct;
-      const pt=gaugePoint(cur,GAUGE.R_NEEDLE);
-      needle.setAttribute('x2',pt.x); needle.setAttribute('y2',pt.y);
-      if (kpiEl) { kpiEl.textContent=formatFn(cur); kpiEl.style.color=colorFn(cur); }
-      if (t<1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }, delay);
-}
-function animateLoadGauge(needle, kpiEl, loadPct, delay=0) {
-  animateNeedle(needle, kpiEl, loadPct,
-    cur=>`${Math.round(cur)} %`,
-    cur=>cur>85?'#D93025':cur>65?'#BF8900':'#007D43', delay);
-}
-function animateTempGauge(needle, kpiEl, tempF, maxTempF=150, delay=0) {
-  const targetPct=Math.min((tempF/maxTempF)*100,100);
-  animateNeedle(needle, kpiEl, targetPct,
-    cur=>`${Math.round((cur/100)*tempF)} °F`,
-    cur=>cur>80?'#D93025':cur>55?'#BF8900':'#007D43', delay);
-}
-
-function parseStatus(raw='') {
-  const s=raw.toLowerCase().trim();
-  const found=STATUS_KEY_MAP.find(({match})=>s.includes(match));
-  return found?found.key:DEFAULT_STATUS;
-}
-function isOff(sk) { return sk==='fuera-servicio'||sk==='standby'; }
-function loadColorClass(pct) { return pct>85?'c-danger':pct>65?'c-warning':'c-normal'; }
-function tempColorClass(f)   { return f>110?'c-danger':'c-normal'; }
-const DASH='—';
-function metricRow(label, value, colorClass='') {
-  return `<div class="mrow"><span class="mlabel">${label}</span><span class="mval ${colorClass}">${value}</span></div>`;
-}
-function statusMeta(key) { return STATUS_META[key]??STATUS_META[DEFAULT_STATUS]; }
-
-function renderChillerCard(ch, idx, delay=0) {
-  const off=isOff(ch.status), meta=statusMeta(ch.status);
-  const card=document.createElement('div');
-  card.className=`hmi-card ${meta.cardClass}`.trim();
-  card.innerHTML=`
-    <div class="hmi-header">
-      <span class="hmi-title">${ch.name}</span>
-      <span class="status-badge ${meta.badge}">${meta.label}</span>
-    </div>
-    <div class="hmi-sub">${ch.sub}</div>
-    <div class="gauge-wrap"><svg id="svg-ch-${idx}" viewBox="0 0 230 100"></svg></div>
-    <div class="kpi-value ${off?'kpi-off':''}" id="kpi-ch-${idx}">${off?DASH:'0 %'}</div>
-    <div class="metrics">
-      ${metricRow('Carga',      off?DASH:ch.carga+' %',    off?'c-off':loadColorClass(ch.carga))}
-      ${metricRow('T° Salida',  off?DASH:ch.tempOut+' °F', off?'c-off':'c-normal')}
-      ${metricRow('T° Entrada', off?DASH:ch.tempIn+' °F',  off?'c-off':'c-normal')}
-      ${metricRow('P. Salida',  off?DASH:ch.presOut+' psi',off?'c-off':'c-warning')}
-      ${metricRow('P. Entrada', off?DASH:ch.presIn+' psi', off?'c-off':'c-warning')}
-    </div>`;
-  document.getElementById('hmi-container').appendChild(card);
-  const svg=document.getElementById(`svg-ch-${idx}`);
-  const kpiEl=document.getElementById(`kpi-ch-${idx}`);
-  const needle=buildGauge(svg,`grad-ch-${idx}`,'%');
-  if (!off) animateLoadGauge(needle,kpiEl,ch.carga,delay);
-}
-
-function renderCompresorCard(cp, idx, delay=0) {
-  const off=isOff(cp.status), meta=statusMeta(cp.status);
-  const card=document.createElement('div');
-  card.className=`hmi-card ${meta.cardClass}`.trim();
-  card.innerHTML=`
-    <div class="hmi-header">
-      <span class="hmi-title">${cp.name}</span>
-      <span class="status-badge ${meta.badge}">${meta.label}</span>
-    </div>
-    <div class="hmi-sub">${cp.sub}</div>
-    <div class="gauge-wrap"><svg id="svg-cp-${idx}" viewBox="0 0 230 100"></svg></div>
-    <div class="kpi-value ${off?'kpi-off':''}" id="kpi-cp-${idx}">${off?DASH:'0 °F'}</div>
-    <div class="metrics">
-      ${metricRow('T° Carga',    off?DASH:cp.tempCarga+' °F',    off?'c-off':tempColorClass(cp.tempCarga))}
-      ${metricRow('T° Descarga', off?DASH:cp.tempDescarga+' °F', off?'c-off':tempColorClass(cp.tempDescarga))}
-      ${metricRow('P. Carga',    off?DASH:cp.presCarga+' psi',   off?'c-off':'c-warning')}
-      ${metricRow('P. Descarga', off?DASH:cp.presDescarga+' psi',off?'c-off':'c-warning')}
-    </div>`;
-  document.getElementById('hmi-container').appendChild(card);
-  const svg=document.getElementById(`svg-cp-${idx}`);
-  const kpiEl=document.getElementById(`kpi-cp-${idx}`);
-  const needle=buildGauge(svg,`grad-cp-${idx}`,'°F');
-  if (!off) animateTempGauge(needle,kpiEl,cp.tempCarga,150,delay);
-}
-
-const MONDAY_API='https://api.monday.com/v2';
-const MONDAY_HEADERS={
-  'Content-Type':'application/json',
-  'Authorization':CONFIG.TOKEN,
-  'API-Version':'2023-10',
+/* ═══════════════════════════════════════════════════════════
+   MONDAY.COM API
+═══════════════════════════════════════════════════════════ */
+const MONDAY_API     = 'https://api.monday.com/v2';
+const MONDAY_HEADERS = {
+  'Content-Type': 'application/json',
+  'Authorization': CONFIG.TOKEN,
+  'API-Version':  '2023-10',
 };
 
 async function fetchAllItems(boardId) {
-  const items=[]; let cursor=null;
+  const items = [];
+  let cursor  = null;
   do {
-    const cursorArg=cursor?`, cursor: "${cursor}"`:'';
-    const query=`query {
+    const cursorArg = cursor ? `, cursor: "${cursor}"` : '';
+    const query = `query {
       boards(ids: ${boardId}) {
         items_page(limit: 100${cursorArg}) {
           cursor
@@ -970,210 +1053,213 @@ async function fetchAllItems(boardId) {
         }
       }
     }`;
-    const res=await fetch(MONDAY_API,{method:'POST',headers:MONDAY_HEADERS,body:JSON.stringify({query})});
-    const data=await res.json();
-    if (data.errors) throw new Error(data.errors.map(e=>e.message).join(', '));
-    const page=data.data.boards[0].items_page;
-    items.push(...page.items); cursor=page.cursor??null;
+    const res  = await fetch(MONDAY_API, { method:'POST', headers:MONDAY_HEADERS, body:JSON.stringify({ query }) });
+    const data = await res.json();
+    if (data.errors) throw new Error(data.errors.map(e => e.message).join(', '));
+    const page = data.data.boards[0].items_page;
+    items.push(...page.items);
+    cursor = page.cursor ?? null;
   } while (cursor);
   return items;
 }
 
 function latestByName(items, allowList) {
-  const map=new Map();
+  const map = new Map();
   items.forEach(item => {
-    const name=item.name.trim().toUpperCase();
+    const name = item.name.trim().toUpperCase();
     if (!allowList.includes(name)) return;
-    if (!map.has(name)||new Date(item.created_at)>new Date(map.get(name).created_at))
-      map.set(name,item);
+    if (!map.has(name) || new Date(item.created_at) > new Date(map.get(name).created_at))
+      map.set(name, item);
   });
   return map;
 }
+
 function numericCol(item, colId) {
-  const raw=item.column_values.find(c=>c.id===colId)?.text??'';
-  return parseFloat(raw.replace(/[^\d.-]/g,''))||0;
+  const raw = item.column_values.find(c => c.id === colId)?.text ?? '';
+  return parseFloat(raw.replace(/[^\d.-]/g, '')) || 0;
 }
-function statusCol(item, colId) { return item.column_values.find(c=>c.id===colId)?.text??''; }
 
-let currentTab='CH', allCHItems=[], allCPItems=[];
-
-function showLoading(msg='Conectando con Monday.com…') {
-  document.getElementById('hmi-container').innerHTML=`
-    <div class="loading-msg"><div class="spinner"></div><span>${msg}</span></div>`;
+function statusCol(item, colId) {
+  return item.column_values.find(c => c.id === colId)?.text ?? '';
 }
-function showError(msg='Error de conexión') {
-  document.getElementById('hmi-container').innerHTML=`
-    <div class="loading-msg" style="color:var(--danger)">⚠ ${msg}</div>`;
+
+/* ─── State ─── */
+let currentTab2 = 'CH', allCHItems = [], allCPItems = [];  // currentTab already declared above
+
+function showLoading(msg = 'Conectando con Monday.com…') {
+  document.getElementById('hmi-container').innerHTML =
+    `<div class="loading-msg"><div class="spinner"></div><span>${msg}</span></div>`;
+}
+
+function showError(msg = 'Error de conexión. Intente de nuevo.') {
+  document.getElementById('hmi-container').innerHTML =
+    `<div class="loading-msg" style="color:var(--danger)">⚠ ${msg}</div>`;
 }
 
 async function fetchData() {
   showLoading();
   try {
-    [allCHItems, allCPItems]=await Promise.all([
+    [allCHItems, allCPItems] = await Promise.all([
       fetchAllItems(CONFIG.BOARD_CHILLERS),
       fetchAllItems(CONFIG.BOARD_COMPRESORES),
     ]);
     renderItems();
-  } catch { showError(); }
+  } catch (err) {
+    console.error('Monday.com fetch error:', err);
+    showError();
+  }
 }
 
 function renderItems() {
-  document.getElementById('hmi-container').innerHTML='';
-  if (currentTab==='CH') {
-    const latest=latestByName(allCHItems, CONFIG.CH_LIST);
-    CONFIG.CH_LIST.forEach((name,i) => {
-      const item=latest.get(name); if (!item) return;
-      const { COL_CH }=CONFIG;
+  document.getElementById('hmi-container').innerHTML = '';
+  if (currentTab === 'CH') {
+    const latest = latestByName(allCHItems, CONFIG.CH_LIST);
+    CONFIG.CH_LIST.forEach((name, i) => {
+      const item = latest.get(name);
+      if (!item) return;
+      const { COL_CH } = CONFIG;
       renderChillerCard({
-        name, sub:CHILLER_SUB[name]??'Equipo',
-        carga:   numericCol(item,COL_CH.CARGA),
-        tempOut: numericCol(item,COL_CH.TEMP_OUT),
-        tempIn:  numericCol(item,COL_CH.TEMP_IN),
-        presOut: numericCol(item,COL_CH.PRES_OUT),
-        presIn:  numericCol(item,COL_CH.PRES_IN),
-        status:  parseStatus(statusCol(item,COL_CH.STATUS)),
-      }, i, i*80);
+        name, sub: CHILLER_SUB[name] ?? 'Equipo',
+        carga:   numericCol(item, COL_CH.CARGA),
+        tempOut: numericCol(item, COL_CH.TEMP_OUT),
+        tempIn:  numericCol(item, COL_CH.TEMP_IN),
+        presOut: numericCol(item, COL_CH.PRES_OUT),
+        presIn:  numericCol(item, COL_CH.PRES_IN),
+        status:  parseStatus(statusCol(item, COL_CH.STATUS)),
+      }, i, i * 80);
     });
   } else {
-    const latest=latestByName(allCPItems, CONFIG.CP_LIST);
-    CONFIG.CP_LIST.forEach((name,i) => {
-      const item=latest.get(name); if (!item) return;
-      const { COL_CP }=CONFIG;
+    const latest = latestByName(allCPItems, CONFIG.CP_LIST);
+    CONFIG.CP_LIST.forEach((name, i) => {
+      const item = latest.get(name);
+      if (!item) return;
+      const { COL_CP } = CONFIG;
       renderCompresorCard({
-        name, sub:COMPRESOR_SUB[name]??'Equipo',
-        tempCarga:    numericCol(item,COL_CP.TEMP_CARGA),
-        tempDescarga: numericCol(item,COL_CP.TEMP_DESCARGA),
-        presCarga:    numericCol(item,COL_CP.PRES_CARGA),
-        presDescarga: numericCol(item,COL_CP.PRES_DESCARGA),
-        status:       parseStatus(statusCol(item,COL_CP.STATUS)),
-      }, i, i*80);
+        name, sub: COMPRESOR_SUB[name] ?? 'Equipo',
+        tempCarga:    numericCol(item, COL_CP.TEMP_CARGA),
+        tempDescarga: numericCol(item, COL_CP.TEMP_DESCARGA),
+        presCarga:    numericCol(item, COL_CP.PRES_CARGA),
+        presDescarga: numericCol(item, COL_CP.PRES_DESCARGA),
+        status:       parseStatus(statusCol(item, COL_CP.STATUS)),
+      }, i, i * 80);
     });
   }
 }
 
-function hideAllSections() {
-  document.getElementById('hmi-view').style.display='none';
-  document.getElementById('checklist-view').style.display='none';
+/* ═══════════════════════════════════════════════════════════
+   CHECK LIST
+═══════════════════════════════════════════════════════════ */
+const CL_KEY      = 'pdm_checklist_records';
+const CL_FIELDS   = ['cl-id','cl-carga','cl-temp-out','cl-temp-in','cl-pres-out','cl-pres-in'];
+let   clRecords   = loadClRecords();
+
+function loadClRecords() {
+  try { return JSON.parse(localStorage.getItem(CL_KEY)) ?? []; }
+  catch { return []; }
 }
 
-function sidebarNav(section) {
-  document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  hideAllSections();
-  if (section==='hmi') {
-    document.getElementById('hmi-view').style.display='flex';
-    fetchData();
-  } else if (section==='checklist') {
-    document.getElementById('checklist-view').style.display='flex';
-  }
+function saveClRecords() {
+  try { localStorage.setItem(CL_KEY, JSON.stringify(clRecords)); } catch {}
 }
 
-function openHMI() {
-  document.getElementById('main-menu-wrap').classList.add('hidden');
-  hideAllSections();
-  document.getElementById('hmi-view').style.display='flex';
-  document.getElementById('header-back-btn').classList.remove('hidden');
-  fetchData();
-}
-
-function openSection(section) {
-  document.getElementById('main-menu-wrap').classList.add('hidden');
-  hideAllSections();
-  document.getElementById('header-back-btn').classList.remove('hidden');
-  if (section==='checklist') {
-    document.getElementById('checklist-view').style.display='flex';
-  }
-}
-
-function closeHMI() {
-  hideAllSections();
-  document.getElementById('main-menu-wrap').classList.remove('hidden');
-  document.getElementById('header-back-btn').classList.add('hidden');
-}
-
-function switchTab(type) {
-  currentTab = type;
-  document.getElementById('tab-ch').classList.toggle('active', type==='CH');
-  document.getElementById('tab-cp').classList.toggle('active', type==='CP');
-  document.getElementById('tab-tc').classList.toggle('active', type==='TC');
-
-  const hmiContainer  = document.getElementById('hmi-container');
-  const tempContainer = document.getElementById('temp-container');
-
-  if (type === 'TC') {
-    hmiContainer.style.display  = 'none';
-    tempContainer.style.display = 'grid';
-    renderTempCards();
-  } else {
-    hmiContainer.style.display  = 'grid';
-    tempContainer.style.display = 'none';
-    (allCHItems.length||allCPItems.length) ? renderItems() : fetchData();
-  }
-}
-
-/* ── CHECK LIST ── */
-let clRecords = [];
+function getField(id) { return document.getElementById(id).value; }
 
 function clearChecklist() {
-  ['cl-id','cl-carga','cl-temp-out','cl-temp-in','cl-pres-out','cl-pres-in']
-    .forEach(id => document.getElementById(id).value='');
+  CL_FIELDS.forEach(id => { document.getElementById(id).value = ''; });
   document.getElementById('cl-toast').classList.add('hidden');
 }
 
 function submitChecklist() {
-  const id       = document.getElementById('cl-id').value.trim();
-  const carga    = document.getElementById('cl-carga').value;
-  const tempOut  = document.getElementById('cl-temp-out').value;
-  const tempIn   = document.getElementById('cl-temp-in').value;
-  const presOut  = document.getElementById('cl-pres-out').value;
-  const presIn   = document.getElementById('cl-pres-in').value;
-
+  const id = getField('cl-id').trim();
   if (!id) { document.getElementById('cl-id').focus(); return; }
 
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'})
-    + ' ' + now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  const now     = new Date();
+  const dateStr = now.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' })
+                + ' ' + now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit' });
 
-  clRecords.unshift({ id, carga, tempOut, tempIn, presOut, presIn, date: dateStr });
+  clRecords.unshift({
+    id,
+    carga:   getField('cl-carga'),
+    tempOut: getField('cl-temp-out'),
+    tempIn:  getField('cl-temp-in'),
+    presOut: getField('cl-pres-out'),
+    presIn:  getField('cl-pres-in'),
+    date:    dateStr,
+  });
+  saveClRecords();
 
   const toast = document.getElementById('cl-toast');
   toast.classList.remove('hidden');
-  setTimeout(()=>toast.classList.add('hidden'), 2800);
+  setTimeout(() => toast.classList.add('hidden'), 2800);
 
   renderClHistory();
   clearChecklist();
 }
 
-function renderClHistory() {
-  const el = document.getElementById('cl-history');
-  if (!clRecords.length) { el.innerHTML=''; return; }
-  el.innerHTML = `<div class="cl-history-title">Registros guardados (${clRecords.length})</div>`
-    + clRecords.map(r=>`
-      <div class="cl-history-item">
-        <div class="cl-history-header">
-          <span class="cl-history-id">${r.id}</span>
-          <span class="cl-history-date">${r.date}</span>
-        </div>
-        <div class="cl-history-grid">
-          <div class="cl-history-row"><span class="cl-history-lbl">Carga</span><span class="cl-history-val">${r.carga||'—'} %</span></div>
-          <div class="cl-history-row"><span class="cl-history-lbl">T° Salida</span><span class="cl-history-val">${r.tempOut||'—'} °F</span></div>
-          <div class="cl-history-row"><span class="cl-history-lbl">T° Entrada</span><span class="cl-history-val">${r.tempIn||'—'} °F</span></div>
-          <div class="cl-history-row"><span class="cl-history-lbl">P. Salida</span><span class="cl-history-val">${r.presOut||'—'} psi</span></div>
-          <div class="cl-history-row"><span class="cl-history-lbl">P. Entrada</span><span class="cl-history-val">${r.presIn||'—'} psi</span></div>
-        </div>
-      </div>`).join('');
+function deleteClRecord(index) {
+  clRecords.splice(index, 1);
+  saveClRecords();
+  renderClHistory();
 }
 
+function exportClCSV() {
+  if (!clRecords.length) return;
+  const header = 'Equipo,Fecha,Carga (%),T° Salida (°F),T° Entrada (°F),P. Salida (psi),P. Entrada (psi)';
+  const rows   = clRecords.map(r =>
+    `"${r.id}","${r.date}","${r.carga||''}","${r.tempOut||''}","${r.tempIn||''}","${r.presOut||''}","${r.presIn||''}"`
+  );
+  const blob = new Blob([[header, ...rows].join('\n')], { type:'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), {
+    href:     url,
+    download: `checklist_pdm_${new Date().toISOString().slice(0,10)}.csv`,
+  });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function renderClHistory() {
+  const el = document.getElementById('cl-history');
+  if (!clRecords.length) { el.innerHTML = ''; return; }
+
+  const items = clRecords.map((r, i) => `
+    <div class="cl-history-item">
+      <button class="cl-btn-delete" onclick="deleteClRecord(${i})" title="Eliminar">✕</button>
+      <div class="cl-history-header">
+        <span class="cl-history-id">${r.id}</span>
+        <span class="cl-history-date">${r.date}</span>
+      </div>
+      <div class="cl-history-grid">
+        <div class="cl-history-row"><span class="cl-history-lbl">Carga</span>     <span class="cl-history-val">${r.carga   ||'—'} %</span></div>
+        <div class="cl-history-row"><span class="cl-history-lbl">T° Salida</span> <span class="cl-history-val">${r.tempOut ||'—'} °F</span></div>
+        <div class="cl-history-row"><span class="cl-history-lbl">T° Entrada</span><span class="cl-history-val">${r.tempIn  ||'—'} °F</span></div>
+        <div class="cl-history-row"><span class="cl-history-lbl">P. Salida</span> <span class="cl-history-val">${r.presOut ||'—'} psi</span></div>
+        <div class="cl-history-row"><span class="cl-history-lbl">P. Entrada</span><span class="cl-history-val">${r.presIn  ||'—'} psi</span></div>
+      </div>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="cl-history-bar">
+      <span class="cl-history-title">Registros guardados (${clRecords.length})</span>
+      <button class="cl-btn-export" onclick="exportClCSV()">⬇ Exportar CSV</button>
+    </div>
+    ${items}`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════ */
 function initLayout() {
-  const isDesktop=window.matchMedia('(min-width: 768px)').matches;
+  renderClHistory();
+  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
   if (isDesktop) {
     document.getElementById('main-menu-wrap').classList.add('hidden');
-    document.getElementById('hmi-view').style.display='flex';
+    document.getElementById('hmi-view').style.display = 'flex';
     fetchData();
   }
 }
+
 document.addEventListener('DOMContentLoaded', initLayout);
 </script>
-
 </body>
 </html>
