@@ -975,7 +975,9 @@ function navigate(section) {
   }
   document.getElementById('main-menu-wrap').classList.add('hidden');
   document.getElementById('header-back-btn').classList.remove('hidden');
+  // Ocultar explícitamente todas las secciones Y el hmi-view
   hideAllSections();
+  document.getElementById('hmi-view').style.display = 'none';
   showSection(section);
 }
 
@@ -995,6 +997,7 @@ function showSection(section) {
   } else if (section === 'checklist') {
     document.getElementById('checklist-view').style.display = 'flex';
     setSyncStatus('idle');
+    renderClHistory();   // refrescar historial cada vez que se abre
   } else if (section === 'qr') {
     document.getElementById('qr-view').style.display = 'flex';
   }
@@ -1653,14 +1656,17 @@ function stopQrIfActive() {
 /* ═══════════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════════ */
-async function initLayout() {
-  await loadClRecords();
-  renderClHistory();
+function initLayout() {
   const isDesktop = window.matchMedia('(min-width: 768px)').matches;
   if (isDesktop) {
+    // Desktop: mostrar HMI inmediatamente, cargar checklist en paralelo
     document.getElementById('main-menu-wrap').classList.add('hidden');
     document.getElementById('hmi-view').style.display = 'flex';
-    fetchData();
+    fetchData();                    // Monday.com (no bloquea)
+    loadClRecords();                // JSONBin (no bloquea)
+  } else {
+    // Móvil: solo pre-cargar registros en background
+    loadClRecords();
   }
 }
 
